@@ -5,6 +5,17 @@
       .header-content Identifying the Color and the Theme of City.
     .main-content
       .nav-container.box-shadow
+        .nav-element.nav-vm-container
+          .nav-title View Mode
+          .nav-vm-radio-container
+        .nav-element.nav-search-container
+          .nav-title Search
+        .nav-element.nav-date-container
+          .nav-title Date
+        .nav-element.nav-time-container
+          .nav-title Time
+        .nav-element.nav-category-container
+          .nav-title Categories
       .main-container.box-shadow
       .detail-container.box-shadow
 </template>
@@ -20,17 +31,8 @@ export default {
 
 <style scoped lang="sass">
 @import "../style/_colors.sass"
+@import "../style/_sizes.sass"
 @import url('https://fonts.googleapis.com/css?family=Roboto')
-
-$unit-small: 6px
-$unit-middle: 12px
-$unit-large: 18px
-
-$font-size-first: 24px
-$font-size-second: 21px
-$font-size-third: 18px
-$font-size-fourth: 15px
-$font-size-fifth: 12px
 
 .wrapper
   width: 1920px
@@ -64,13 +66,31 @@ $font-size-fifth: 12px
     width: 100%
     height: calc(100% - #{$header-height} - #{$unit-middle})
     display: flex
-    $nav-container-width: 330px
-    $detail-container-width: 450px
+    $nav-container-width: 300px
+    $detail-container-width: 390px
     .nav-container
       width: $nav-container-width
       height: 100%
       background: $md-white
       margin-right: $unit-middle
+      padding: $unit-large 0
+      $nav-title-height: 48px
+      $nav-title-line-height: 36px
+      .nav-element
+        width: 100%
+        height: auto
+        padding: $unit-small $unit-large
+        border: 1px solid $md-blue-grey-300
+        .nav-title
+          line-height: $nav-title-line-height
+          font-size: $font-size-fourth
+          font-family: 'Roboto', sans-serif
+          color: $md-dark-text-primary
+          font-weight: 500
+      .nav-vm-container
+        width: 100%
+        height: $nav-title-height
+        display: flex
     .main-container
       width: calc(100% - #{$nav-container-width} - #{$detail-container-width})
       height: 100%
