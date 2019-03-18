@@ -1,5 +1,5 @@
 <template lang="pug">
-  .test-svg#filter
+  .test-svg#filter(@mousedown="mouseDown")
 </template>
 
 <script>
@@ -19,8 +19,6 @@ export default {
         .attr('height', 200)
         .style('background', '#aeaeae')
         .append('g');
-
-
     /*
     세 개를 만들어야 함.
     A. 메인 몸통 1개 B. 양 끝 귀 2
@@ -40,6 +38,10 @@ export default {
       trigger하는 식으로 하면 된다.
 
      */
+  },
+  methods: {
+    mouseDown() {
+    }
   }
 
 };
