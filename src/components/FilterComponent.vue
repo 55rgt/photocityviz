@@ -18,7 +18,7 @@ export default {
         .attr('width', 300)
         .attr('height', 200)
         .style('background', '#aeaeae')
-        .append('g')
+        .append('g');
 
 
     /*
@@ -38,6 +38,7 @@ export default {
       마우스가 눌러진 상태로 움직였을 때 계속해서 이벤트를 trigger해야 하는데,
       데이터가 많아져서 그게 무거워진다면, debounce를 이용하여 drag가 된 상태에서 0.n초 이내에 아무런 이벤트가 없었다면
       trigger하는 식으로 하면 된다.
+
      */
   }
 

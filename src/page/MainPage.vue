@@ -20,7 +20,6 @@
         FilterComponent
       .detail-container.box-shadow
 </template>
-
 <script>
 import FilterComponent from '../components/FilterComponent';
 

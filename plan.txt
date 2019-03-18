@@ -5,13 +5,21 @@
 
 3/24(일) ~ 3/30(토): 기획서 발표(3/25)
 -교수님께 기획서 메일 보내드리기
+-데이터 처리 완
 -메인뷰 제작 시작
 -서브뷰 제작 시작
+
+-기획 동기
+-이전 작업물 설명(4분)
+-이전 작업물에서 부족했던 점 + 추가할 점 설명
+-데이터 설명
+-데이터 처리 방법
+-뷰 설명
 
 3/31(일) ~ 4/6(토)
 -데이터 추가 수집 시작
 
-4/7(일) ~ 4/13(토)
+4/7(일) ~ 4/13(토)x
 
 4/14(일) ~ 4/20(토)
 
@@ -37,13 +45,32 @@ Todo 1: Google Vision API를 사용 #완료#
 Todo 2: 사진에서 메타데이터 추출 (ExifTool 등 이용) #완료#
   + 각각 1년치 자료 합산하기 #완료#
 Todo 3: Image Resizing #완료#
+Todo 10부터 먼저 한다.
 Todo 4: 라벨 카운팅 및 정제
   => toLowerCase로 정제
   => 카운트 일정 이하는 지우기
+  => 라벨 분류는 모든 데이터가 있어야 될 수도 있다.
 Todo 5: 4번에서 했던 걸 대분류 -> 중분류 -> 소분류화하기
 Todo 6: 해시태그 카운팅 및 정제(wordnik으로 되나?)
   => 카운트 일정 이하는 지우기, 띄어쓰기, 특수문자 등 고려해서 정제
   => 일단은 카운트 일정 이하 지우기만 하자
+  /*
+  "hashTags": [
+        "oslonorway",
+        "corvid",
+        "nuts_about_birds",
+        "fuglerinorge",
+        "corvuscornix",
+        "oslofjorden",
+        "crows",
+        "kråke",
+        "birds",
+        "birdsofinstagram",
+        "instabird",
+        "urbanwildlife"
+  ]
+  "hashTags_m": [ "oslo", "norway", "birds", "instagram", "life", "urban", "wild"]
+  */
 Todo 7: 색상 정제 (이미지 Property를 이미지 linear mapping 으로 변환하기)
   => 근데 이게 남색 30% 노란색 15% ... 짙은남색 42% 이러니까 얘들을 변환해서 같은 건 합쳐야 할 것 같다.
 Todo 8: Label + Property + Metadata 를 기반으로 하는 최종 json 파일 만들기
