@@ -17,15 +17,16 @@
         .nav-element.nav-category-container
           .nav-title Categories
       .main-container.box-shadow
+        FilterComponent
       .detail-container.box-shadow
 </template>
 
 <script>
-import SpiralComponent from '../components/SpiralComponent';
+import FilterComponent from '../components/FilterComponent';
 
 export default {
   name: 'MainPage',
-  components: { SpiralComponent },
+  components: { FilterComponent },
 };
 </script>
 

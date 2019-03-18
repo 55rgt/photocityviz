@@ -50,7 +50,7 @@ export default {
         .append('svg')
         .attr('width', that.width + that.margin.right + that.margin.left)
         .attr('height', that.height + that.margin.top + that.margin.bottom)
-        .append('g')
+        .append('g');
     // 사각형 붙이기
     that.svg.append("rect")
         .attr("width", "100%")
