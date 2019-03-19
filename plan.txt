@@ -79,20 +79,21 @@ Todo 6: 해시태그 카운팅 및 정제(wordnik으로 되나?)
   3. 오탈자나 이상한 단어 처리
   => 처리 못 할 수도 있음. 정확성 낮아지더라도 무시하는 게 나을 수도 있다.
 Todo 7: 색상 정제 (이미지 Property를 이미지 linear mapping 으로 변환하기)
+  => HSL palette 만들기 => HSL -> LAB 변환 => DeltaE 2000
   => 근데 이게 남색 30% 노란색 15% ... 짙은남색 42% 이러니까 얘들을 변환해서 같은 건 합쳐야 할 것 같다.
 Todo 8: Label + Property + Metadata 를 기반으로 하는 최종 json 파일 만들기
   => 1시간 단위로 시각화를 할 예정이므로 property 적절히 파악하여 추가
   /*
     {
-      "City": oslo,
-      "Name": "test.jpg",
+      "Group": oslo,
+      "File": "test.jpg",
       "HashTags": [],
       "Primary": {
-        "Color": 1 // 미리 정해진 코드
+        "Hex": "" // 미리 정해진 코드
         "Proportion": 0.32
       },
       "Secondary": {
-        "Color": 5 // 미리 정해진 코드
+        "Hex": "" // 미리 정해진 코드
         "Proportion": 0.24
       },
       "Labels": {
