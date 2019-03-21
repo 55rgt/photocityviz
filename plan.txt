@@ -81,6 +81,9 @@ Todo 6: 해시태그 카운팅 및 정제(wordnik으로 되나?)
 Todo 7: 색상 정제 (이미지 Property를 이미지 linear mapping 으로 변환하기)
   => HSL palette 만들기 => HSL -> LAB 변환 => DeltaE 2000
   => 근데 이게 남색 30% 노란색 15% ... 짙은남색 42% 이러니까 얘들을 변환해서 같은 건 합쳐야 할 것 같다.
+  => color palette가 현재 36개짜린데, 얘의 단점은 회색 계열을 반영하지 못하는 것에 있다. 따라서, 이걸 처리해야 할 것 같음.
+  => 2개를 하지 말고 3~4개까지 그라데이션을 하는 건 어떤지
+  => 근데 주색상, 부색상이 필요가 없다. 주색상만 하고 카운팅해서 나오는 걸 가지고 해야지
 Todo 8: Label + Property + Metadata 를 기반으로 하는 최종 json 파일 만들기
   => 1시간 단위로 시각화를 할 예정이므로 property 적절히 파악하여 추가
   /*
@@ -88,25 +91,27 @@ Todo 8: Label + Property + Metadata 를 기반으로 하는 최종 json 파일 �
       "Group": oslo,
       "File": "test.jpg",
       "HashTags": [],
-      "Primary": {
-        "Hex": "" // 미리 정해진 코드
-        "Proportion": 0.32
-      },
-      "Secondary": {
-        "Hex": "" // 미리 정해진 코드
-        "Proportion": 0.24
-      },
-      "Labels": {
-        "중분류1": {
-          "소분류1": 0.883, // 소수점 네번째에서 반올림 (세자리까지),
-          "소분류2": 0.831, // 소수점 네번째에서 반올림 (세자리까지),
-          "소분류3": 0.740, // 소수점 네번째에서 반올림 (세자리까지)
-        },
-        "중분류1": {
-          "소분류13": 0.783, // 소수점 네번째에서 반올림 (세자리까지),
-          "소분류14": 0.731, // 소수점 네번째에서 반올림 (세자리까지),
-        },
-      }
+      "Date": "2018-06-29",
+      "Hour": 3,
+      "Color": {
+                  "43": 21.34,
+                  "45": 23.62,
+                  "73": 14.46,
+                  "74": 14.98
+              },
+              "Labels": {
+                  "season": {
+                      "winter": 3.971
+                  },
+                  "activity": {
+                      "fun": 0.768,
+                      "tour": 0.729,
+                      "leisure": 0.624
+                  },
+                  "human": {
+                      "product": 1.47
+                  }
+              }
     }
   */
 Todo 9: DB에 넣기
@@ -134,6 +139,7 @@ Force 원칙
 => 또 각각의 중분류 라벨 값들 * 각각의 weight를 합산해 더한 것으로 대분류 force를 결정
 Todo 0: rgba 코드 json
 Todo 1: 왼쪽 navigation bar (plot mode/category/duration/threshold)
+  => 추가적으로 색상 필터가 있으면 재밌을 것 같다.
 Todo 2: 메인 뷰 1) Spiral
   Todo 2-1: Spiral에 데이터 매핑해서 그리기
     => 높이를 파악하려면 8번 과정에서 EDA로 Min, Max에 대한 정보를 미리 알고 있어야 할 듯.
