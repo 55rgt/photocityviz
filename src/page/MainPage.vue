@@ -81,16 +81,19 @@ export default {
         height: auto
         padding: $unit-small $unit-large
         border: 1px solid $md-blue-grey-300
+        display: flex
         .nav-title
           line-height: $nav-title-line-height
           font-size: $font-size-fourth
           font-family: 'Roboto', sans-serif
           color: $md-dark-text-primary
           font-weight: 500
+          margin-right: $unit-large
       .nav-vm-container
         width: 100%
         height: $nav-title-height
-        display: flex
+        .nav-vm-radio-container
+          flex: 1
     .main-container
       width: calc(100% - #{$nav-container-width} - #{$detail-container-width})
       height: 100%

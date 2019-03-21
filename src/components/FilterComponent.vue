@@ -49,7 +49,7 @@ export default {
       console.log(e);
       console.log(that.rangeUnit.sX, that.rangeUnit.eX);
       that.rangeUnit.onDrag = true;
-      that.svg.append("rect").attr("y", 0)
+      that.svg.append("rect").attr("y", 0);
       // 현재 문제 상황. 기존에 rect 영역을 누르면, event target이 rect가 되어서 offset값이 이상
     },
     dragOn(e) {
