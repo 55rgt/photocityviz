@@ -1,6 +1,6 @@
 <template lang="pug">
   .test-svg
-    svg(width="300", height="200")#filter(@mousedown="dragStart($event)", @mousemove="dragOn($event)", @mouseup="dragEnd($event)")
+    svg(width="300", height="200")
 </template>
 
 <script>
@@ -11,56 +11,26 @@ export default {
   name: 'FilterComponent',
   data() {
     return {
-      svg: null,
-      rangeUnit: {
-        sX: null,
-        eX: null,
-        onDrag: false,
-        height: 200
-      }
+      svg: null
     }
   },
   mounted() {
     let that = this;
     that.svg = d3.select('svg')
-        .style('background', '#aeaeae')
+        .style('background', '#16ae97')
         .append('g');
-
+    for(let i = 0 ; i < 12 ; i ++) {
+      that.svg.append('rect')
+          .attr('x', 25 * i)
+          .attr('width', 25)
+          .attr('height', 30)
+          .style('background', '#a13afd')
+    }
   },
   watch: {
-    'rangeUnit.eX': function () {
-      let that = this;
-      if(that.rangeUnit.onDrag){
-        that.rangeUnit.eX - that.rangeUnit.sX <= 0 ?
-            that.svg.select("rect").attr("x", that.rangeUnit.eX):
-            that.svg.select("rect").attr("x", that.rangeUnit.sX);
-        that.svg.select("rect")
-            .attr("width", Math.abs(that.rangeUnit.eX - that.rangeUnit.sX))
-            .attr("height", 200);
-      }
-    }
   },
   methods: {
-    dragStart(e) {
-      let that = this;
-      that.svg.select("rect").remove();
-      that.rangeUnit.sX = e.offsetX;
-      that.rangeUnit.eX = e.offsetX;
-      console.log(e);
-      console.log(that.rangeUnit.sX, that.rangeUnit.eX);
-      that.rangeUnit.onDrag = true;
-      that.svg.append("rect").attr("y", 0);
-      // 현재 문제 상황. 기존에 rect 영역을 누르면, event target이 rect가 되어서 offset값이 이상
-    },
-    dragOn(e) {
-      let that = this;
-      that.rangeUnit.eX = e.offsetX;
 
-    },
-    dragEnd(e) {
-      let that = this;
-      that.rangeUnit.onDrag = false;
-    }
   }
 
 };
