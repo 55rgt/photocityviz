@@ -1,50 +1,75 @@
 <template lang="pug">
-  .test-svg
-    svg(width="300", height="200")
+  //.chart
+  //  div
+  .test
+    v-expansion-panel(v-model='panel' expand)
+      v-expansion-panel-content
+        template(v-slot:header='')
+          div Hello
+        .sth
+          | Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.
+          .tea dlkfjd
+      v-expansion-panel-content
+        template(v-slot:header='')
+          div Item
+        .sth
+          | Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.
 </template>
 
 <script>
 /* eslint-disable no-console */
 
 import * as d3 from 'd3';
+
 export default {
   name: 'FilterComponent',
   data() {
     return {
-      svg: null
-    }
+      data: [3, 5, 12, 13, 24, 35],
+      svg: null,
+      panel: [false, true, true]
+    };
   },
   mounted() {
     let that = this;
-    that.svg = d3.select('svg')
-        .style('background', '#16ae97')
-        .append('g');
-    for(let i = 0 ; i < 12 ; i ++) {
-      that.svg.append('rect')
-          .attr('x', 25 * i)
-          .attr('width', 25)
-          .attr('height', 30)
-          .style('background', '#a13afd')
-    }
+    let x = d3.scaleLinear()
+        .domain([0, d3.max(that.data)])
+        .range([0, 420]);
+    d3.select('.chart')
+        .selectAll('div')
+        .data(that.data)
+        .enter().append('div')
+        .style('width', d => x(d) + 'px')
+        .text(d => d);
   },
   watch: {
+    panel: function() {
+      let that = this;
+      console.log(that.panel);
+    }
   },
-  methods: {
-
-  }
+  methods: {}
 
 };
 </script>
 
 <style scoped lang="sass">
 
-.test-svg
+.test
+  width: 100%
+  height: auto
+
+.chart
   width: 100%
   height: 100%
-  padding: 24px
+  /deep/ div
+    font: 10px sans-serif
+    background-color: steelblue
+    text-align: right
+    padding: 3px
+    margin: 1px
+    color: white
 
-
-.d
 
 </style>
 
