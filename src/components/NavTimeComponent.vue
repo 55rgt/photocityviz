@@ -1,6 +1,8 @@
 <template lang="pug">
-  .nav-body.test
-    | NavTime
+  .nav-body
+    .nav-time-manual-controller
+    .nav-time-svg-container
+    .nav-countries-menu-container
 </template>
 
 <script>
@@ -10,10 +12,19 @@ export default {
 </script>
 
 <style scoped lang="sass">
-.test
-  width: 100%
-  height: 300px
 
+.nav-time-manual-controller
+  width: 100%
+  height: 60px
+  border: 1px solid black
+.nav-time-svg-container
+  width: 100%
+  height: 120px
+  border: 1px solid black
+.nav-countries-menu-container
+  width: 100%
+  height: 60px
+  border: 1px solid black
 
 
 </style>

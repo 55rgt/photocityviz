@@ -1,7 +1,7 @@
 <template lang="pug">
   .wrapper
     .header.box-shadow
-      .header-title Photo City Visualization
+      .header-title Photo City Visualization {{ this.$store.state.counter }}
       .header-content Identifying the Color and the Theme of City.
     .main-content
       .nav-container.box-shadow
@@ -25,7 +25,7 @@ export default {
   components: { NavCategoryComponent, NavTimeComponent, FilterComponent, NavDateComponent },
   data() {
     return {
-      panel: [true, true, true],
+      panel: [false, true, false],
       navComponents: [
         {
           "title": "Date",
