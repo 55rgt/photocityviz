@@ -5,27 +5,43 @@
       .header-content Identifying the Color and the Theme of City.
     .main-content
       .nav-container.box-shadow
-        .nav-element.nav-vm-container
-          .nav-title View Mode
-          .nav-vm-radio-container
-        .nav-element.nav-search-container
-          .nav-title Search
-        .nav-element.nav-date-container
-          .nav-title Date
-        .nav-element.nav-time-container
-          .nav-title Time
-        .nav-element.nav-category-container
-          .nav-title Categories
+        v-expansion-panel(v-model='panel' expand)
+          v-expansion-panel-content(v-for="navComponent in navComponents")
+            template(v-slot:header='')
+              .nav-title {{ navComponent.title }}
+            component(:is="navComponent.component")
       .main-container.box-shadow
-        FilterComponent
+          FilterComponent
       .detail-container.box-shadow
 </template>
 <script>
 import FilterComponent from '../components/FilterComponent';
+import NavDateComponent from '../components/NavDateComponent';
+import NavTimeComponent from '../components/NavTimeComponent';
+import NavCategoryComponent from '../components/NavCategoryComponent';
 
 export default {
   name: 'MainPage',
-  components: { FilterComponent },
+  components: { NavCategoryComponent, NavTimeComponent, FilterComponent, NavDateComponent },
+  data() {
+    return {
+      panel: [true, true, true],
+      navComponents: [
+        {
+          "title": "Date",
+          "component": NavDateComponent
+        },
+        {
+          "title": "Time",
+          "component": NavTimeComponent
+        },
+        {
+          "title": "Category",
+          "component": NavCategoryComponent
+        }
+      ]
+    }
+  }
 };
 </script>
 
@@ -46,7 +62,7 @@ export default {
     background: $md-white
     margin-bottom: $unit-small
     display: flex
-    padding: 0 $unit-large
+    padding: 0 $unit-largest
     .header-title
       width: auto
       height: 100%
@@ -76,24 +92,13 @@ export default {
       padding: $unit-large 0
       $nav-title-height: 48px
       $nav-title-line-height: 36px
-      .nav-element
-        width: 100%
-        height: auto
-        padding: $unit-small $unit-large
-        border: 1px solid $md-blue-grey-300
-        display: flex
-        .nav-title
-          line-height: $nav-title-line-height
-          font-size: $font-size-fourth
-          font-family: 'Roboto', sans-serif
-          color: $md-dark-text-primary
-          font-weight: 500
-          margin-right: $unit-large
-      .nav-vm-container
-        width: 100%
-        height: $nav-title-height
-        .nav-vm-radio-container
-          flex: 1
+      .v-expansion-panel__container
+        /deep/ .v-expansion-panel__header
+          padding: $unit-middle $unit-large
+          .nav-title
+        .nav-body
+          padding: $unit-middle $unit-large
+
     .main-container
       width: calc(100% - #{$nav-container-width} - #{$detail-container-width})
       height: 100%

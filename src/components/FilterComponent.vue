@@ -1,19 +1,6 @@
 <template lang="pug">
   //.chart
   //  div
-  .test
-    v-expansion-panel(v-model='panel' expand)
-      v-expansion-panel-content
-        template(v-slot:header='')
-          div Hello
-        .sth
-          | Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.
-          .tea dlkfjd
-      v-expansion-panel-content
-        template(v-slot:header='')
-          div Item
-        .sth
-          | Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.
 </template>
 
 <script>
@@ -26,8 +13,7 @@ export default {
   data() {
     return {
       data: [3, 5, 12, 13, 24, 35],
-      svg: null,
-      panel: [false, true, true]
+      svg: null
     };
   },
   mounted() {
