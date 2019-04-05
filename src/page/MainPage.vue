@@ -1,7 +1,7 @@
 <template lang="pug">
   .wrapper
     .header.box-shadow
-      .header-title Photo City Visualization {{ getCounter }}
+      .header-title Photo City Visualization {{ getLength }}
       .header-content Identifying the Color and the Theme of City.
     .main-content
       .nav-container.box-shadow
@@ -45,7 +45,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-        'getCounter'
+        'getLength'
     ])
   }
 };
@@ -107,9 +107,7 @@ export default {
       .v-expansion-panel__container
         /deep/ .v-expansion-panel__header
           padding: $unit-middle $unit-large
-
           .nav-title
-
         .nav-body
           padding: $unit-middle $unit-large
 
