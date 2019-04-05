@@ -40,19 +40,31 @@ export default {
         .attr('width', '100%')
         .attr('height', '300px')
         .append('g');
+    that.data = this.$store.getters.getHourComponentData;
+    console.log(that.data);
+    // data로 그림을 그리면 됩니다.
+    // data가 바뀌면 그림이 달라지는지?
   },
   watch: {
     hrStart: _.debounce(function () {
       this.$store.dispatch('update', { key: 'hrStart', value: Number.parseInt(this.hrStart), type: 'Hour' });
+      this.data = this.$store.getters.getHourComponentData;
+      console.log(this.data);
     }, 1000),
     hrEnd: _.debounce(function () {
-      this.$store.dispatch('update', { key: 'hrStart', value: Number.parseInt(this.hrEnd), type: 'Hour' });
+      this.$store.dispatch('update', { key: 'hrEnd', value: Number.parseInt(this.hrEnd), type: 'Hour' });
+      this.data = this.$store.getters.getHourComponentData;
+      console.log(this.data);
     }, 1000),
     dtStart: _.debounce(function () {
-      this.$store.dispatch('update', { key: 'hrStart', value: Number.parseInt(this.dtStart), type: 'Date' });
+      this.$store.dispatch('update', { key: 'dtStart', value: this.dtStart, type: 'Date' });
+      this.data = this.$store.getters.getDateComponentData;
+      console.log(this.data);
     }, 1000),
     dtEnd: _.debounce(function () {
-      this.$store.dispatch('update', { key: 'hrStart', value: Number.parseInt(this.dtEnd), type: 'Date' });
+      this.$store.dispatch('update', { key: 'dtEnd', value: this.dtEnd, type: 'Date' });
+      this.data = this.$store.getters.getDateComponentData;
+      console.log(this.data);
     }, 1000),
   },
   methods: {
