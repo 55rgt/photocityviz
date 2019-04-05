@@ -9,27 +9,47 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
-    original: data,
-    filter: {
+    filteredData: data,
+    dateComponentData: null,
+    hourComponentData: null,
+    filterOption: {
       hrStart: 0,
       hrEnd: 23,
       dtStart: '2018-03-01',
       dtEnd: '2019-02-28'
+      // 여기 이제 다른 필터 옵션
     }
   },
   getters: {
+    getDateData: () => 0,
     getLength: () => 0,
-    getHrStart: state => state.filter.hrStart,
-    getHrEnd: state => state.filter.hrEnd,
-    getDtStart: state => state.filter.dtStart,
-    getDtEnd: state => state.filter.dtEnd
+    getHrStart: state => state.filterOption.hrStart,
+    getHrEnd: state => state.filterOption.hrEnd,
+    getDtStart: state => state.filterOption.dtStart,
+    getDtEnd: state => state.filterOption.dtEnd
   },
-  //  Vuex 의 데이터, 즉 state 값을 변경하는 로직 (동기적)
   mutations: {
-    filter: function (state, payload) {
-      // case 별로 처리하여 리턴하는데, filter의 조건을 반영해야 할 부분과 그렇지 않은 부분을 구분
-      let delStr = 'Date';
-      let result = _.reduce(data, (result, value) => {
+    updateFilterOption: function (state, payload) {
+      console.log('Update Filter Option');
+      state.filterOption[payload.key] = payload.value;
+    },
+    updateFilteredData: function (state) {
+      console.log('Update Filter Data');
+      const getTime = str => new Date(str).getTime() / 1000;
+      state.filteredData = _.filter(data, datum =>
+          datum['Hour'] >= state.filterOption.hrStart &&
+          datum['Hour'] <= state.filterOption.hrEnd &&
+          (getTime(state.filterOption.dtStart) - getTime(datum['Date'])) *
+          (getTime(state.filterOption.dtEnd) - getTime(datum['Date'])) <= 0
+      // add conditions
+    );
+      console.log(state.filteredData);
+    },
+    updateComponentData: function (state, payload) {
+      if(_.isNil(payload.type)) return;
+      console.log('Update Component Data');
+      let delStr = payload.type;
+      let result = _.reduce(state.filteredData, (result, value) => {
         const delVal = value[delStr];
         _.isNil(_.find(result, [delStr, delVal])) ?
             result.push({ [delStr]: delVal, [value.Group]: 1 }) :
@@ -39,14 +59,14 @@ export const store = new Vuex.Store({
         return result;
       }, []);
       console.log(result);
+      delStr === 'Hour' ? state.hourComponentData = result : state.dateComponentData = result;
     }
   },
   actions: {
-    updateFilterOption: function (context, payload) {
-      for (let key of Object.keys(payload)) {
-        this.state.filter[key] = payload[key];
-      }
-      return context.commit('filter', payload);
-    }
+    update: function (context, payload) {
+      context.commit('updateFilterOption', payload);
+      context.commit('updateFilteredData');
+      context.commit('updateComponentData', payload);
+    },
   }
 });
