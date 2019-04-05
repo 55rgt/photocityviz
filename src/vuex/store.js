@@ -3,7 +3,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import _ from 'lodash';
-import data from '../../public/data/Total_refined_short';
+import data from '../../public/data/Total_refined_sample';
 
 Vue.use(Vuex);
 
@@ -28,7 +28,7 @@ export const store = new Vuex.Store({
   mutations: {
     filter: function (state, payload) {
       // case 별로 처리하여 리턴하는데, filter의 조건을 반영해야 할 부분과 그렇지 않은 부분을 구분
-      let delStr = 'Hour';
+      let delStr = 'Date';
       let result = _.reduce(data, (result, value) => {
         const delVal = value[delStr];
         _.isNil(_.find(result, [delStr, delVal])) ?

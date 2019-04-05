@@ -2,6 +2,10 @@
 node_modules
 /dist
 
+# data
+/public/data/Total_refined_short.json
+
+
 # local env files
 .env.local
 .env.*.local
