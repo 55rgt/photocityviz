@@ -6,8 +6,15 @@
 </template>
 
 <script>
+import { EventBus } from '../utils/event-bus'
+
 export default {
-  name: 'NavTimeComponent'
+  name: 'NavTimeComponent',
+  created() {
+    EventBus.$on("update", () => {
+      console.log('update Time!')
+    });
+  }
 };
 </script>
 

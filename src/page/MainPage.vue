@@ -20,6 +20,7 @@ import NavDateComponent from '../components/NavDateComponent';
 import NavTimeComponent from '../components/NavTimeComponent';
 import NavCategoryComponent from '../components/NavCategoryComponent';
 import { mapGetters } from 'vuex';
+import { EventBus } from '../utils/event-bus'
 
 export default {
   name: 'MainPage',
@@ -42,6 +43,11 @@ export default {
         }
       ]
     };
+  },
+  created() {
+    EventBus.$on("update", () => {
+      console.log('update Main!')
+    });
   },
   computed: {
     ...mapGetters([

@@ -3,7 +3,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import _ from 'lodash';
-import data from '../../public/data/Total_refined_short';
+import data from '../../public/data/Total_refined_sample';
 
 Vue.use(Vuex);
 
