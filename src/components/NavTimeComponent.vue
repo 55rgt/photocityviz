@@ -1,19 +1,30 @@
 <template lang="pug">
   .nav-body
     .nav-time-manual-controller
-    .nav-time-svg-container
+    .nav-time-svg-container#chart
     .nav-countries-menu-container
 </template>
 
 <script>
-import { EventBus } from '../utils/event-bus'
+/* eslint-disable no-console */
+
+import { EventBus } from '../utils/event-bus';
+import * as d3 from 'd3';
 
 export default {
   name: 'NavTimeComponent',
+  data() {
+    return {
+    };
+  },
+  mounted() {
+
+  },
   created() {
-    EventBus.$on("update", () => {
-      console.log('update Time!')
-    });
+    EventBus.$on('update', () => console.log('update Time!'));
+  },
+  methods: {
+
   }
 };
 </script>
@@ -23,15 +34,15 @@ export default {
 .nav-time-manual-controller
   width: 100%
   height: 60px
-  border: 1px solid black
+
 .nav-time-svg-container
   width: 100%
-  height: 120px
+  height: 320px
   border: 1px solid black
+
 .nav-countries-menu-container
   width: 100%
   height: 60px
-  border: 1px solid black
 
 
 </style>

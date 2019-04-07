@@ -1,0 +1,56 @@
+{
+  "name": "example",
+  "children": [
+    {
+      "name": "group1",
+      "children": [
+        { "name": "Norway", "value": 356 },
+        { "name": "Barcelona", "value": 424 },
+        { "name": "Tokyo", "value": 245 }
+      ]
+    },
+    {
+      "name": "group2",
+      "children": [
+        { "name": "Norway", "value": 108 },
+        { "name": "Barcelona", "value": 60 },
+        { "name": "Spain", "value": 245 },
+        { "name": "Tokyo", "value": 99 }
+      ]
+    },
+    {
+      "name": "group3",
+      "children": [
+        { "name": "Norway", "value": 860 },
+        { "name": "Barcelona", "value": 625 },
+        { "name": "Spain", "value": 300 },
+        { "name": "Tokyo", "value": 180 }
+      ]
+    },
+    {
+      "name": "group4",
+      "children": [
+        { "name": "Norway", "value": 400 },
+        { "name": "Barcelona", "value": 100 },
+        { "name": "Spain", "value": 200 },
+        { "name": "Tokyo", "value": 300 }
+      ]
+    },
+    {
+      "name": "group5",
+      "children": [
+        { "name": "Norway", "value": 199 },
+        { "name": "Barcelona", "value": 381 },
+        { "name": "Spain", "value": 60 },
+        { "name": "Tokyo", "value": 199 }
+      ]
+    },
+    {
+      "name": "group6",
+      "children": [
+        { "name": "Barcelona", "value": 321 },
+        { "name": "Tokyo", "value": 223 }
+      ]
+    }
+  ]
+}

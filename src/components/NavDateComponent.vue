@@ -11,7 +11,7 @@
         input.nav-date-input(type="date" v-model="dtStart")
         .nav-date End
         input.nav-date-input(type='date' v-model="dtEnd")
-    .nav-svg
+    //.nav-svg
   // 1. 시간 2. 날짜 3. 도시 4. 색상 5. 카테고리
 </template>
 
@@ -33,7 +33,7 @@ export default {
       hrStart: this.$store.getters.getHrStart,
       hrEnd: this.$store.getters.getHrEnd,
       dtStart: this.$store.getters.getDtStart,
-      dtEnd: this.$store.getters.getDtEnd
+      dtEnd: this.$store.getters.getDtEnd,
     };
   },
   async mounted() {

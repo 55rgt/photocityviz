@@ -1,0 +1,76 @@
+{
+	"activity" : {
+		"concert" : [],
+		"event" : [],
+		"fun" : [],
+		"sport" : [],
+		"tour" : [],
+		"vacation" : []
+	},
+	"art" : {
+		"art": [],
+		"painting": [],
+		"photography": [],
+		"sculpture": []
+	},
+	"building" : {
+		"architecture": [],
+		"building": [],
+		"history": [],
+		"housing": [],
+		"interior": [],
+		"landmark": [],
+		"material": [],
+		"modern": [],
+		"religion": [],
+		"structure": []
+	},
+	"city" : {
+		"city": [],
+		"property": [],
+		"public": [],
+		"street": [],
+		"town": []
+	},
+	"food" : {
+		"beverage": [],
+		"dessert": [],
+		"dish": [],
+		"food": [],
+		"ingredient": [],
+		"meal": []
+	},
+	"human" : {
+		"beauty": [],
+		"body": [],
+		"fashion": [],
+		"job": [],
+		"selfie": [],
+		"human": []
+	},
+	"nature" : {
+		"animal": [],
+		"air": [],
+		"ground": [],
+		"nature": [],
+		"water": []
+	},
+	"season" : {
+		"autumn": [],
+		"spring": [],
+		"summer": [],
+		"winter": []
+	},
+	"time" : {
+		"afternoon": [],
+		"evening": [],
+		"morning": [],
+		"night": []
+	},
+	"transportation" : {
+		"air transportation": [],
+		"ground transportation": [],
+		"water transportation": [],
+		"transportation": []
+	}
+}
