@@ -5,8 +5,8 @@
       "name": "group1",
       "children": [
         { "name": "Norway", "value": 356 },
-        { "name": "Barcelona", "value": 424 },
-        { "name": "Tokyo", "value": 245 }
+        { "name": "Barcelona", "value": 604 },
+        { "name": "Tokyo", "value": 95 }
       ]
     },
     {
@@ -24,7 +24,7 @@
         { "name": "Norway", "value": 860 },
         { "name": "Barcelona", "value": 625 },
         { "name": "Spain", "value": 300 },
-        { "name": "Tokyo", "value": 180 }
+        { "name": "Tokyo", "value": 590 }
       ]
     },
     {
@@ -32,7 +32,7 @@
       "children": [
         { "name": "Norway", "value": 400 },
         { "name": "Barcelona", "value": 100 },
-        { "name": "Spain", "value": 200 },
+        { "name": "Spain", "value": 400 },
         { "name": "Tokyo", "value": 300 }
       ]
     },

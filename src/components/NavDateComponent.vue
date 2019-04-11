@@ -105,7 +105,7 @@ export default {
       line-height: 36px
       margin-right: 6px
     .nav-date-input
-      width: 132px
+      width: 100px
       height: 100%
       font-size: 10px
 .nav-svg
