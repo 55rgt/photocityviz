@@ -36,7 +36,7 @@ export default {
     // 색상 지정
     that.color = d3.scaleOrdinal(d3.schemeCategory10);
     // 점 개수 지정?
-    that.points = d3.range(that.start, that.end + 0.001, (that.end - that.start) / 1000);
+    that.points = d3.dateRange(that.start, that.end + 0.001, (that.end - that.start) / 1000);
     // 세타값
     that.theta = r => that.numSpirals * Math.PI * r;
 
@@ -44,7 +44,7 @@ export default {
     // x: [0, 2.25] y: [40, 210] y = (170/2.25)x + 40
     that.radius = d3.scaleLinear()
         .domain([that.start, that.end])
-        .range([40, that.r]);
+        .dateRange([40, that.r]);
     // 그림판 붙이기
     that.svg = d3.select('#chart')
         .append('svg')
@@ -90,12 +90,12 @@ export default {
 
     that.timeScale = d3.scaleTime()
         .domain(d3.extent(that.someData, d => d.date))
-        .range([0, that.spiralLength]);
+        .dateRange([0, that.spiralLength]);
 
     // y값 지
     that.yScale = d3.scaleLinear()
         .domain([0, d3.max(that.someData, d => d.value)])
-        .range([0, (that.r / that.numSpirals) - 20]);
+        .dateRange([0, (that.r / that.numSpirals) - 20]);
 
     that.svg.selectAll("rect")
         .data(that.someData)

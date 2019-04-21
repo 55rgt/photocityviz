@@ -5,15 +5,6 @@
       .header-content Identifying the Color and the Theme of City.
     .main-content
       .nav-container.box-shadow
-        .nav-element-container
-          .nav-element-title Date
-          .nav-element-body
-            .nav-element-date
-              vc-date-picker(mode='range' v-model='range' :min-date='new Date(2018, 2, 1)'
-                :max-date='new Date(2019, 1, 28)' color="indigo" is-dark=true :input-debounce=debounceSec).nav-date-container
-        .nav-element-container
-          .nav-element-title Time
-          .nav-element-body
         v-expansion-panel(v-model='panel' expand)
           v-expansion-panel-content(v-for="navComponent in navComponents")
             template(v-slot:header='')
@@ -56,13 +47,16 @@ export default {
   components: { NavCategoryComponent, NavTimeComponent, FilterComponent, NavDateComponent, HashTagComponent, ClusterComponent },
   data() {
     return {
-      debounceSec: 2000,
-      range: {
-        start: new Date(2018, 2, 1), // March 1th, 2018
-        end: new Date(2019, 1, 28)    // Feb 28th, 2019
-      },
       panel: [false, false, false],
       navComponents: [
+        {
+          'title': 'Date',
+          'component': NavDateComponent
+        },
+        {
+          'title': 'Time',
+          'component': NavTimeComponent
+        },
         {
           'title': 'HashTag',
           'component': HashTagComponent
@@ -158,27 +152,6 @@ export default {
         .nav-element-body
           flex: 1
           padding-right: $unit-large
-          .nav-element-date
-            width: 100%
-            height: 100%
-            display: table-cell
-            vertical-align: center
-            border: 1px solid #ffffff
-            border-radius: 8px
-            background: #444444
-            .nav-date-container
-              width: 100%
-              height: 100%
-              font-size: 13px
-              /deep/ input
-                text-align: center
-                width: 162px
-                height: 100%
-                background: #444444
-                color: #ffffff
-                border-radius: 8px
-                outline: none
-
       .v-expansion-panel__container
         /deep/ .v-expansion-panel__header
           min-height: 66px
