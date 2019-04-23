@@ -1,7 +1,7 @@
 <template lang="pug">
   .nav-body
-    .nav-obsolete
-      .nav-container
+    .nav-time-wrapper
+      .nav-time-container
         .nav-time Start
         input.nav-time-input(v-model="hrStart")
         .nav-time End
@@ -75,33 +75,37 @@ export default {
 </script>
 
 <style scoped lang="sass">
+@import "../style/_colors.sass"
+@import "../style/_sizes.sass"
+@import url('https://fonts.googleapis.com/css?family=Roboto')
 
-.nav-obsolete
+.nav-body
   width: 100%
-  height: auto
-  .nav-container
+  padding: $unit-middle $unit-largest !important
+  .nav-time-wrapper
     width: 100%
-    height: 36px
-    display: flex
-    border: 1px solid black
-    .nav-time
-      width: auto
-      height: 100%
-      line-height: 36px
-      margin-right: 12px
-    .nav-time-input
-      width: 60px
-      height: 100%
-      margin-right: 6px
-    .nav-date
-      width: auto
-      height: 100%
-      line-height: 36px
-      margin-right: 6px
-    .nav-date-input
-      width: 100px
-      height: 100%
-      font-size: 10px
+    height: auto
+    background: #606060
+    color: #ffffff
+    border-radius: 4px
+    .nav-time-container
+      width: 100%
+      height: 36px
+      display: flex
+      padding: 0 $unit-middle
+      font-family: 'Roboto', sans-serif
+      .nav-time
+        width: auto
+        height: 100%
+        line-height: 36px
+        margin-right: 12px
+        font-size: $font-size-fourth
+      .nav-time-input
+        width: 60px
+        height: 100%
+        margin-right: 6px
+        font-size: $font-size-fourth
+        outline: none
 .nav-svg
   width: 100%
   height: 300px

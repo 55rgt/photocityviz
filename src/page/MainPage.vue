@@ -136,7 +136,7 @@ export default {
       height: 100%
       background: $md-white
       margin-right: $unit-middle
-      padding: $unit-large 0
+      padding-bottom: $unit-large
       $nav-element-height: 66px
       $nav-title-line-height: 42px
       .nav-element-container
@@ -155,6 +155,7 @@ export default {
       .v-expansion-panel__container
         /deep/ .v-expansion-panel__header
           min-height: 66px
+          font-family: 'Roboto', sans-serif
           @include nav_default(true)
         .nav-body
           @include nav_default(false)
