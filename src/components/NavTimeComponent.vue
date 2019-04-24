@@ -76,7 +76,7 @@ export default {
 
 <style scoped lang="sass">
 @import "../style/_colors.sass"
-@import "../style/_sizes.sass"
+@import "../style/sizes2"
 @import url('https://fonts.googleapis.com/css?family=Roboto')
 
 .nav-body

@@ -37,7 +37,7 @@ import FilterComponent from '../components/FilterComponent';
 import NavDateComponent from '../components/NavDateComponent';
 import NavTimeComponent from '../components/NavTimeComponent';
 import NavCategoryComponent from '../components/NavCategoryComponent';
-import ClusterComponent from '../components/ClusterComponent';
+import ClusterComponent from '../components/ClusterComponent_';
 import HashTagComponent from '../components/HashTagComponent';
 import { mapGetters } from 'vuex';
 import { EventBus } from '../utils/event-bus'
@@ -87,7 +87,7 @@ export default {
 
 <style scoped lang="sass">
 @import "../style/_colors.sass"
-@import "../style/_sizes.sass"
+@import "../style/sizes2"
 @import url('https://fonts.googleapis.com/css?family=Roboto')
 @mixin nav_default($bottomState)
   @if $bottomState == true

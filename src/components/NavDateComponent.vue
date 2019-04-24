@@ -38,7 +38,7 @@ export default {
 
 <style scoped lang="sass">
 @import "../style/_colors.sass"
-@import "../style/_sizes.sass"
+@import "../style/sizes2"
 .nav-element-date
   width: 100%
   height: 54px

@@ -32,7 +32,11 @@
             .nodeOnHover-display.b Node Info (on Click or Hover)
               | <br>
               | -좌측은 그리드식 사진배열 나타나고, 사진을 누르면 우측에 노드 정보
+              | <br>
+              | -노드가 아닌 벤 다이어그램을 눌렀을 때는 그 영역에 해당하는 애들 정보로
             .interCluster-display.b InterCluster
+              | <br>
+              | -클러스터 간 유사도 및 중분류의 분포 수 정도 비
       .subView-container
         .subView-navigator
           .subView-upSet.b Upset
@@ -40,7 +44,7 @@
         .subView-heatMap.b HeatMap
         .subView-metaInfo.b Meta
           | <br>
-          | -3개의 레이아웃을 carousel 같은 형식으로 보여준다.
+          | -3개의 레이아웃을 carousel / multiTab 같은 형식으로 보여준다.
           | <br>
           | - 1. Label 2. HashTag 3. ColorMap
           | <br>
