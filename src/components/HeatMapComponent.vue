@@ -1,5 +1,7 @@
 <template lang="pug">
-  .subView-heatMap HeatMap
+  .subView-heatMap
+    .component-header HeatMap
+    .component-body
 </template>
 
 <script>
@@ -13,5 +15,4 @@ export default {
 .subView-heatMap
   width: 100%
   height: $subView-heatMap-height
-  @include b
 </style>

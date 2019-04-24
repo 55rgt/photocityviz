@@ -1,5 +1,4 @@
-
-/* padding */
+/* unit */
 
 $unit-1: 4px
 $unit-2: 8px
@@ -21,13 +20,9 @@ $subView-navigator-height: 240px
 $subView-upSet-width: 440px
 $subView-heatMap-height: 320px
 
-/* mixins */
+$component-header-height: 40px
 
-//@mixin nav_default($bottomState)
-//  @if $bottomState == true
-//    border-bottom: 1px solid rgba(0,0,0,0.12)
-//  padding: $unit-middle $unit-middle $unit-middle $unit-largest
-//  font-size: $font-size-third
+/* mixins */
 
 // possibly dealt w/ padding with numbers of params
 @mixin setHeightAndLineHeight($h)
@@ -38,9 +33,12 @@ $subView-heatMap-height: 320px
   border: 1px solid #eeeeee
   padding: $unit-2 0 0 $unit-2
 
-
-
-
-
-
-//@import "../style/_sizes.sass"
+// possibly style (bold, italic, ... sth like that)
+@mixin setFonts($name, $color, $size)
+  color: $color
+  font-size: $size
+  font-family: $name, sans-serif
+  -webkit-user-select: none
+  -moz-user-select: none
+  -ms-user-select: none
+  user-select: none

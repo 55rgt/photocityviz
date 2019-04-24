@@ -1,7 +1,11 @@
 <template lang="pug">
   .subView-navigator
-    .subView-upSet Upset
-    .subView-upSetView Venn-Diagram ShortCut
+    .subView-upSet
+      .component-header Upset
+      .component-body
+    .subView-upSetView
+      .component-header Venn-Diagram ShortCut
+      .component-body
 </template>
 
 <script>
@@ -19,9 +23,7 @@ export default {
   .subView-upSet
     width: $subView-upSet-width
     height: 100%
-    @include b
   .subView-upSetView
     width: calc(100% - #{$subView-upSet-width})
     height: 100%
-    @include b
 </style>
