@@ -1,0 +1,46 @@
+
+/* padding */
+
+$unit-1: 4px
+$unit-2: 8px
+$unit-3: 12px
+$unit-4: 16px
+$unit-5: 20px
+$unit-6: 24px
+
+/* variables */
+$header-height: 60px
+$header-margin-bottom: $unit-2
+$mainView-container-width: 1120px
+$mainView-margin-right: $unit-2
+$clusterRanking-container-height: 320px
+$clusterRanking-navigator-width: 240px
+$forceLayout-display-width: 680px
+$nodeOnHover-display-height: 240px
+$subView-navigator-height: 240px
+$subView-upSet-width: 440px
+$subView-heatMap-height: 320px
+
+/* mixins */
+
+//@mixin nav_default($bottomState)
+//  @if $bottomState == true
+//    border-bottom: 1px solid rgba(0,0,0,0.12)
+//  padding: $unit-middle $unit-middle $unit-middle $unit-largest
+//  font-size: $font-size-third
+
+// possibly dealt w/ padding with numbers of params
+@mixin setHeightAndLineHeight($h)
+  height: $h
+  line-height: $h
+
+@mixin b
+  border: 1px solid #eeeeee
+  padding: $unit-2 0 0 $unit-2
+
+
+
+
+
+
+//@import "../style/_sizes.sass"
