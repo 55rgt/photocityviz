@@ -5,7 +5,7 @@
       .component-body
         | -ClusterRanking에서 클러스터별 막대색 분포를 hover 하면, 해당 영역의 벤 다이어그램이 hover되게
         | <br>
-        | -Migrate Node 기능 추가 가능 (version 2)
+        | -Migrate Node 기능 추가 가능 (version 2) => HexBin Map으로??
         | <br>
         | -필터와 Node Unit(Migrate)를 모두 다 옵션에 두는데, 옵션은 버튼을 누르면 expand 하거나 popup으로
     .detail-display

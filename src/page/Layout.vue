@@ -20,7 +20,7 @@ import UpSetComponent from '../components/UpSetComponent';
 import HeatMapComponent from '../components/HeatMapComponent';
 import MetaComponent from '../components/MetaComponent';
 export default {
-  name: 'Layout2',
+  name: 'Layout',
   components: { MetaComponent, HeatMapComponent, UpSetComponent, ClusterComponent, RankComponent }
 };
 </script>

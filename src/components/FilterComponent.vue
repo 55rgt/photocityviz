@@ -47,7 +47,7 @@ var root = d3.hierarchy(data).sum(function (d) {
 }); // Here the size of each leave is given in the 'value' field in input data
 // Then d3.treemap computes the position of each element of the hierarchy
 d3.treemap()
-    .size([width, height])
+    .data([width, height])
     .padding(1.5)(root);
 
 // use this information to add rectangles:
