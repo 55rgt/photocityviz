@@ -4,7 +4,7 @@
       .component-header Upset
       .component-body
     .subView-upSetView
-      .component-header Venn-Diagram ShortCut
+      .component-header HexBin Venn-Diagram
       .component-body
 </template>
 

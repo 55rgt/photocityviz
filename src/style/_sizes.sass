@@ -35,12 +35,17 @@ $component-header-height: 40px
   border: 1px solid #eeeeee
   padding: $unit-2 0 0 $unit-2
 
+@mixin selectNone
+  -webkit-user-select: none
+  -moz-user-select: none
+  -ms-user-select: none
+  user-select: none
+
 // possibly style (bold, italic, ... sth like that)
 @mixin setFonts($name, $color, $size)
   color: $color
   font-size: $size
   font-family: $name, sans-serif
-  -webkit-user-select: none
-  -moz-user-select: none
-  -ms-user-select: none
-  user-select: none
+  @include selectNone
+
+

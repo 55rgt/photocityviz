@@ -6,16 +6,16 @@
 </template>
 
 <script>
-import RankDisplay from './Rank/Rank-Display';
+import RankDisplay from './Rank-Display';
 export default {
-  name: 'RankComponent',
+  name: 'Rank-Component',
   components: { RankDisplay }
 };
 </script>
 
 <style scoped lang="sass">
-@import "../style/_colors.sass"
-@import "../style/_sizes.sass"
+@import "../../style/colors"
+@import "../../style/sizes"
 .clusterRanking-container
   width: 100%
   height: $clusterRanking-container-height

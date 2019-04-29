@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import RankComponent from '../components/RankComponent';
+import RankComponent from '../components/Rank/Rank-Component';
 import ClusterComponent from '../components/ClusterComponent';
 import UpSetComponent from '../components/UpSetComponent';
 import HeatMapComponent from '../components/HeatMapComponent';

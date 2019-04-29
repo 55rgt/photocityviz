@@ -2,11 +2,15 @@
   .subView-metaInfo
     .component-header Meta
     .component-body
-      | -3개의 레이아웃을 carousel / multiTab 같은 형식으로 보여준다.
-      | <br>
       | - 1. Label 2. HashTag 3. ColorMap
       | <br>
-      | -(View By Group / Country)는 항상 옵션으로 두어서 쓸 수 있게 한다.
+      | -옵션: (View By Group / Country)
+      | <br>
+      | -label: 이전에 했던 시각화
+      | <br>
+      | -HastTag: 워드클라우드: Group 또는 Country에 따라 색상을 달리하는 등의 ...
+      | <br>
+      | -ColorMap: 미정
 </template>
 
 <script>

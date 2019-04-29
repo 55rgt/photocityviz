@@ -1,7 +1,7 @@
 <template lang="pug">
   .subView-heatMap
     .component-header HeatMap
-    .component-body
+    .component-body 국가별 Upset에서 선택된 데이터들의 분포를 보여주는 시각화
 </template>
 
 <script>

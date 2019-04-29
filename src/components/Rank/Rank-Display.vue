@@ -1,10 +1,12 @@
 <template lang="pug">
   .clusterRanking-display
-    .clusterRanking-display-navigator Sort By: ___ + Canvas List Shortcut
+    .clusterRanking-display-navigator 여러 방법으로 한 Cluster 목록 보여주기
+      | <br>
+      | -여기서 하나를 선택하면, HexMap에 선택한 데이터가 그려지게
     .clusterRanking-display-body
       .clusterRanking-idx.b
       .clusterRanking-list
-        RankItem(v-for="n in 4" :idx="getID(n)")
+        // RankItem(v-for="n in 1" :idx="getID(n)")
       .clusterRanking-idx.b
 </template>
 
@@ -20,6 +22,7 @@ export default {
   },
   mounted() {
     // console.log(this.$refs)
+    // node info 쪽 헤더랑 오른쪽 upset, vds heatmap, meta 이 애들 헤더 다 한 칸 아래로 옮기자
   },
   computed: {
 
@@ -50,6 +53,6 @@ export default {
       display: flex
       overflow-x: hidden
 .b
-  border: 1px solid black
+  /*border: 1px solid black*/
 
 </style>
