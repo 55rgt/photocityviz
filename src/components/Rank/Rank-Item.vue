@@ -328,7 +328,6 @@ export default {
       return {
         svg: () => d3.select(that.svgOption.svgID).remove()
       };
-
     }
   }
 

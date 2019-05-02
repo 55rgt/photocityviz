@@ -3,11 +3,7 @@
     .forceLayout-display
       .component-header HexMap
       .component-body
-        | -클러스터별 막대색 분포를 클릭하면 하면, 해당 HexBin 영역이 그려
-        | <br>
-        | -Migrate Node 기능은 HexBin 크기를 조절하여 업데이트하면 자동으로 가능할 것 같다.
-        | <br>
-        | -필터 (시간, 날짜, 카테고리) 추가 필
+        HexMap
     .detail-display
       .nodeOnHover-display
         .component-header Node Info (on Click or Hover)
@@ -21,8 +17,10 @@
 </template>
 
 <script>
+import HexMap from './Cluster/HexMap';
 export default {
-  name: 'ClusterComponent'
+  name: 'ClusterComponent',
+  components: { HexMap }
 };
 </script>
 
