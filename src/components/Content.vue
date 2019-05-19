@@ -1,16 +1,15 @@
 <template lang="pug">
   .content-wrapper
     .filter-container.box-shadow
-    .mainView-container.box-shadow
-      ClusterComponent
+    MainViewComponent
     .subView-container.box-shadow
 </template>
 
 <script>
-import ClusterComponent from './ClusterComponent';
+import MainViewComponent from './MainView/MainView-Component';
 export default {
   name: 'Content',
-  components: { ClusterComponent }
+  components: { MainViewComponent }
 };
 </script>
 
@@ -24,11 +23,6 @@ export default {
   display: flex
   .filter-container
     width: $filter-container-width
-    height: 100%
-    background: $md-white
-    margin-right: $mainView-margin-right
-  .mainView-container
-    width: $mainView-container-width
     height: 100%
     background: $md-white
     margin-right: $mainView-margin-right
