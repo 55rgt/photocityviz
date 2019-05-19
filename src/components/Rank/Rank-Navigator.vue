@@ -36,19 +36,19 @@ export default {
   },
   mounted() {
     let that = this;
-    console.log('mounted hook!');
 
   },
   methods: {
     updateRankFilter(key, value) {
       let that = this;
+      console.log('update rank filter');
 
       switch (key) {
         case 'min':
-          that.rankFilter['min'] = value;
+          that.rankFilter['min'] = Number.parseInt(value);
           break;
         case 'max':
-          that.rankFilter['max'] = value;
+          that.rankFilter['max'] = Number.parseInt(value);
           break;
         case 'sortByName':
           break;

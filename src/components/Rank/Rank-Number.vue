@@ -5,7 +5,7 @@
       input.cluster-number-input(v-model="min" v-on:keyup="triggerChangeNumber('min')")
     .cluster-number-div
       .cluster-number-description max clusters
-      input.cluster-number-input(v-model="max")
+      input.cluster-number-input(v-model="max" v-on:keyup="triggerChangeNumber('max')")
 </template>
 
 
@@ -38,21 +38,15 @@ export default {
   mounted() {
   },
   methods: {
-    triggerChangeNumber(type) {
-      let that = this;
-      console.log(type);
-      _.debounce(function () {
-        that.changeNumber(type);
-      }, DEBOUNCE);
-    },
     changeNumber(type) {
       let that = this;
-      console.log(that.min);
-      // 만약 지금 바
+      // Todo: 숫자가 아닐 시, 이전 값으로 바꾸고, 그냥 return
+      EventBus.$emit('updateRankFilter', type, type === 'min' ? that.min : that.max);
+    },
+    triggerChangeNumber: _.debounce(function (type) {
+      this.changeNumber(type);
+    }, DEBOUNCE),
 
-      // type 별로 min or max의 값 바꾸고
-
-    }
   }
 };
 </script>
