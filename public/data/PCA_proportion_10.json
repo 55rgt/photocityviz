@@ -1,0 +1,62 @@
+[
+  {
+    "Standard deviation": 1.4173,
+    "Proportion of Variance": 0.2009,
+    "Cumulative Proportion": 0.2009,
+    "_row": "PC1"
+  },
+  {
+    "Standard deviation": 1.1836,
+    "Proportion of Variance": 0.1401,
+    "Cumulative Proportion": 0.341,
+    "_row": "PC2"
+  },
+  {
+    "Standard deviation": 1.1141,
+    "Proportion of Variance": 0.1241,
+    "Cumulative Proportion": 0.4651,
+    "_row": "PC3"
+  },
+  {
+    "Standard deviation": 1.0108,
+    "Proportion of Variance": 0.1022,
+    "Cumulative Proportion": 0.5673,
+    "_row": "PC4"
+  },
+  {
+    "Standard deviation": 0.9911,
+    "Proportion of Variance": 0.0982,
+    "Cumulative Proportion": 0.6655,
+    "_row": "PC5"
+  },
+  {
+    "Standard deviation": 0.9523,
+    "Proportion of Variance": 0.0907,
+    "Cumulative Proportion": 0.7562,
+    "_row": "PC6"
+  },
+  {
+    "Standard deviation": 0.8909,
+    "Proportion of Variance": 0.0794,
+    "Cumulative Proportion": 0.8356,
+    "_row": "PC7"
+  },
+  {
+    "Standard deviation": 0.8456,
+    "Proportion of Variance": 0.0715,
+    "Cumulative Proportion": 0.9071,
+    "_row": "PC8"
+  },
+  {
+    "Standard deviation": 0.7154,
+    "Proportion of Variance": 0.0512,
+    "Cumulative Proportion": 0.9583,
+    "_row": "PC9"
+  },
+  {
+    "Standard deviation": 0.6461,
+    "Proportion of Variance": 0.0417,
+    "Cumulative Proportion": 1,
+    "_row": "PC10"
+  }
+]

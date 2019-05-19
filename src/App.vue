@@ -1,24 +1,20 @@
 <template lang="pug">
   .v-app#app
-    //MainPage
     Layout
 </template>
 
 <script>
 import Vue from 'vue';
-import MainPage from './page/MainPage.vue';
-import VDatePicker from 'v-calendar';
 import Layout from './page/Layout';
 // Use v-calendar & v-date-picker components
-Vue.use(VDatePicker, {
-  componentPrefix: 'vc',  // Use <vc-calendar /> instead of <v-calendar />
-});
+// Vue.use(VDatePicker, {
+//   componentPrefix: 'vc',  // Use <vc-calendar /> instead of <v-calendar />
+// });
 
 export default {
   name: 'App',
   components: {
-    Layout,
-    MainPage
+    Layout
   },
   data () {
     return {

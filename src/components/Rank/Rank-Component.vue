@@ -1,15 +1,17 @@
 <template lang="pug">
   .clusterRanking-container
-    .component-header Cluster Rankings
-    .component-body
-      RankDisplay
+    RankNavigator
+    RankList
+    RankSelected
 </template>
 
 <script>
-import RankDisplay from './Rank-Display';
+import RankNavigator from './Rank-Navigator';
+import RankList from './Rank-List';
+import RankSelected from './Rank-Selected';
 export default {
   name: 'Rank-Component',
-  components: { RankDisplay }
+  components: { RankSelected, RankList, RankNavigator }
 };
 </script>
 
@@ -18,6 +20,7 @@ export default {
 @import "../../style/sizes"
 .clusterRanking-container
   width: 100%
-  height: $clusterRanking-container-height
+  height: 100%
+  display: flex
 
 </style>
