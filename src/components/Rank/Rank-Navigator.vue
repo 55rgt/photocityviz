@@ -27,32 +27,27 @@ export default {
     that.rankFilter = {
       min: 6,
       max: 18,
-      sortByName: ['name'],
-      sortBySequence: ['asc'],
+      sortByName: 'name',
+      sortBySequence: 'asc',
       methods: ['Kmeans', 'DBSCAN']
     };
 
     EventBus.$on('updateRankFilter', (key, value) => that.updateRankFilter(key, value));
   },
   mounted() {
-    let that = this;
 
   },
   methods: {
     updateRankFilter(key, value) {
       let that = this;
-      console.log('update rank filter');
-
       switch (key) {
-        case 'min':
-          that.rankFilter['min'] = Number.parseInt(value);
+        case 'min': that.rankFilter['min'] = Number.parseInt(value);
           break;
-        case 'max':
-          that.rankFilter['max'] = Number.parseInt(value);
+        case 'max': that.rankFilter['max'] = Number.parseInt(value);
           break;
-        case 'sortByName':
+        case 'sortByName': that.rankFilter['sortByName'] = value;
           break;
-        case 'sortBySequence':
+        case 'sortBySequence': that.rankFilter['sortBySequence'] = value;
           break;
         case 'methods':
           break;
