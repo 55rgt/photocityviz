@@ -29,7 +29,7 @@ export default {
       max: 18,
       sortByName: 'name',
       sortBySequence: 'asc',
-      methods: ['Kmeans', 'DBSCAN']
+      methods: ['Kmeans', 'DBSCAN', 'Hierarchical', 'Spectral']
     };
 
     EventBus.$on('updateRankFilter', (key, value) => that.updateRankFilter(key, value));
@@ -74,6 +74,6 @@ export default {
     width: 100%
     @include setFonts('Roboto', $md-dark-text-primary, $unit-4)
     display: flex
-    padding: 0 0 0 $unit-5
+    padding: 0 0 0 $unit-3
 
 </style>
