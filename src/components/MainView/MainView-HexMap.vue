@@ -7,6 +7,7 @@ import * as d3 from 'd3';
 import testData from '../../../public/data/PCA_total_10';
 import clusterData from '../../../public/data/kmeans_10_cluster_10_refined';
 import * as hexbin from 'd3-hexbin';
+import { EventBus } from '../../utils/event-bus'
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 
@@ -17,15 +18,19 @@ export default {
   data() {
     return {
       width: 1080,
-      height: 648,
+      height: 728,
       svg: null,
       hexDataset: null,
       axisX: 'PC1',
       axisY: 'PC2',
-      hexRadius: 20,
+      hexRadius: 50,
       hexData: {},
       white: true,
     }
+  },
+  created() {
+    let that = this;
+    EventBus.$on('updateRender', () => that.do());
   },
   mounted() {
     let that = this;
@@ -92,6 +97,9 @@ export default {
 
   },
   methods: {
+    do() {
+      console.log('do it')
+    },
     testSth() {
       let that = this;
       that.white = !that.white;
@@ -193,7 +201,6 @@ export default {
 .mainView-hexMap-container
   width: 100%
   height: calc(100% - #{$mainView-option-container-height})
-  border: 1px solid black
 
   /deep/ svg
     background-color: #ffffff

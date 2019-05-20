@@ -4,19 +4,16 @@
     .component-body
       RankNumber(v-bind:minCluster="rankFilter.min", v-bind:maxCluster="rankFilter.max")
       RankSort(v-bind:sortName="rankFilter.sortByName", v-bind:sortSeq="rankFilter.sortBySequence")
-      RankMethod(v-bind:methods="rankFilter.methods")
-
 
 </template>
 
 <script>
 import RankNumber from './Rank-Number';
 import RankSort from './Rank-Sort';
-import RankMethod from './Rank-Method';
 import {EventBus} from '../../utils/event-bus';
 export default {
   name: 'Rank-Navigator',
-  components: { RankMethod, RankSort, RankNumber },
+  components: {RankSort, RankNumber },
   data() {
     return {
       rankFilter: {}
@@ -28,8 +25,7 @@ export default {
       min: 6,
       max: 18,
       sortByName: 'name',
-      sortBySequence: 'asc',
-      methods: ['Kmeans', 'DBSCAN', 'Hierarchical', 'Spectral']
+      sortBySequence: 'asc'
     };
 
     EventBus.$on('updateRankFilter', (key, value) => that.updateRankFilter(key, value));

@@ -1,15 +1,16 @@
 <template lang="pug">
   .content-wrapper
-    .filter-container.box-shadow
+    FilterComponent
     MainViewComponent
     .subView-container.box-shadow
 </template>
 
 <script>
 import MainViewComponent from './MainView/MainView-Component';
+import FilterComponent from './Filter/Filter-Component';
 export default {
   name: 'Content',
-  components: { MainViewComponent }
+  components: { FilterComponent, MainViewComponent }
 };
 </script>
 
@@ -21,11 +22,6 @@ export default {
   width: 100%
   height: calc(100% - #{$header-height} - #{$header-margin-bottom} - #{$clusterRanking-wrapper-height} - #{$header-margin-bottom})
   display: flex
-  .filter-container
-    width: $filter-container-width
-    height: 100%
-    background: $md-white
-    margin-right: $mainView-margin-right
   .subView-container
     width: calc(100% - #{$mainView-container-width} - #{$mainView-margin-right} - #{$filter-container-width} - #{$mainView-margin-right})
     height: 100%
