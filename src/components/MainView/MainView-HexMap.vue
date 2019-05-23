@@ -2,16 +2,17 @@
   .mainView-hexMap-container#hexMap
 </template>
 
+
 <script>
 import * as d3 from 'd3';
-import testData from '../../../public/data/PCA_total_10';
-import clusterData from '../../../public/data/kmeans_10_cluster_10_refined';
+import testData from '../../../public/data/tsne_sample_refined';
+import clusterData from '../../../public/data/kmeans_tSVD_refined';
 import * as hexbin from 'd3-hexbin';
 import { EventBus } from '../../utils/event-bus'
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 
-const SCALE_MIN = 1 / 10, SCALE_MAX = 3;
+const SCALE_MIN = 1 / 30, SCALE_MAX = 3;
 
 export default {
   name: 'MainView-HexMap',
@@ -21,8 +22,8 @@ export default {
       height: 728,
       svg: null,
       hexDataset: null,
-      axisX: 'PC1',
-      axisY: 'PC2',
+      axisX: 'x',
+      axisY: 'y',
       hexRadius: 50,
       hexData: {},
       white: true,
@@ -33,6 +34,7 @@ export default {
     EventBus.$on('updateRender', () => that.do());
   },
   mounted() {
+
     let that = this;
     that.colors = [null, '#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabebe', '#469990', '#e6beff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000'];
     that.svg = d3.select('#hexMap')
@@ -40,7 +42,7 @@ export default {
         .attr('width', that.width)
         .attr('height', that.height);
 
-    that.points = _.map(testData, (d) => [d[that.axisX] * that.width, d[that.axisY] * that.height, d['name']]);
+    that.points = _.map(testData, (d) => [d[that.axisX] * that.width / 12, d[that.axisY] * that.height / 12, d['name']]);
     that.hexbin = hexbin.hexbin().extent([[0, 0], [that.width, that.height]]).radius(that.hexRadius);
 
     that.bins = that.hexbin(that.points);
@@ -180,13 +182,13 @@ export default {
         gradient.append('stop')
             .attr('offset', `${prop}%`)
             .style('stop-color', that.colors[Number.parseInt(datum.key)])
-            .style('stop-opacity', 0.1 + (datum.value / that.hexRadius) * 0.9);
+            .style('stop-opacity', 0.5 + (datum.value / that.hexRadius) * 0.9);
         // opacity는 radius와 협력해서 해야할것 -> 각 육각형 내부 데이터 수 분포를 파악하고, 이를 특이한 그래프 가진 공
         prop += datum.value * datum.value * ratio;
         gradient.append('stop')
             .attr('offset', `${prop}%`)
             .style('stop-color', that.colors[Number.parseInt(datum.key)])
-            .style('stop-opacity', 0.1 + (datum.value / that.hexRadius) * 0.9);
+            .style('stop-opacity', 0.5 + (datum.value / that.hexRadius) * 0.9);
       });
       return `url(#${uniqID})`;
     }
@@ -200,8 +202,7 @@ export default {
 @import url('https://fonts.googleapis.com/css?family=Roboto')
 .mainView-hexMap-container
   width: 100%
-  height: calc(100% - #{$mainView-option-container-height})
-
+  height: 100%
   /deep/ svg
     background-color: #ffffff
     /deep/ g

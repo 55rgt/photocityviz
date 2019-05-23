@@ -1,15 +1,13 @@
 <template lang="pug">
   .mainView-container.box-shadow
-    MainViewOption
     MainViewHexMap
 </template>
 
 <script>
-import MainViewOption from './MainView-Option';
 import MainViewHexMap from './MainView-HexMap';
 export default {
   name: 'MainView-Component',
-  components: { MainViewHexMap, MainViewOption }
+  components: { MainViewHexMap }
 };
 </script>
 
