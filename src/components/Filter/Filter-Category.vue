@@ -44,8 +44,8 @@ export default {
       await starsRef.getDownloadURL().then(function (url) {
         that.svg.append('svg:image')
             .attr('xlink:href', url)
-            .attr('width', 100)
-            .attr('height', 100)
+            .attr('width', 75)
+            .attr('height', 75)
             .attr('x', 0)
             .attr('y', 0);
         // Insert url into an <img> tag to "download"

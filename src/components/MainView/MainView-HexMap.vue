@@ -1,5 +1,5 @@
 <template lang="pug">
-  .mainView-hexMap-container#hexMap
+  //.mainView-hexMap-container#hexMap
 </template>
 
 
@@ -12,7 +12,7 @@ import { EventBus } from '../../utils/event-bus'
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 
-const SCALE_MIN = 1 / 30, SCALE_MAX = 3;
+const SCALE_MIN = 1 / 20, SCALE_MAX = 3;
 
 export default {
   name: 'MainView-HexMap',
@@ -24,7 +24,7 @@ export default {
       hexDataset: null,
       axisX: 'x',
       axisY: 'y',
-      hexRadius: 50,
+      hexRadius: 80,
       hexData: {},
       white: true,
     }

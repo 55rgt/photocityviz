@@ -1,8 +1,8 @@
 <template lang="pug">
   .rank-container.cluster-sort-container
-    .cluster-sort-description sortBy
+    .cluster-sort-description SortBy
     .cluster-sort-list-container
-      .cluster-sort-item(v-for="n in 6" v-bind:class="{ selected: selectedName === itemList[n-1] }" @click="selectSortItem(n)") {{ `${itemList[n - 1]} ${itemList[n - 1] === selectedName ? selectedSeq === 'asc' ? '↑' : '↓' : ''}` }}
+      .cluster-sort-item(v-for="n in itemList.length" v-bind:class="{ selected: selectedName === itemList[n-1] }" @click="selectSortItem(n)") {{ `${itemList[n - 1]} ${itemList[n - 1] === selectedName ? selectedSeq === 'asc' ? '↑' : '↓' : ''}` }}
 </template>
 
 <script>
@@ -15,7 +15,7 @@ export default {
   },
   data() {
     return {
-      itemList: ['name', 'calinski', 'davis', 's_Dbw', 'SD', 'average'],
+      itemList: ['Average', 'C-index', 'Calinski', 'Davis_B', 'Dunn', 's_Dbw', 'SD_Dis', 'SD_Scat', 'Silhouette'],
       selectedName: null,
       selectedSeq: null
     };
@@ -45,7 +45,7 @@ export default {
 @import "../../style/colors"
 @import "../../style/sizes"
 .cluster-sort-container
-  @include setHeightAndLineHeight(80px)
+  @include setHeightAndLineHeight(132px)
 
   .cluster-sort-description
     width: 80px
@@ -59,10 +59,11 @@ export default {
 
     .cluster-sort-item
       width: calc(100% / 3)
-      @include setHeightAndLineHeight(28px)
-      border-radius: 4px
+      @include setHeightAndLineHeight(32px)
+      border-radius: 2px
       font-size: 12px
       text-align: center
+      border: 1px solid #292929
 
 .selected
   background: black

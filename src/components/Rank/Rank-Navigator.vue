@@ -1,6 +1,5 @@
 <template lang="pug">
   .clusterRanking-navigator-container
-    .component-header Navigator
     .component-body
       RankNumber(v-bind:minCluster="rankFilter.min", v-bind:maxCluster="rankFilter.max")
       RankSort(v-bind:sortName="rankFilter.sortByName", v-bind:sortSeq="rankFilter.sortBySequence")
