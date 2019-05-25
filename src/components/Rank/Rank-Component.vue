@@ -1,17 +1,15 @@
 <template lang="pug">
   .clusterRanking-container
-    RankNavigator
     RankList
     RankSelected
 </template>
 
 <script>
-import RankNavigator from './Rank-Navigator';
 import RankList from './Rank-List';
 import RankSelected from './Rank-Selected';
 export default {
   name: 'Rank-Component',
-  components: { RankSelected, RankList, RankNavigator }
+  components: { RankSelected, RankList }
 };
 </script>
 
@@ -22,5 +20,8 @@ export default {
   width: 100%
   height: 100%
   display: flex
-
+  .empty
+    width: 4px
+    height: 100%
+    background: pink
 </style>

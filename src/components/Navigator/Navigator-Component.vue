@@ -1,15 +1,16 @@
 <template lang="pug">
-  .filter-container.box-shadow
-    FilterHashtag
-    FilterCategory
+  .navigator-container.box-shadow
+    NavigatorFilter
+    .hex-description-container.b
+
+
 </template>
 
 <script>
-import FilterHashtag from './Filter-Hashtag';
-import FilterCategory from './Filter-Category';
+import NavigatorFilter from './Navigator-Filter';
 export default {
-  name: 'Filter-Component',
-  components: { FilterCategory, FilterHashtag }
+  name: 'Navigator-Component',
+  components: { NavigatorFilter },
 };
 </script>
 
@@ -17,11 +18,14 @@ export default {
 @import "../../style/_colors.sass"
 @import "../../style/_sizes.sass"
 @import url('https://fonts.googleapis.com/css?family=Roboto')
-.filter-container
-  width: $filter-container-width
+.navigator-container
+  width: $navigator-container-width
   height: 100%
   background: $md-white
   margin-right: $mainView-margin-right
+  .hex-description-container
+    width: 100%
+    height: 320px
 .b
   border: 1px solid black
 </style>

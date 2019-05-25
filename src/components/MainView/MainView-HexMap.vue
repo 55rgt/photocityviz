@@ -1,11 +1,11 @@
 <template lang="pug">
-  //.mainView-hexMap-container#hexMap
+  .mainView-hexMap-container#hexMap
 </template>
 
 
 <script>
 import * as d3 from 'd3';
-import testData from '../../../public/data/tsne_sample_refined';
+import testData from '../../../public/data/tsne_sub_refined';
 import clusterData from '../../../public/data/kmeans_tSVD_refined';
 import * as hexbin from 'd3-hexbin';
 import { EventBus } from '../../utils/event-bus'
@@ -18,13 +18,13 @@ export default {
   name: 'MainView-HexMap',
   data() {
     return {
-      width: 1080,
-      height: 728,
+      width: 880,
+      height: 808,
       svg: null,
       hexDataset: null,
       axisX: 'x',
       axisY: 'y',
-      hexRadius: 80,
+      hexRadius: 90,
       hexData: {},
       white: true,
     }
@@ -42,7 +42,7 @@ export default {
         .attr('width', that.width)
         .attr('height', that.height);
 
-    that.points = _.map(testData, (d) => [d[that.axisX] * that.width / 12, d[that.axisY] * that.height / 12, d['name']]);
+    that.points = _.map(testData, (d) => [d[that.axisX] * that.width / 6, d[that.axisY] * that.height / 6, d['name']]);
     that.hexbin = hexbin.hexbin().extent([[0, 0], [that.width, that.height]]).radius(that.hexRadius);
 
     that.bins = that.hexbin(that.points);

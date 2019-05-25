@@ -14,6 +14,8 @@ export default {
 @import "../../style/colors"
 @import "../../style/sizes"
 .clusterRanking-selected-container
-  width: calc(100% - #{$clusterRanking-navigator-container-width} - #{$clusterRanking-margin-right} - #{$clusterRanking-list-container-width} - #{$clusterRanking-margin-right}
+  width: calc(100% - #{$clusterRanking-margin-right} - #{$clusterRanking-list-container-width})
   height: 100%
+  border-left: 8px solid #dcdcdc
+
 </style>

@@ -62,7 +62,7 @@ export default {
         labelFactor: 1.06, 	//How much farther than the radius of the outer circle should the labels be placed
         wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
         opacityArea: 0.35, 	//The opacity of the area of the blob
-        dotRadius: 4, 			//The size of the colored circles of each blog
+        dotRadius: 2, 			//The size of the colored circles of each blog
         opacityCircles: 0.1, 	//The opacity of the circles of each blob
         strokeWidth: 2, 		//The width of the stroke around each blob
         roundStrokes: false,	//If true the area and stroke will follow a round path (cardinal-closed)
@@ -243,6 +243,6 @@ export default {
   .clusterRanking-item
     width: 100%
     height: 100%
-    border: 2px solid #464646
+    border: 2px solid #9c9c9c
     border-radius: 8px
 </style>

@@ -88,5 +88,35 @@
     "SD_Dis": 67,
     "SD_Scat": 87,
     "Silhouette": 64
+  },
+  {
+    "name": "Spectral",
+    "id": "Spectral_1",
+    "method": "Spectral",
+    "clusters": 13,
+    "Average": 80,
+    "C-index": 44,
+    "Calinski": 66,
+    "Davis_B": 69,
+    "Dunn": 76,
+    "s_Dbw": 70,
+    "SD_Dis": 68,
+    "SD_Scat": 67,
+    "Silhouette": 55
+  },
+  {
+    "name": "MiniBatch",
+    "id": "MiniBatch_2",
+    "method": "MiniBatch",
+    "clusters": 10,
+    "Average": 80,
+    "C-index": 84,
+    "Calinski": 86,
+    "Davis_B": 85,
+    "Dunn": 86,
+    "s_Dbw": 67,
+    "SD_Dis": 87,
+    "SD_Scat": 57,
+    "Silhouette": 55
   }
 ]

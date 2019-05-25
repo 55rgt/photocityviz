@@ -7,8 +7,6 @@
 <script>
 import modelScore from '../../../public/data/ModelScore';
 import RankItem from './Rank-Item';
-import _ from 'lodash';
-import {EventBus} from '../../utils/event-bus';
 export default {
   name: 'Rank-List',
   components: { RankItem },
@@ -18,18 +16,9 @@ export default {
     }
   },
   created() {
-    let that = this;
-    EventBus.$on('updateRankList', filter => that.updateRankList(filter));
   },
   methods: {
-    updateRankList(filter) {
-      let that = this;
-      // min max
-      that.modelList = _.orderBy(that.modelList, [filter.sortByName], [filter.sortBySequence]);
-      // console.log(that.modelList);
-      // console.log('c');
-      // 중복, 필터가 적용이 안됨
-    },
+
   },
 
 };
