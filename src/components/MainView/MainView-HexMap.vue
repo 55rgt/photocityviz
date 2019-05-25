@@ -1,12 +1,13 @@
 <template lang="pug">
   .mainView-hexMap-container#hexMap
+    .navigator-header Cluster HexMap: Cluster#1
 </template>
 
 
 <script>
 import * as d3 from 'd3';
-import testData from '../../../public/data/tsne_sub_refined';
-import clusterData from '../../../public/data/kmeans_tSVD_refined';
+import TSNEData from '../../../public/data/TSNE_final';
+import clusterData from '../../../public/data/kmeans_12_tsvd_final';
 import * as hexbin from 'd3-hexbin';
 import { EventBus } from '../../utils/event-bus'
 import _ from 'lodash';
@@ -24,7 +25,7 @@ export default {
       hexDataset: null,
       axisX: 'x',
       axisY: 'y',
-      hexRadius: 90,
+      hexRadius: 80,
       hexData: {},
       white: true,
     }
@@ -42,7 +43,8 @@ export default {
         .attr('width', that.width)
         .attr('height', that.height);
 
-    that.points = _.map(testData, (d) => [d[that.axisX] * that.width / 6, d[that.axisY] * that.height / 6, d['name']]);
+    that.points = _.map(TSNEData, (d) => [d[that.axisX] * that.width / 12, d[that.axisY] * that.height / 12, d['name']]);
+    console.log(that.points);
     that.hexbin = hexbin.hexbin().extent([[0, 0], [that.width, that.height]]).radius(that.hexRadius);
 
     that.bins = that.hexbin(that.points);
@@ -78,7 +80,7 @@ export default {
         // .attr('stroke', d =>`${that.setMainStroke(`hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}`)}`)
         .attr('stroke', '#000')
         .attr('stroke-opacity', 0.8)
-        .attr('stroke-width', 1)
+        .attr('stroke-width', 5) // 얘도 그거에 따라 반지름에 따
         .attr('d', that.hexbin.hexagon())
         .attr('id', d => `hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}`)
         .attr('transform', d => `translate(${d.x},${d.y})`)
@@ -203,8 +205,15 @@ export default {
 .mainView-hexMap-container
   width: 100%
   height: 100%
+  position: relative
   /deep/ svg
     background-color: #ffffff
     /deep/ g
       overflow: scroll
+  .navigator-header
+    position: absolute
+    top: $unit-3
+    left: $unit-3
+    @include setFonts('Roboto', $md-dark-text-secondary, $unit-4)
+
 </style>

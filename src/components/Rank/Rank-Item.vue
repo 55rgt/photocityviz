@@ -1,17 +1,18 @@
 <template lang="pug">
   .clusterRanking-wrapper
-    .clusterRanking-item(@click="clickRankItem" :id="modelData.id")
+    .clusterRanking-item(@click="selectRankItem" :id="modelData.id")
 
 </template>
 
 <script>
 import * as d3 from 'd3';
 import _ from 'lodash';
+import { EventBus } from '../../utils/event-bus';
 
 export default {
   name: 'Rank-Item',
   props: {
-    modelData: Object,
+    modelData: Object
   },
   data() {
     return {
@@ -34,12 +35,10 @@ export default {
     that.RadarChart('.radarChart', that.RadarData(), that.radarChartOptions);
   },
   methods: {
-    clickRankItem() {
+    selectRankItem() {
       let that = this;
-      console.log(this.modelData.name);
-      d3.select(`#${that.ID}`)
-          .style('border', '2px solid #8a6c34')
-          .style('background', '#fff3e3')
+      EventBus.$emit('selectRankItem', that.ID);
+      // Selected Cluster에 에밋하기
     },
     RadarData() {
       let that = this;
@@ -54,8 +53,8 @@ export default {
     RadarChart(id, data, options) {
       let that = this;
       let cfg = {
-        w: 120,				//Width of the circle
-        h: 120,				//Height of the circle
+        w: 124,				//Width of the circle
+        h: 124,				//Height of the circle
         margin: { top: 0, right: 0, bottom: 0, left: 0 }, //The margins of the SVG
         levels: 3,				//How many levels or inner circles should there be drawn
         maxValue: 100, 			//What is the value that the biggest circle will represent
@@ -240,9 +239,12 @@ export default {
   width: 180px
   height: 100%
   padding: 8px
+  border-radius: 8px
+  transition: 0.24s
+  position: relative
+  &:hover
+    background: rgba(0, 0, 0, 0.1)
   .clusterRanking-item
     width: 100%
     height: 100%
-    border: 2px solid #9c9c9c
-    border-radius: 8px
 </style>

@@ -1,16 +1,17 @@
 <template lang="pug">
   .navigator-container.box-shadow
+    NavigatorSettings
     NavigatorFilter
-    .hex-description-container.b
-
-
+    NavigatorHexagon
 </template>
 
 <script>
+import NavigatorSettings from './Navigator-Settings';
+import NavigatorHexagon from './Navigator-Hexagon';
 import NavigatorFilter from './Navigator-Filter';
 export default {
   name: 'Navigator-Component',
-  components: { NavigatorFilter },
+  components: { NavigatorFilter, NavigatorHexagon, NavigatorSettings },
 };
 </script>
 
@@ -23,9 +24,6 @@ export default {
   height: 100%
   background: $md-white
   margin-right: $mainView-margin-right
-  .hex-description-container
-    width: 100%
-    height: 320px
 .b
   border: 1px solid black
 </style>
