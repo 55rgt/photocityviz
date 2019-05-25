@@ -2,11 +2,13 @@
   .rank-container.cluster-sort-container
     .cluster-sort-description SortBy
     .cluster-sort-list-container
-      .cluster-sort-item(v-for="n in itemList.length" v-bind:class="{ selected: selectedName === itemList[n-1] }" @click="selectSortItem(n)") {{ `${itemList[n - 1]} ${itemList[n - 1] === selectedName ? selectedSeq === 'asc' ? '↑' : '↓' : ''}` }}
+      .cluster-sort-item(v-for="n in itemList.length" v-bind:class="{ selected: selectedName === itemList[n-1] }" @click="triggerSelectSortItem(n)") {{ `${itemList[n - 1]} ${itemList[n - 1] === selectedName ? selectedSeq === 'asc' ? '↑' : '↓' : ''}` }}
 </template>
 
 <script>
 import { EventBus } from '../../utils/event-bus';
+import _ from 'lodash';
+const DEBOUNCE = 1000;
 export default {
   name: 'Rank-Sort',
   props: {
@@ -26,6 +28,9 @@ export default {
     that.selectedSeq = that.sortSeq;
   },
   methods: {
+    triggerSelectSortItem: _.debounce(function (n) {
+      this.selectSortItem(n);
+    }, DEBOUNCE),
     selectSortItem(n) {
       let that = this;
       if (that.selectedName === that.itemList[n - 1]) {
@@ -34,6 +39,7 @@ export default {
         that.selectedName = that.itemList[n - 1];
         that.selectedSeq = 'asc';
       }
+      // console.log('emit');
       EventBus.$emit('updateRankFilter', 'sortByName', that.selectedName);
       EventBus.$emit('updateRankFilter', 'sortBySequence', that.selectedSeq);
     }

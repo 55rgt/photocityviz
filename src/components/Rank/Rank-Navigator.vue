@@ -49,9 +49,12 @@ export default {
         default: console.error('Undefined key interrupt');
       }
 
-      // 그리는 애한테 에밋
-      console.log(that.rankFilter);
+      console.log('render');
 
+      EventBus.$emit('updateRankList', that.rankFilter);
+
+
+      // 그리는 애한테 에밋
     }
   }
 };
