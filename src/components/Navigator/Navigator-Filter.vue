@@ -1,6 +1,6 @@
 <template lang="pug">
   .navigator-filter-container
-    .navigator-header Show
+    .navigator-header Filter
     .navigator-filter-content
       .navigator-show-item-wrapper
         .navigator-show-item-name Countries

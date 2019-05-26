@@ -51,7 +51,7 @@
     "clusters": 13,
     "Average": 94,
     "C-index": 78,
-    "Calinski": 100,
+    "Calinski": 90,
     "Davis_B": 65,
     "Dunn": 100,
     "s_Dbw": 88,
