@@ -16,7 +16,7 @@ export default {
 @import "../../style/_sizes.sass"
 @import url('https://fonts.googleapis.com/css?family=Roboto')
 .mainView-container
-  width: $mainView-container-width
+  flex: 1
   height: 100%
   background: $md-white
   margin-right: $mainView-margin-right

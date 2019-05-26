@@ -7,20 +7,20 @@
           .subView-selector-list-wrapper
             .subView-selector-list
               .subView-selector-item(v-for="image in images" v-bind:class="{ selected: image.name === 'Mexico' || image.name === 'Taiwan' }" :style="'background-image: url(' + image.url + ')'")
-        .subView-discover-label-container.b
+        .subView-discover-label-container
       .subView-discover-content-container
-        .subView-discover-header-container.b
+        .subView-discover-header-container
         .subView-discover-photo-wrapper
-          .subView-discover-photo-container.b
+          .subView-discover-photo-container.b-right
             .subView-photo(v-for="image in data1" :style='{backgroundImage: "url(" + image.url + ")", border: "1px solid" + colors[image.border]}').b
-          .subView-discover-photo-container.b
+          .subView-discover-photo-container
             .subView-photo(v-for="image in data2" :style='{backgroundImage: "url(" + image.url + ")", border: "1px solid" + colors[image.border]}').b
       .subView-discover-content-container
-        .subView-discover-header-container.b
+        .subView-discover-header-container
         .subView-discover-photo-wrapper
-          .subView-discover-photo-container.b
+          .subView-discover-photo-container.b-right
             .subView-photo(v-for="image in data3" :style='{backgroundImage: "url(" + image.url + ")", border: "1px solid" + colors[image.border]}').b
-          .subView-discover-photo-container.b
+          .subView-discover-photo-container
             .subView-photo(v-for="image in data4" :style='{backgroundImage: "url(" + image.url + ")", border: "1px solid" + colors[image.border]}').b
 </template>
 
@@ -47,7 +47,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const storage = firebase.storage();
 const storageRef = storage.ref();
-const test = [{ url: 'https://firebasestorage.googleapis.com/v0/b/photocityviz.appspot.com/o/images%2F2015-02-17%2019.00.23%20922303976916561947_Egypt.jpg?alt=media&token=9a18b10b-b5c7-48c7-a70c-939a4fb8a88c', name: 'Egypt', border: 1 },
+const test = [{ url: Macao, name: 'Egypt', border: 1 },
   { url: Macao, name: 'Macao' , border: 1},
   { url: Mexico, name: 'Mexico', border: 1 },
   { url: Peru, name: 'Peru',border: 1 },
@@ -60,7 +60,15 @@ const test = [{ url: 'https://firebasestorage.googleapis.com/v0/b/photocityviz.a
   { url: Spain, name: 'Spain',border: 1 },
   { url: Taiwan, name: 'Taiwan',border: 1 },
   { url: Spain, name: 'Spain',border: 1 },
-  { url: Taiwan, name: 'Taiwan',border: 1 }];
+  { url: Taiwan, name: 'Taiwan',border: 1 },
+  { url: Macao, name: 'Egypt', border: 1 },
+  { url: Macao, name: 'Macao' , border: 1},
+  { url: Mexico, name: 'Mexico', border: 1 },
+  { url: Peru, name: 'Peru',border: 1 },
+  { url: Spain, name: 'Spain',border: 1 },
+  { url: Taiwan, name: 'Taiwan',border: 1 },
+  { url: Egypt, name: 'Egypt',border: 1 },
+  { url: Macao, name: 'Macao',border: 1 }];
 
 export default {
   name: 'SubView-Component',
@@ -226,24 +234,28 @@ export default {
       height: 100%
       .subView-discover-header-container
         width: 100%
-        height: 104px
+        height: 108px
       .subView-discover-photo-wrapper
         width: 100%
-        height: calc(100% - 104px)
+        height: calc(100% - 108px)
         display: flex
         .subView-discover-photo-container
           flex: 1
           height: 100%
           display: flex
           flex-wrap: wrap
+          padding: 2px
           .subView-photo
-            width: 60px
-            height: 60px
+            width: 56px
+            height: 56px
+            margin-right: 2px
             border-radius: 4px
             background-repeat: no-repeat
             background-size: 100% 100%
 .b
   border: 1px solid black
+.b-right
+  border-right: 1px solid #686868
 
 
 </style>

@@ -2,7 +2,7 @@
   .content-wrapper
     NavigatorComponent
     MainViewComponent
-    SubViewComponent
+    //SubViewComponent
 </template>
 
 <script>
