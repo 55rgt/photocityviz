@@ -73,7 +73,7 @@ export default {
           .attr('width', that.width)
           .attr('height', that.height);
 
-      that.points = _.map(that.filteredTSNE, (d) => [d[that.axisX] * that.width / 12, d[that.axisY] * that.height / 12, d['name']]);
+      that.points = _.map(that.filteredTSNE, (d) => [d[that.axisX] * that.width / 12, d[that.axisY] * that.height / 12, d['name']]); // 이쪽 것도 radius에 맞게 조절 필요할
       that.hexbin = hexbin.hexbin().extent([[0, 0], [that.width, that.height]]).radius(that.hexRadius);
       that.bins = that.hexbin(that.points);
 
@@ -90,10 +90,6 @@ export default {
         }, {});
         return result;
       }, {});
-
-      // 얘를 좀 바꾸고,setMainColor에서 하이라이트된 클러스터 + 국가 모두 만족하는 데이터가 있을 경우에,
-      // 1. 하이라이트가 둘 다 []이면 걍 무시해도 되는데, 두 개 중에 어느 하나라도 뭐가 있으면 걔만 색칠, 나머지는 #ffffff
-
     },
     render() {
       let that = this;
@@ -215,13 +211,13 @@ export default {
               .attr('offset', `${prop}%`)
               .style('stop-color', that.colors[Number.parseInt(datum.key)])
               // opacity scaling 필요. hexData에서 number 분포 보고 파악하기.
-              .style('stop-opacity', 0.4 + (datum.value / 30) * 0.6);
+              .style('stop-opacity', 0.2 + datum.value / (that.hexRadius * that.hexRadius / 360));
           // opacity는 radius와 협력해서 해야할것 -> 각 육각형 내부 데이터 수 분포를 파악하고, 이를 특이한 그래프 가진 공
           prop += datum.value * datum.value * ratio;
           gradient.append('stop')
               .attr('offset', `${prop}%`)
               .style('stop-color', that.colors[Number.parseInt(datum.key)])
-              .style('stop-opacity', 0.4 + (datum.value / 30) * 0.6);
+              .style('stop-opacity', 0.2 + datum.value / (that.hexRadius * that.hexRadius / 360));
         });
         return `url(#${uniqID})`;
       }
