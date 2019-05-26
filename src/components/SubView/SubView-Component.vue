@@ -1,25 +1,27 @@
 <template lang="pug">
   .subView-container.box-shadow
-    .subView-header Filtered Information
-    .subView-summary-container s
     .subView-discover-container
       .subView-discover-navigator-container
         .subView-discover-selector-container
-          .subView-selector-header Select
+          .subView-selector-header(@click="getImages()") Select
           .subView-selector-list-wrapper
             .subView-selector-list
-              .subView-selector-item(v-for="image in images" :style="'background-image: url(' + image.url + ')'")
+              .subView-selector-item(v-for="image in images" v-bind:class="{ selected: image.name === 'Mexico' || image.name === 'Taiwan' }" :style="'background-image: url(' + image.url + ')'")
         .subView-discover-label-container.b
       .subView-discover-content-container
         .subView-discover-header-container.b
         .subView-discover-photo-wrapper
           .subView-discover-photo-container.b
+            .subView-photo(v-for="image in data1" :style='{backgroundImage: "url(" + image.url + ")", border: "1px solid" + colors[image.border]}').b
           .subView-discover-photo-container.b
+            .subView-photo(v-for="image in data2" :style='{backgroundImage: "url(" + image.url + ")", border: "1px solid" + colors[image.border]}').b
       .subView-discover-content-container
         .subView-discover-header-container.b
         .subView-discover-photo-wrapper
           .subView-discover-photo-container.b
+            .subView-photo(v-for="image in data3" :style='{backgroundImage: "url(" + image.url + ")", border: "1px solid" + colors[image.border]}').b
           .subView-discover-photo-container.b
+            .subView-photo(v-for="image in data4" :style='{backgroundImage: "url(" + image.url + ")", border: "1px solid" + colors[image.border]}').b
 </template>
 
 <script>
@@ -30,11 +32,41 @@ import Mexico from '../../assets/flag/Mexico.png';
 import Peru from '../../assets/flag/Peru.png';
 import Spain from '../../assets/flag/Spain.png';
 import Taiwan from '../../assets/flag/Taiwan.png';
+import firebase from 'firebase';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyCTJ3ZEa4vBP3vGvjL_OiFvZuFtoA9th5Q',
+  authDomain: 'photocityviz.firebaseapp.com',
+  databaseURL: 'https://photocityviz.firebaseio.com',
+  projectId: 'photocityviz',
+  storageBucket: 'photocityviz.appspot.com',
+  messagingSenderId: '64979964954',
+  appId: '1:64979964954:web:5dc5cc338f64117b'
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const storage = firebase.storage();
+const storageRef = storage.ref();
+const test = [{ url: 'https://firebasestorage.googleapis.com/v0/b/photocityviz.appspot.com/o/images%2F2015-02-17%2019.00.23%20922303976916561947_Egypt.jpg?alt=media&token=9a18b10b-b5c7-48c7-a70c-939a4fb8a88c', name: 'Egypt', border: 1 },
+  { url: Macao, name: 'Macao' , border: 1},
+  { url: Mexico, name: 'Mexico', border: 1 },
+  { url: Peru, name: 'Peru',border: 1 },
+  { url: Spain, name: 'Spain',border: 1 },
+  { url: Taiwan, name: 'Taiwan',border: 1 },
+  { url: Egypt, name: 'Egypt',border: 1 },
+  { url: Macao, name: 'Macao',border: 1 },
+  { url: Mexico, name: 'Mexico',border: 1 },
+  { url: Peru, name: 'Peru',border: 1 },
+  { url: Spain, name: 'Spain',border: 1 },
+  { url: Taiwan, name: 'Taiwan',border: 1 },
+  { url: Spain, name: 'Spain',border: 1 },
+  { url: Taiwan, name: 'Taiwan',border: 1 }];
 
 export default {
   name: 'SubView-Component',
   data() {
     return {
+      colors: this.$store.getters.getColors,
       filteredData: this.$store.getters.getFilteredData,
       images: [
         { url: Egypt, name: 'Egypt' },
@@ -44,6 +76,11 @@ export default {
         { url: Spain, name: 'Spain' },
         { url: Taiwan, name: 'Taiwan' },
       ],
+      data1: test,
+      data2: test,
+      data3: test,
+      data4: test,
+
     };
   },
   created() {
@@ -53,6 +90,47 @@ export default {
     });
   },
   methods: {
+    async getImages() {
+      // let that = this;
+      // console.log('getImages');
+      const starsRef = storageRef.child('images/2015-02-17 19.00.23 922303976916561947_Egypt.jpg');
+      await starsRef.getDownloadURL().then(function (url) {
+        // that.svg.append('svg:image')
+        //     .attr('xlink:href', url)
+        //     .attr('width', 100)
+        //     .attr('height', 100)
+        //     .attr('x', 0)
+        //     .attr('y', 0);
+        // Insert url into an <img> tag to "download"
+        console.log(url);
+      }).catch(function (error) {
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+          case 'storage/object-not-found':
+            // File doesn't exist
+            break;
+          case 'storage/unauthorized':
+            // User doesn't have permission to access the object
+            break;
+          case 'storage/canceled':
+            // User canceled the upload
+            break;
+          case 'storage/unknown':
+            // Unknown error occurred, inspect the server response
+            break;
+        }
+      });
+      let that = this;
+      that.images = [
+        { url: Egypt, name: 'Egypt' },
+        { url: Egypt, name: 'Macao' },
+        { url: Egypt, name: 'Mexico' },
+        { url: Egypt, name: 'Peru' },
+        { url: Egypt, name: 'Spain' },
+        { url: Egypt, name: 'Taiwan' },
+      ]
+    },
     update() {
       let that = this;
       that.makeDataForSubView();
@@ -61,6 +139,7 @@ export default {
       let that = this;
       that.filteredData= that.$store.getters.getFilteredData;
       console.log(that.filteredData);
+      // 1. filteredData
       /*
 
       <만들어야 할 데이터 형식>
@@ -108,7 +187,7 @@ export default {
     padding: 0 $unit-3
   .subView-discover-container
     width: 100%
-    height: calc(100% - #{$subView-header-height} - #{$subView-summary-container-height})
+    height: 100%
     display: flex
     .subView-discover-navigator-container
       width: 200px
@@ -136,6 +215,9 @@ export default {
               background-repeat: no-repeat
               opacity: 0.3
               background-size: 100% 100%
+            .selected
+              border: 1px solid #000000
+              opacity: 1
       .subView-discover-label-container
         width: 100%
         height: calc(100% - 104px)
@@ -151,7 +233,17 @@ export default {
         display: flex
         .subView-discover-photo-container
           flex: 1
+          height: 100%
+          display: flex
+          flex-wrap: wrap
+          .subView-photo
+            width: 60px
+            height: 60px
+            border-radius: 4px
+            background-repeat: no-repeat
+            background-size: 100% 100%
 .b
   border: 1px solid black
+
 
 </style>
