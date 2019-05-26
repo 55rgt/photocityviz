@@ -1,5 +1,5 @@
 <template lang="pug">
-  .mainView-hexMap-container#hexMap
+  .mainView-hexMap-container(@click="doSth()")#hexMap
     .navigator-header Cluster HexMap: Cluster#1
 </template>
 
@@ -9,7 +9,7 @@ import * as d3 from 'd3';
 import TSNEData from '../../../public/data/TSNE_final';
 import clusterData from '../../../public/data/kmeans_12_tsvd_final';
 import * as hexbin from 'd3-hexbin';
-import { EventBus } from '../../utils/event-bus'
+import { EventBus } from '../../utils/event-bus';
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 
@@ -25,35 +25,40 @@ export default {
       hexDataset: null,
       axisX: 'x',
       axisY: 'y',
-      hexRadius: 80,
+      hexRadius: this.$store.getters.getHexRadius,
+      sampleProportion: this.$store.getters.getSampleProportion,
       hexData: {},
-      white: true,
-    }
+      svgID: 'hexMapSVG',
+      colors: this.$store.getters.getColors,
+
+    };
   },
   created() {
     let that = this;
-    EventBus.$on('updateRender', () => that.do());
+    EventBus.$on('update', () => {
+      that.update()
+    });
   },
   mounted() {
-
     let that = this;
-    that.colors = [null, '#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabebe', '#469990', '#e6beff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000'];
+
     that.svg = d3.select('#hexMap')
         .append('svg')
+        .attr('id', that.svgID)
         .attr('width', that.width)
         .attr('height', that.height);
 
     that.points = _.map(TSNEData, (d) => [d[that.axisX] * that.width / 12, d[that.axisY] * that.height / 12, d['name']]);
-    console.log(that.points);
     that.hexbin = hexbin.hexbin().extent([[0, 0], [that.width, that.height]]).radius(that.hexRadius);
 
     that.bins = that.hexbin(that.points);
     /* make Hexagon Data */
-    that.hexData = _.reduce(that.bins, (result, data) => {
+    that.hexData = _.reduce(that.bins, (result, data, idx) => {
       let id = `hex_${Math.floor(data['x'])}_${Math.floor(data['y'])}`;
       result[id] = _.reduce(data, (result, datum) => {
         let name = datum[2];
         let cluster = clusterData[name];
+        if (idx <= 1) console.log(cluster);
         _.isNil(result['names']) ? result['names'] = [name] : result['names'].push(name);
         result['number'] = result['names'].length;
         if (_.isNil(result['clusters'])) result['clusters'] = {};
@@ -62,7 +67,6 @@ export default {
       }, {});
       return result;
     }, {});
-    console.log(Object.keys(that.hexData).length);
 
     let zoom_layer = that.svg.append('g');
     let zoom = d3.zoom()
@@ -77,7 +81,6 @@ export default {
         .selectAll('path')
         .data(that.bins)
         .join('path')
-        // .attr('stroke', d =>`${that.setMainStroke(`hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}`)}`)
         .attr('stroke', '#000')
         .attr('stroke-opacity', 0.8)
         .attr('stroke-width', 5) // 얘도 그거에 따라 반지름에 따
@@ -88,28 +91,28 @@ export default {
         .attr('fill', d => `${that.setMainColor(`hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}`)}`)
         .on('click', function (d) {
           console.log(this.id);
-          // console.log(this);
-          // let a = d3.select(this).attr('isSelected');
-          // console.log(typeof a);
-          // console.log(state);
-          // d3.select(this).attr('isSelected', !state);
-          // console.log(this);
-          // state on - off 조정하고, trigger 이벤트 써서 debounce로 여러 개 선택해서 해당 정보 넣을 수도 있다.
-          // 그리고 선택된 애들은 border를 진하게 하는 등의 ..
-          // 이거 이렇게 하지 말고, data update로 하자
         });
 
   },
   methods: {
-    do() {
-      console.log('do it')
+    doSth() {
+      this.remove();
     },
-    testSth() {
+    update() {
+      this.remove();
+      this.prepare();
+      this.render();
+    },
+    remove() {
       let that = this;
-      that.white = !that.white;
-      that.svg.style('background', that.white ? 'white' : 'black');
-      d3.selectAll('path').style('stroke', that.white ? 'black' : 'white');
-      d3.selectAll('path').style('stroke-width', that.white ? 2 : 0)
+      console.log('remove');
+      d3.select(`#${that.svgID}`).remove();
+    },
+    prepare() {
+
+    },
+    render() {
+
     },
     getRandInt(min, max) {
       min = Math.ceil(min);
@@ -136,29 +139,12 @@ export default {
         return r;
       }, {});
     },
-    setMainStroke(hexID) {
-      let that = this;
-      let datum = that.hexData[hexID];
-      let max = 0, maxKey = null;
-      _.forEach(datum['cluster'], (value, key) => {
-        if(max < value) {
-          max = value;
-          maxKey = key;
-        }
-      });
-      return that.colors[Number.parseInt(maxKey)];
-    },
     setMainColor(hexID) {
       let that = this;
       let uniqID = uuidv4();
       let gradient = that.svg.append('defs')
-      // .append('linearGradient')
           .append('radialGradient')
           .attr('id', uniqID)
-          // .attr('x1', '0%')
-          // .attr('x2', '0%')
-          // .attr('y1', '0%')
-          // .attr('y2', '100%')
           .attr('cx', '50%')
           .attr('cy', '50%')
           .attr('fx', '50%')
@@ -206,10 +192,13 @@ export default {
   width: 100%
   height: 100%
   position: relative
+
   /deep/ svg
     background-color: #ffffff
+
     /deep/ g
       overflow: scroll
+
   .navigator-header
     position: absolute
     top: $unit-3

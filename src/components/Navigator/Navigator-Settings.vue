@@ -4,30 +4,70 @@
     .navigator-filter-item-container
       .navigator-filter-item-name Hexagon Radius
       .navigator-filter-item-input-wrapper
-        input.navigator-filter-item-input
+        input.navigator-filter-item-input(v-model="hexRadius")
     .navigator-filter-item-container
       .navigator-filter-item-name Sample (0 ~ 100%)
       .navigator-filter-item-input-wrapper
-        input.navigator-filter-item-input
+        input.navigator-filter-item-input(v-model="sampleProportion")
     .navigator-filter-item-container
       .navigator-filter-item-name Month A (1 ~ 12)
       .navigator-filter-item-input-wrapper
-        input.navigator-filter-item-input
+        input.navigator-filter-item-input(v-model="MonthStartA")
       .navigator-filter-unit-space ~
       .navigator-filter-item-input-wrapper
-        input.navigator-filter-item-input
+        input.navigator-filter-item-input(v-model="MonthEndA")
     .navigator-filter-item-container
       .navigator-filter-item-name Month B (1 ~ 12)
       .navigator-filter-item-input-wrapper
-        input.navigator-filter-item-input
+        input.navigator-filter-item-input(v-model="MonthStartB")
       .navigator-filter-unit-space ~
       .navigator-filter-item-input-wrapper
-        input.navigator-filter-item-input
+        input.navigator-filter-item-input(v-model="MonthEndB")
 </template>
 
 <script>
+const DEBOUNCE_TIME = 1000;
+import _ from 'lodash'
+import { mapActions } from 'vuex';
 export default {
-  name: 'Navigator-Settings'
+  name: 'Navigator-Settings',
+  data() {
+    return {
+      hexRadius: this.$store.getters.getHexRadius,
+      sampleProportion: this.$store.getters.getSampleProportion,
+      MonthStartA: this.$store.getters.getMonthStartA,
+      MonthEndA: this.$store.getters.getMonthEndA,
+      MonthStartB: this.$store.getters.getMonthStartB,
+      MonthEndB: this.$store.getters.getMonthEndA
+    }
+  },
+  watch: {
+    // watch로 하면 비효율적이다.
+    hexRadius: _.debounce(async function () {
+      await this.$store.dispatch('updateFilter', { key: 'hexRadius', value: Number.parseInt(this.hexRadius) });
+    }, DEBOUNCE_TIME),
+    sampleProportion: _.debounce(async function () {
+      await this.$store.dispatch('updateFilter', { key: 'sampleProportion', value: Number.parseInt(this.sampleProportion) });
+    }, DEBOUNCE_TIME),
+    MonthStartA: _.debounce(async function () {
+      await this.$store.dispatch('updateFilter', { key: 'MonthStartA', value: Number.parseInt(this.MonthStartA) });
+    }, DEBOUNCE_TIME),
+    MonthEndA: _.debounce(async function () {
+      await this.$store.dispatch('updateFilter', { key: 'MonthEndA', value: Number.parseInt(this.MonthEndA) });
+    }, DEBOUNCE_TIME),
+    MonthStartB: _.debounce(async function () {
+      await this.$store.dispatch('updateFilter', { key: 'MonthStartB', value: Number.parseInt(this.MonthStartB) });
+    }, DEBOUNCE_TIME),
+    MonthEndB: _.debounce(async function () {
+      await this.$store.dispatch('updateFilter', { key: 'MonthEndB', value: Number.parseInt(this.MonthEndB) });
+    }, DEBOUNCE_TIME)
+  },
+  mounted() {
+
+  },
+  methods: {
+    ...mapActions(['updateFilter'])
+  }
 };
 </script>
 

@@ -1,9 +1,9 @@
 [
   {
-    "name": "k-means(10)",
-    "id": "k-means_10",
+    "name": "k-means(12)",
+    "id": "kmeans_12",
     "method": "k-means",
-    "clusters": 10,
+    "clusters": 12,
     "Average": 80,
     "C-index": 84,
     "Calinski": 56,
