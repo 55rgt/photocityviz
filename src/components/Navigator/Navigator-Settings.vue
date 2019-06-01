@@ -6,18 +6,15 @@
       .navigator-filter-item-input-wrapper
         input.navigator-filter-item-input(v-model="hexRadius")
     .navigator-filter-item-container
-      .navigator-filter-item-name Sample (0 ~ 100%)
+      .navigator-filter-item-name Sample
       .navigator-filter-item-input-wrapper
         input.navigator-filter-item-input(v-model="sampleProportion")
     .navigator-filter-item-container
-      .navigator-filter-item-name Month A (1 ~ 12)
+      .navigator-filter-item-name Cohesion
       .navigator-filter-item-input-wrapper
-        input.navigator-filter-item-input(v-model="MonthStartA")
-      .navigator-filter-unit-space ~
-      .navigator-filter-item-input-wrapper
-        input.navigator-filter-item-input(v-model="MonthEndA")
+        input.navigator-filter-item-input(v-model="cohesion")
     .navigator-filter-item-container
-      .navigator-filter-item-name Month B (1 ~ 12)
+      .navigator-filter-item-name Month
       .navigator-filter-item-input-wrapper
         input.navigator-filter-item-input(v-model="MonthStartB")
       .navigator-filter-unit-space ~
@@ -33,6 +30,7 @@ export default {
   name: 'Navigator-Settings',
   data() {
     return {
+      cohesion: this.$store.getters.getCohesion,
       hexRadius: this.$store.getters.getHexRadius,
       sampleProportion: this.$store.getters.getSampleProportion,
       MonthStartA: this.$store.getters.getMonthStartA,
@@ -60,7 +58,11 @@ export default {
     }, DEBOUNCE_TIME),
     MonthEndB: _.debounce(async function () {
       await this.$store.dispatch('updateFilter', { key: 'MonthEndB', value: Number.parseInt(this.MonthEndB) });
+    }, DEBOUNCE_TIME),
+    cohesion: _.debounce(async function () {
+      await this.$store.dispatch('updateFilter', { key: 'cohesion', value: Number.parseInt(this.cohesion) });
     }, DEBOUNCE_TIME)
+
   },
   mounted() {
 

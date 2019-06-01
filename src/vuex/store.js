@@ -28,8 +28,10 @@ export const store = new Vuex.Store({
       'ShowCountries': COUNTRIES,
       'ShowClusters': [],
       'HighlightCountries': [],
-      'HighlightClusters': []
+      'HighlightClusters': [],
+      'cohesion': 12,
     },
+
     // clusterMap { "id" : kmeans_12 }
     rawData: totalData,
     filteredData: null, // selectedData + filters 결과
@@ -40,6 +42,7 @@ export const store = new Vuex.Store({
     filteredTSNE: null
   },
   getters: {
+    getCohesion: state => state.filters.cohesion,
     getSelectedClusterData: state => state.selectedClusterData,
     getFilteredData: state => state.filteredData,
     getColors: state => state.colors,

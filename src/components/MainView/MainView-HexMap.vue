@@ -17,7 +17,7 @@ export default {
   name: 'MainView-HexMap',
   data() {
     return {
-      width: 1568, // 880
+      width: 700, // 880
       height: 808,
       svg: null,
       hexDataset: null,
@@ -31,7 +31,8 @@ export default {
       filteredTSNE: this.$store.getters.getFilteredTSNE,
       filteredData: this.$store.getters.getFilteredData,
       highlightCountries: this.$store.getters.getHighlightCountries,
-      highlightClusters: this.$store.getters.getHighlightClusters
+      highlightClusters: this.$store.getters.getHighlightClusters,
+      cohesion: this.$store.getters.getCohesion
 
     };
   },
@@ -64,6 +65,7 @@ export default {
       that.filteredData = this.$store.getters.getFilteredData;
       that.highlightCountries = this.$store.getters.getHighlightCountries;
       that.highlightClusters = this.$store.getters.getHighlightClusters;
+      that.cohesion = this.$store.getters.getCohesion;
     },
     prepare() {
       let that = this;
@@ -73,7 +75,7 @@ export default {
           .attr('width', that.width)
           .attr('height', that.height);
 
-      that.points = _.map(that.filteredTSNE, (d) => [d[that.axisX] * that.width / 12, d[that.axisY] * that.height / 12, d['name']]); // 이쪽 것도 radius에 맞게 조절 필요할
+      that.points = _.map(that.filteredTSNE, (d) => [d[that.axisX] * that.width / that.cohesion, d[that.axisY] * that.height / that.cohesion, d['name']]); // 이쪽 것도 radius에 맞게 조절 필요할
       that.hexbin = hexbin.hexbin().extent([[0, 0], [that.width, that.height]]).radius(that.hexRadius);
       that.bins = that.hexbin(that.points);
 
@@ -237,13 +239,10 @@ export default {
   width: 100%
   height: 100%
   position: relative
-
   /deep/ svg
     background-color: #ffffff
-
     /deep/ g
       overflow: scroll
-
   .navigator-header
     position: absolute
     top: $unit-3

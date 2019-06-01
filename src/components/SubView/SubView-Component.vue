@@ -33,20 +33,6 @@ import Peru from '../../assets/flag/Peru.png';
 import Spain from '../../assets/flag/Spain.png';
 import Taiwan from '../../assets/flag/Taiwan.png';
 import firebase from 'firebase';
-
-const firebaseConfig = {
-  apiKey: 'AIzaSyCTJ3ZEa4vBP3vGvjL_OiFvZuFtoA9th5Q',
-  authDomain: 'photocityviz.firebaseapp.com',
-  databaseURL: 'https://photocityviz.firebaseio.com',
-  projectId: 'photocityviz',
-  storageBucket: 'photocityviz.appspot.com',
-  messagingSenderId: '64979964954',
-  appId: '1:64979964954:web:5dc5cc338f64117b'
-};
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const storage = firebase.storage();
-const storageRef = storage.ref();
 const test = [{ url: Macao, name: 'Egypt', border: 1 },
   { url: Macao, name: 'Macao' , border: 1},
   { url: Mexico, name: 'Mexico', border: 1 },

@@ -19,6 +19,6 @@ export default {
   flex: 1
   height: 100%
   background: $md-white
-  margin-right: $mainView-margin-right
+  margin-right: 0
 .a
 </style>

@@ -10,7 +10,7 @@
             svg(width="100%", height="100%")#nav-cluster
               rect(:width="datum.width", height="100%", :x="datum.x", :fill="color[index + 1]")(v-for="(datum, index) in s").b
       .navigator-cluster-container
-        .navigator-cluster-title Number of Clusters: 13
+        .navigator-cluster-title Number of Clusters: 12
       .navigator-cluster-container
         .navigator-cluster-title Rank Info: Average #1, Calinski #2, Silhouette #1
 </template>
