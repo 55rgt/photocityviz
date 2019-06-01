@@ -4,12 +4,7 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import Layout from './page/Layout';
-// Use v-calendar & v-date-picker components
-// Vue.use(VDatePicker, {
-//   componentPrefix: 'vc',  // Use <vc-calendar /> instead of <v-calendar />
-// });
 
 export default {
   name: 'App',

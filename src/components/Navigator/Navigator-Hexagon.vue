@@ -6,29 +6,14 @@
 </template>
 
 <script>
-import firebase from 'firebase';
 import M from '../../../public/data/mexico'
 import T from '../../../public/data/taiwan'
-
-const firebaseConfig = {
-  apiKey: 'AIzaSyCTJ3ZEa4vBP3vGvjL_OiFvZuFtoA9th5Q',
-  authDomain: 'photocityviz.firebaseapp.com',
-  databaseURL: 'https://photocityviz.firebaseio.com',
-  projectId: 'photocityviz',
-  storageBucket: 'photocityviz.appspot.com',
-  messagingSenderId: '64979964954',
-  appId: '1:64979964954:web:5dc5cc338f64117b'/**/
-};
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const storage = firebase.storage();
-const storageRef = storage.ref();
 export default {
   name: 'Navigator-Hexagon',
   data() {
     return {
       colors: this.$store.getters.getColors,
-      data: M,
+      data: null,
     }
   },
   methods: {

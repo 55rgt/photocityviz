@@ -2,7 +2,6 @@
   .content-wrapper
     NavigatorComponent
     MainViewComponent
-    //SubViewComponent
 </template>
 
 <script>

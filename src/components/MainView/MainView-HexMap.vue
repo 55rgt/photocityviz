@@ -17,7 +17,7 @@ export default {
   name: 'MainView-HexMap',
   data() {
     return {
-      width: 700, // 880
+      width: 1576, // 880
       height: 808,
       svg: null,
       hexDataset: null,
