@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       colors: this.$store.getters.getColors,
-      data: null,
+      data: M,
     }
   },
   methods: {
