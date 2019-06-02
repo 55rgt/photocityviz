@@ -1,14 +1,16 @@
 <template lang="pug">
   .v-app#app
-    Layout
+    Wrapper
 </template>
 
 <script>
 import Layout from './page/Layout';
+import Wrapper from './page/Wrapper';
 
 export default {
   name: 'App',
   components: {
+    Wrapper,
     Layout
   },
   data () {

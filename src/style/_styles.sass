@@ -1,0 +1,88 @@
+@import "colors"
+
+/* unit */
+$unit-1: 4px
+$unit-2: 8px
+$unit-3: 12px
+$unit-4: 16px
+$unit-5: 20px
+$unit-6: 24px
+
+/* Header */
+$header-height: 60px
+$header-margin-bottom: $unit-2
+
+/* Filter */
+$filter-wrapper-height: 180px
+$filter-margin-bottom: $unit-2
+
+/* Cluster */
+
+$cluster-container-width: 280px
+$cluster-container-margin-right: $unit-2
+
+/* UpSet */
+$upset-container-width: calc(100% - #{$cluster-container-width} - #{$cluster-container-margin-right})
+
+/* Content */
+$content-wrapper-height: calc(100% - #{$header-height} - #{$header-margin-bottom} - #{$filter-wrapper-height} - #{$filter-margin-bottom})
+
+/* Main View */
+$main-container-width: 1040px
+$main-container-margin-right: $unit-2
+
+/* Legend */
+$legend-container-width: 200px
+$legend-container-height: 60px
+
+/* Navigator */
+$navigator-container-width: 200px
+$navigator-container-height: 280px
+
+/* Sub View */
+$sub-container-width: calc(100% - #{$main-container-width} - #{$main-container-margin-right})
+
+/* Labels */
+$labels-container-height: 400px
+$labels-container-margin-bottom: $unit-2
+
+/* Label */
+$label-container-width: 214px
+$label-container-height: 200px
+
+/* Photo */
+$photo-container-height: calc(100% - #{$labels-container-height} - #{$labels-container-margin-bottom})
+
+/* PhotoThumbnail */
+$photo-thumbnail-container-width: 80px
+
+/* PhotoInfo */
+$photo-info-container-width: calc(100% - #{$photo-thumbnail-container-width})
+
+/* PhotoImage */
+$photo-image-container-width: 400px
+
+/* PhotoText */
+$photo-text-container-width: calc(100% - #{$photo-image-container-width})
+
+/* mixins */
+@mixin box_shadow
+  -webkit-box-shadow: 0 3px 5px 1px $md-grey-400
+  -moz-box-shadow: 0 3px 5px 1px $md-grey-400
+  box-shadow: 0 3px 5px 1px $md-grey-400
+
+@mixin setHeightAndLineHeight($h)
+  height: $h
+  line-height: $h
+
+@mixin selectNone
+  -webkit-user-select: none
+  -moz-user-select: none
+  -ms-user-select: none
+  user-select: none
+
+@mixin setFonts($name, $color, $size)
+  color: $color
+  font-size: $size
+  font-family: $name, sans-serif
+  @include selectNone
