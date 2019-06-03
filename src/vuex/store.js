@@ -3,14 +3,28 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import _ from 'lodash';
-
-import totalData from '../../public/data/Total_final_short';
+import final from '../../public/data/Total_final_short';
 import kmeans_12 from '../../public/data/kmeans_12';
 import TSNE from '../../public/data/TSNE_final'
+import labels from '../../public/data/Labels';
 
 Vue.use(Vuex);
 
 const COUNTRIES = ['Egypt', 'Macao', 'Mexico', 'Peru', 'Spain', 'Taiwan'];
+
+
+const mergeData = function (final, cluster, TSNE) {
+  let res = cluster.map(x => Object.assign(x, final.find(y => y.name === x.name)));
+  return TSNE.map(x => Object.assign(x, res.find(y => y.name === x.name)));
+};
+
+let initialData = mergeData(final, kmeans_12, TSNE);
+
+const countLabel = function (queriedData) {
+  let obj = {};
+  _.forEach(labels, label => obj[label] = (_.filter(queriedData, o => o.labels.includes(label))).length);
+  return obj;
+};
 
 export const store = new Vuex.Store({
   state: {
@@ -18,89 +32,34 @@ export const store = new Vuex.Store({
     filters: {
       'hexRadius': 60,
       'sampleProportion': 100,
-      'MonthStartA': 1,
-      'MonthEndA': 12,
-      'MonthStartB': 1,
-      'MonthEndB': 12,
-      'ShowCountries': COUNTRIES,
-      'ShowClusters': [],
-      'HighlightCountries': [],
-      'HighlightClusters': [],
       'cohesion': 12,
     },
+    selectedClusterData: kmeans_12,
+    selectedClusterName: "kmeans_12",
 
-    // clusterMap { "id" : kmeans_12 }
-    rawData: totalData,
-    filteredData: null, // selectedData + filters 결과
-    selectedCluster: 'kmeans_12', // map으로 바꾸기 + modelScore와 협
-    selectedClusterData: kmeans_12, // rank에서 선택된 애 끼우기 (원래는 null)
-    modelScore: ModelScore,
-    TSNE: TSNE,
-    filteredTSNE: null
+    /* rawData: 현재 선택된 클러스터 데이터 + totalData + TSNE 합친 것. */
+    rawData: initialData,
+    queriedData: initialData,
+
+    labelQuery: {},
+    labelUnselected: labels,
+    labelCount: countLabel(initialData)
+
   },
   getters: {
-    getCohesion: state => state.filters.cohesion,
-    getSelectedClusterData: state => state.selectedClusterData,
-    getFilteredData: state => state.filteredData,
-    getColors: state => state.colors,
-    getFilter: state => state.filters,
-    getHexRadius: state => state.filters.hexRadius,
-    getSampleProportion: state => state.filters.sampleProportion,
-    getMonthStartA: state => state.filters.MonthStartA,
-    getMonthEndA: state => state.filters.MonthEndA,
-    getMonthStartB: state => state.filters.MonthStartB,
-    getMonthEndB: state => state.filters.MonthEndB,
-    getShowCountries: state => state.filters.ShowCountries,
-    getShowClusters: state => state.filters.ShowClusters,
-    getHighlightCountries: state => state.filters.HighlightCountries,
-    getHighlightClusters: state => state.filters.HighlightClusters,
-    getFilteredTSNE: state => state.filteredTSNE
-    // getRawData: state => state.rawData,
-    // getFilteredData: state => state.filteredData
+    getLabelUnselected: state => state.labelUnselected,
+    getLabelCount: state => state.labelCount
   },
   mutations: {
 
-    updateFilter: function (state, payload) {
-      state.filters[payload.key] = payload.value;
-      console.log(state.filters);
-    },
-    updateFilteredData: function (state) {
-      // console.log(`Raw Data: ${state.rawData.length}`);
-
-      state.filteredData = _.slice(_.shuffle(state.rawData), 0, Math.floor(state.rawData.length * state.filters.sampleProportion / 100));
-      // console.log(`Sliced Data: ${state.filteredData.length}`);
-
-      state.filteredData = _(state.filteredData)
-          .filter(datum => state.filters.ShowCountries.includes(datum["country"])) // 1. Selected 국가
-          .filter(datum => state.filters.ShowClusters.includes(state.selectedClusterData[datum["name"]])) // 2. Selected Cluster
-          .value();
-      // console.log('filteredData' + state.filteredData.length);
-      // 여기에 highlight 속성까지 넣어서
-
-      let names = _.reduce(state.filteredData, (result, datum) => {
-        result.push(datum['name']);
-        return result;
-      }, []);
-      state.filteredTSNE = _.filter(TSNE, datum => names.includes(datum['name']))
-
-      // console.log('filteredTSNE' + state.filteredTSNE.length);
-      // 데이터를 샘플링한다 proportion에 따라
-
-      // 1. Total_final_short에서 필터드데이터를 만든다.
-      // 2. TSNEData도 필터드 만들어야함
-      // 클러스터데이터는 필터된 거 만들 필요 없음.
-
-      // 1. 필터된 데이터를 만든다.
-
-    }
   },
   actions: {
-    updateFilter: function (context, payload) {
-      context.commit('updateFilter', payload);
-    },
-    updateFilteredData: function(context) {
-      console.log('update detected!');
-      context.commit('updateFilteredData');
-    }
+    // updateFilter: function (context, payload) {
+    //   context.commit('updateFilter', payload);
+    // },
+    // updateFilteredData: function(context) {
+    //   console.log('update detected!');
+    //   context.commit('updateFilteredData');
+    // }
   }
 });
