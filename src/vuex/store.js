@@ -4,11 +4,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import _ from 'lodash';
 
-// ranking 쪽에서 이벤트를 주면, 받은 다음에 데이터를 갈아끼우는 것
 import totalData from '../../public/data/Total_final_short';
-import kmeans_12 from '../../public/data/kmeans_12_final';
-import kmeans_15 from '../../public/data/kmeans_15_final';
-import ModelScore from '../../public/data/ModelScore';
+import kmeans_12 from '../../public/data/kmeans_12';
 import TSNE from '../../public/data/TSNE_final'
 
 Vue.use(Vuex);
