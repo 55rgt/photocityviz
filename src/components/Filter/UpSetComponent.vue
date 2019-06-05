@@ -1,15 +1,15 @@
 <template lang="pug">
   .upset-container
     UpSetQueryComponent
-    UpSetControllerComponent
+    UpSetRadioboxComponent
 </template>
 
 <script>
-import UpSetControllerComponent from './UpSetControllerComponent';
+import UpSetRadioboxComponent from './UpSetRadioboxComponent';
 import UpSetQueryComponent from './UpSetQueryComponent';
 export default {
   name: 'UpSetComponent',
-  components: { UpSetQueryComponent, UpSetControllerComponent }
+  components: { UpSetQueryComponent, UpSetRadioboxComponent },
 };
 </script>
 
@@ -22,6 +22,4 @@ export default {
   @include box_shadow
   background: $md-white
   display: flex
-  overflow-x: auto
-  flex-wrap: nowrap
 </style>

@@ -5,7 +5,7 @@ import Vuex from 'vuex';
 import _ from 'lodash';
 import final from '../../public/data/Total_final_short';
 import kmeans_12 from '../../public/data/kmeans_12';
-import TSNE from '../../public/data/TSNE_final'
+import TSNE from '../../public/data/TSNE_final';
 import labels from '../../public/data/Labels';
 
 Vue.use(Vuex);
@@ -42,21 +42,22 @@ export const store = new Vuex.Store({
     queriedData: initialData,
 
     labelQuery: {},
-    labelUnselected: labels,
     labelCount: countLabel(initialData)
 
   },
   getters: {
-    getLabelUnselected: state => state.labelUnselected,
     getLabelCount: state => state.labelCount
   },
   mutations: {
-
+    updateLabelQuery: function (state, payload) {
+      state.labelQuery[payload.key] = payload.value;
+      console.log(state.labelQuery);
+    }
   },
   actions: {
-    // updateFilter: function (context, payload) {
-    //   context.commit('updateFilter', payload);
-    // },
+    updateLabelQuery: function (context, payload) {
+      context.commit('updateLabelQuery', payload);
+    },
     // updateFilteredData: function(context) {
     //   console.log('update detected!');
     //   context.commit('updateFilteredData');
