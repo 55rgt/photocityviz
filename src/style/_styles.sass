@@ -1,4 +1,6 @@
 @import "colors"
+@import url('https://fonts.googleapis.com/css?family=Nanum+Pen+Script&display=swap')
+@import url('https://fonts.googleapis.com/css?family=Roboto')
 
 /* unit */
 $unit-1: 4px
@@ -12,68 +14,29 @@ $unit-6: 24px
 $header-height: 60px
 $header-margin-bottom: $unit-2
 
-/* Filter */
-$filter-wrapper-height: 180px
-$filter-margin-bottom: $unit-2
-
-/* Cluster */
-
-$cluster-container-width: 280px
-$cluster-container-margin-right: $unit-2
-
-/* UpSet */
-$upset-container-width: calc(100% - #{$cluster-container-width} - #{$cluster-container-margin-right})
-
-$upset-query-container-width: 1320px
-
-$upset-query-item-container-width: 86px
-$upset-query-item-container-height: 33px
-$upset-query-chart-container-width: 53px
-$upset-query-button-container-width: calc(100% - #{$upset-query-chart-container-width})
-
-$upset-radiobox-header-height: 40px
-$upset-query-header-height: 40px
+$component-header-height: 44px
 
 /* Content */
-$content-wrapper-height: calc(100% - #{$header-height} - #{$header-margin-bottom} - #{$filter-wrapper-height} - #{$filter-margin-bottom})
+$content-height: calc(100% - #{$header-height} - #{$header-margin-bottom})
 
-/* Main View */
-$main-container-width: 1040px
-$main-container-margin-right: $unit-2
+/* Nav */
+$nav-container-width: 280px
+$nav-filter-height: 112px
+$nav-query-height: calc(100% - 332px)
+$nav-setting-height: 112px
+$nav-apply-height: 64px
 
-/* Legend */
-$legend-container-width: 200px
-$legend-container-height: 60px
-
-/* Navigator */
-$navigator-container-width: 200px
-$navigator-container-height: 280px
-
-/* Sub View */
-$sub-container-width: calc(100% - #{$main-container-width} - #{$main-container-margin-right})
+/* Sub */
+$sub-container-width: 924px
 
 /* Labels */
-$labels-container-height: 400px
-$labels-container-margin-bottom: $unit-2
+$labels-container-height: 656px
 
-/* Label */
-$label-container-width: 214px
-$label-container-height: 200px
+/* Cluster */
+$cluster-container-height: calc(100% - #{$labels-container-height} - #{$unit-2})
 
-/* Photo */
-$photo-container-height: calc(100% - #{$labels-container-height} - #{$labels-container-margin-bottom})
-
-/* PhotoThumbnail */
-$photo-thumbnail-container-width: 80px
-
-/* PhotoInfo */
-$photo-info-container-width: calc(100% - #{$photo-thumbnail-container-width})
-
-/* PhotoImage */
-$photo-image-container-width: 400px
-
-/* PhotoText */
-$photo-text-container-width: calc(100% - #{$photo-image-container-width})
+/* Gallery */
+$gallery-container-width: 576px
 
 /* mixins */
 @mixin box_shadow
@@ -91,8 +54,8 @@ $photo-text-container-width: calc(100% - #{$photo-image-container-width})
   -ms-user-select: none
   user-select: none
 
-@mixin setFonts($name, $color, $size)
+@mixin setFonts($name, $color, $size, $style)
   color: $color
   font-size: $size
-  font-family: $name, sans-serif
+  font-family: $name, $style
   @include selectNone

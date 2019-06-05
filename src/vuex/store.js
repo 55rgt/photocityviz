@@ -8,6 +8,14 @@ import kmeans_12 from '../../public/data/kmeans_12';
 import TSNE from '../../public/data/TSNE_final';
 import labels from '../../public/data/Labels';
 
+import Egypt from '../assets/flag/Egypt.png';
+import Macao from '../assets/flag/Macao.png';
+import Mexico from '../assets/flag/Mexico.png';
+import Peru from '../assets/flag/Peru.png';
+import Spain from '../assets/flag/Spain.png';
+import Taiwan from '../assets/flag/Taiwan.png';
+
+
 Vue.use(Vuex);
 
 const COUNTRIES = ['Egypt', 'Macao', 'Mexico', 'Peru', 'Spain', 'Taiwan'];
@@ -29,11 +37,21 @@ const countLabel = function (queriedData) {
 export const store = new Vuex.Store({
   state: {
     colors: [null, '#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabebe', '#469990', '#e6beff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000'],
-    filters: {
+    options: {
       'hexRadius': 60,
-      'sampleProportion': 100,
       'cohesion': 12,
+      'countries': [],
+      'start': 1,
+      'end': 12
     },
+    countryFlags: [
+      { url: Egypt, name: 'Egypt' },
+      { url: Macao, name: 'Macao' },
+      { url: Mexico, name: 'Mexico' },
+      { url: Peru, name: 'Peru' },
+      { url: Spain, name: 'Spain' },
+      { url: Taiwan, name: 'Taiwan' },
+    ],
     selectedClusterData: kmeans_12,
     selectedClusterName: "kmeans_12",
 
@@ -46,21 +64,31 @@ export const store = new Vuex.Store({
 
   },
   getters: {
-    getLabelCount: state => state.labelCount
+    getLabelCount: state => state.labelCount,
+    getCountryFlags: state => state.countryFlags,
+    getOption: state => state.options,
+    getOptionCountries: state => state.options.countries,
+    getOptionStart: state => state.options.start,
+    getOptionEnd: state => state.options.end,
+    getOptionHexRadius: state => state.options.hexRadius,
+    getOptionCohesion: state => state.options.cohesion
   },
   mutations: {
     updateLabelQuery: function (state, payload) {
       state.labelQuery[payload.key] = payload.value;
       console.log(state.labelQuery);
+    },
+    updateOptions: function (state, payload) {
+      state.options[payload.key] = payload.value;
+      console.log(state.options);
     }
   },
   actions: {
     updateLabelQuery: function (context, payload) {
       context.commit('updateLabelQuery', payload);
     },
-    // updateFilteredData: function(context) {
-    //   console.log('update detected!');
-    //   context.commit('updateFilteredData');
-    // }
+    updateOptions: function (context, payload) {
+      context.commit('updateOptions', payload)
+    }
   }
 });

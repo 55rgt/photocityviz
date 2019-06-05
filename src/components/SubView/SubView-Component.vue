@@ -32,7 +32,6 @@ import Mexico from '../../assets/flag/Mexico.png';
 import Peru from '../../assets/flag/Peru.png';
 import Spain from '../../assets/flag/Spain.png';
 import Taiwan from '../../assets/flag/Taiwan.png';
-import firebase from 'firebase';
 const test = [{ url: Macao, name: 'Egypt', border: 1 },
   { url: Macao, name: 'Macao' , border: 1},
   { url: Mexico, name: 'Mexico', border: 1 },

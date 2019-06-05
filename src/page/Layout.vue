@@ -6,7 +6,6 @@
 </template>
 
 <script>
-import Header from '../components/Header';
 import RankWrapper from '../components/Rank/Rank-Wrapper';
 import Content from '../components/Content';
 export default {

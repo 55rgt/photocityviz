@@ -1,19 +1,24 @@
 <template lang="pug">
   .wrapper
-    HeaderComponent
-    FilterComponent
-    ContentComponent
+    .header
+      .header-title Photo City Visualization
+      .header-sub Identifying the Theme of City.
+    .content
+      NavComponent
+      MainComponent
+      SubComponent
 
 
 </template>
 
 <script>
-import HeaderComponent from '../components/Header/HeaderComponent';
-import FilterComponent from '../components/Filter/FilterComponent';
-import ContentComponent from '../components/Content/ContentComponent';
+import NavComponent from '../components/Nav/NavComponent';
+import MainComponent from '../components/Main/MainComponent';
+import SubComponent from '../components/Sub/SubComponent';
+
 export default {
   name: 'Wrapper',
-  components: { ContentComponent, FilterComponent, HeaderComponent }
+  components: { SubComponent, MainComponent, NavComponent }
 };
 </script>
 
@@ -25,4 +30,42 @@ export default {
   height: 1080px
   background: $md-grey-200
   padding: $unit-2
-</style >
+
+  .header
+    width: 100%
+    @include box_shadow
+    @include setHeightAndLineHeight($header-height)
+    display: flex
+    background: $md-white
+    padding: 0 $unit-3
+    margin-bottom: $header-margin-bottom
+
+    .header-title
+      width: auto
+      height: 100%
+      margin-right: $unit-2
+      @include setFonts('Roboto', $md-dark-text-primary, $unit-5, 'sans-serif')
+
+    .header-sub
+      width: auto
+      height: 100%
+      @include setFonts('Roboto', $md-dark-text-secondary, $unit-4, 'sans-serif')
+
+  .content
+    width: 100%
+    height: $content-height
+    display: flex
+
+/deep/ .component-header
+  width: 100%
+  @include setHeightAndLineHeight($component-header-height)
+  @include setFonts('Roboto', $md-dark-text-secondary, $unit-4, 'sans-serif')
+  padding: 0 $unit-3
+/*border: 1px solid black*/
+/deep/ .component-body
+  width: 100%
+  height: calc(100% - #{$component-header-height})
+  /*border: 1px solid black*/
+  padding: 0 $unit-3
+
+</style>
