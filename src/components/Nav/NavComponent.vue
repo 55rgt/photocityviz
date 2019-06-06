@@ -4,7 +4,7 @@
     NavSettingComponent
     NavFilterComponent
     NavQueryComponent
-    .nav-apply-container(@click="apply")
+    .nav-apply-container(@click="triggerApply")
       .nav-apply Apply
 </template>
 
@@ -13,12 +13,19 @@ import NavClusterComponent from './NavClusterComponent';
 import NavFilterComponent from './NavFilterComponent';
 import NavQueryComponent from './NavQueryComponent';
 import NavSettingComponent from './NavSettingComponent';
+import { EventBus } from '../../utils/event-bus';
 export default {
   name: 'NavComponent',
   components: { NavSettingComponent, NavQueryComponent, NavFilterComponent, NavClusterComponent },
   methods: {
-    apply() {
-      console.log(this.$store.getters.getOption);
+    triggerApply: _.debounce(function() {
+      console.log('trigger');
+      this.apply();
+    }, 500),
+    async apply() {
+      let that = this;
+      await that.$store.dispatch('updateFilteredData');
+      EventBus.$emit('update');
     }
   }
 };
@@ -40,10 +47,14 @@ export default {
     .nav-apply
       width: 100%
       height: 100%
-      line-height: 44px
+      line-height: 24px
       text-align: center
-      @include setFonts('Roboto', $md-dark-text-secondary, $unit-4, 'sans-serif')
-      border: 2px solid black
+      @include setFonts('Roboto', $md-dark-text-secondary, $unit-3, 'sans-serif')
+      border: 1px solid #ababab
       border-radius: $unit-6
       cursor: pointer
+      transition: border, background 0.2s
+      &:hover
+        border: 1px solid #dedede
+        background: $md-grey-200
 </style>

@@ -1,12 +1,20 @@
 <template lang="pug">
   .main-container
-    .component-header HexMap
+    .component-header Cluster: {{ clusterName }}
     .component-body
+      HexMapComponent
 </template>
 
 <script>
+import HexMapComponent from './HexMapComponent';
 export default {
-  name: 'MainComponent'
+  name: 'MainComponent',
+  components: { HexMapComponent },
+  data() {
+    return {
+      clusterName: this.$store.getters.getSelectedClusterName
+    }
+  }
 };
 </script>
 

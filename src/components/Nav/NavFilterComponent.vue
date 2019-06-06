@@ -6,15 +6,15 @@
         .nav-filter-item-title Countries
         .nav-filter-item-body
           .nav-filter-country-list
-            .nav-filter-country(v-for="flag in countryFlags" @click="toggleCountries(flag.name)" v-bind:class="{ selected: countries.includes(flag.name) }" :style='{backgroundImage: "url(" + flag.url + ")"}')
+            .nav-filter-country(v-for="flag in countryFlags" @click="toggleCountries(flag.name)" v-bind:class="{ selected: option.countries.includes(flag.name) }" :style='{backgroundImage: "url(" + flag.url + ")"}')
       .nav-filter-item-container
         .nav-filter-item-title Month
         .nav-filter-item-body
           .nav-filter-month-input-wrapper
-            input.nav-filter-month-input(v-model="start")
+            input.nav-filter-month-input(v-model="option.start")
           .nav-filter-space ~
           .nav-filter-month-input-wrapper
-            input.nav-filter-month-input(v-model="end")
+            input.nav-filter-month-input(v-model="option.end")
 </template>
 
 <script>
@@ -25,28 +25,26 @@ export default {
   data() {
     return {
       countryFlags: this.$store.getters.getCountryFlags,
-      countries: this.$store.getters.getOptionCountries,
-      start: this.$store.getters.getOptionStart,
-      end: this.$store.getters.getOptionEnd,
+      option: JSON.parse(JSON.stringify(this.$store.getters.getOption)),
     }
   },
   watch: {
-    start: _.debounce(async function() {
-      let value = Number.parseInt(this.start);
-      if(!_.isNil(value) && !_.isNaN(value) && value <= this.end && value >= 1) await this.$store.dispatch('updateOptions', { key: 'start', value });
+    'option.start': _.debounce(async function() {
+      let value = Number.parseInt(this.option.start);
+      if(!_.isNil(value) && !_.isNaN(value) && value <= this.option.end && value >= 1) await this.$store.dispatch('updateOptions', { key: 'start', value });
     }, DEBOUNCE_TIME),
-    end: _.debounce(async function() {
-      let value = Number.parseInt(this.end);
-      if(!_.isNil(value) && !_.isNaN(value) && value >= this.start && value <= 12) await this.$store.dispatch('updateOptions', { key: 'end', value });
+    'option.end': _.debounce(async function() {
+      let value = Number.parseInt(this.option.end);
+      if(!_.isNil(value) && !_.isNaN(value) && value >= this.option.start && value <= 12) await this.$store.dispatch('updateOptions', { key: 'end', value });
     }, DEBOUNCE_TIME),
   },
   methods: {
     async toggleCountries(country) {
       let that = this;
-      that.countries.includes(country) ?
-          that.countries = _.without(that.countries, country):
-          that.countries.push(country);
-      await that.$store.dispatch('updateOptions', { key: 'countries', value: that.countries });
+      that.option.countries.includes(country) ?
+          that.option.countries = _.without(that.option.countries, country):
+          that.option.countries.push(country);
+      await that.$store.dispatch('updateOptions', { key: 'countries', value: that.option.countries });
     }
 
   }

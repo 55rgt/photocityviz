@@ -6,12 +6,12 @@
         .nav-setting-item-title Radius
         .nav-setting-item-body
           .nav-setting-input-wrapper
-            input.nav-setting-input(v-model="hexRadius")
+            input.nav-setting-input(v-model="option.hexRadius")
       .nav-setting-item-container
         .nav-setting-item-title Cohesion
         .nav-setting-item-body
           .nav-setting-input-wrapper
-            input.nav-setting-input(v-model="cohesion")
+            input.nav-setting-input(v-model="option.cohesion")
 </template>
 
 <script>
@@ -21,30 +21,19 @@ export default {
   name: 'NavSettingComponent',
   data() {
     return {
-      hexRadius: this.$store.getters.getOptionHexRadius,
-      cohesion: this.$store.getters.getOptionCohesion,
+      option: JSON.parse(JSON.stringify(this.$store.getters.getOption))
     }
   },
   watch: {
-    hexRadius: _.debounce(async function() {
-      let value = Number.parseInt(this.hexRadius);
+    'option.hexRadius': _.debounce(async function() {
+      let value = Number.parseInt(this.option.hexRadius);
       if(!_.isNil(value) && !_.isNaN(value)) await this.$store.dispatch('updateOptions', { key: 'hexRadius', value });
     }, DEBOUNCE_TIME),
-    cohesion: _.debounce(async function() {
-      let value = Number.parseInt(this.cohesion);
+    'option.cohesion': _.debounce(async function() {
+      let value = Number.parseInt(this.option.cohesion);
       if(!_.isNil(value) && !_.isNaN(value)) await this.$store.dispatch('updateOptions', { key: 'cohesion', value });
     }, DEBOUNCE_TIME),
-  },
-  methods: {
   }
-  // watch: {
-    // 'option.hexRadius': _.debounce(async function() {
-    //   called twice
-    //   console.log(this.option);
-    //   let value = Number.parseInt(this.option.hexRadius);
-    //   if(!_.isNil(value) && !_.isNaN(value)) await this.$store.dispatch('updateOptions', { key: 'hexRadius', value });
-    // }, DEBOUNCE_TIME)
-  // }
 };
 </script>
 

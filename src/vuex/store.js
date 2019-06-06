@@ -40,7 +40,7 @@ export const store = new Vuex.Store({
     options: {
       'hexRadius': 60,
       'cohesion': 12,
-      'countries': [],
+      'countries': COUNTRIES,
       'start': 1,
       'end': 12
     },
@@ -53,11 +53,11 @@ export const store = new Vuex.Store({
       { url: Taiwan, name: 'Taiwan' },
     ],
     selectedClusterData: kmeans_12,
-    selectedClusterName: "kmeans_12",
+    selectedClusterName: 'k-means(12)',
 
     /* rawData: 현재 선택된 클러스터 데이터 + totalData + TSNE 합친 것. */
     rawData: initialData,
-    queriedData: initialData,
+    filteredData: initialData,
 
     labelQuery: {},
     labelCount: countLabel(initialData)
@@ -65,13 +65,12 @@ export const store = new Vuex.Store({
   },
   getters: {
     getLabelCount: state => state.labelCount,
+    getLabelQuery: state => state.labelQuery,
     getCountryFlags: state => state.countryFlags,
     getOption: state => state.options,
-    getOptionCountries: state => state.options.countries,
-    getOptionStart: state => state.options.start,
-    getOptionEnd: state => state.options.end,
-    getOptionHexRadius: state => state.options.hexRadius,
-    getOptionCohesion: state => state.options.cohesion
+    getSelectedClusterName: state => state.selectedClusterName,
+    getColors: state => state.colors,
+    getFilteredData: state => state.filteredData
   },
   mutations: {
     updateLabelQuery: function (state, payload) {
@@ -81,6 +80,25 @@ export const store = new Vuex.Store({
     updateOptions: function (state, payload) {
       state.options[payload.key] = payload.value;
       console.log(state.options);
+    },
+    updateFilteredData: function (state) {
+      let option = state.options;
+      let labelList = _.reduce(state.labelQuery, (result, value, key) => {
+        if (value === 'not') result['not'].push(key);
+        if (value === 'must') result['must'].push(key);
+        return result;
+      }, { 'must': [], 'not': [] });
+      state.filteredData = _.map(state.filteredData, (datum) => {
+        (option.countries.includes(datum.country)
+            && _.difference(labelList['must'], datum.labels).length === 0
+            && _.intersection(labelList['not'], datum.labels).length === 0
+            && datum.month >= option.start
+            && datum.month <= option.end) ?
+            datum.selected = 'true' : datum.selected = 'false';
+        return datum;
+      });
+      console.log('selected Data length: ' + _.filter(state.filteredData, datum => datum.selected === 'true').length);
+      console.log(_.filter(state.filteredData, datum => datum.selected === 'true'));
     }
   },
   actions: {
@@ -88,7 +106,10 @@ export const store = new Vuex.Store({
       context.commit('updateLabelQuery', payload);
     },
     updateOptions: function (context, payload) {
-      context.commit('updateOptions', payload)
+      context.commit('updateOptions', payload);
+    },
+    updateFilteredData: function (context) {
+      context.commit('updateFilteredData');
     }
   }
 });
