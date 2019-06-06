@@ -45,7 +45,7 @@ export default {
         wrapWidth: 60,
         opacityArea: 0.35,
         dotRadius: 2,
-        opacityCircles: 0.08,
+        opacityCircles: 0.05,
         strokeWidth: 2,
         roundStrokes: false,
         color: this.$store.getters.getColors[this.$props.index]
@@ -63,7 +63,7 @@ export default {
 
       var rScale = d3.scaleLinear()
           .range([0, radius])
-          .domain([-0.05 * maxValue, maxValue]);
+          .domain([-0.2 * maxValue, maxValue]);
 
       d3.select(`#${that.ID}`).select('svg').remove();
 
@@ -90,7 +90,7 @@ export default {
           .append('circle')
           .attr('class', 'gridCircle')
           .attr('r', (d, i) => radius / cfg.levels * d)
-          .style('fill', '#CDCDCD')
+          .style('fill', shadeColor(cfg.color, -40))
           .style('stroke', '#CDCDCD')
           .style('fill-opacity', cfg.opacityCircles)
           .style('filter', 'url(#glow)');
@@ -248,11 +248,13 @@ export default {
 
 <style scoped lang="sass">
 @import "../../style/colors"
+@import "../../style/styles"
 .label-container
   width: 300px
   height: 300px
   box-sizing: inherit
   transition: 0.24s
+  border-radius: $unit-5
   &:hover
     background: rgba(0, 0, 0, 0.1)
 </style>
