@@ -1,87 +1,69 @@
 <template lang="pug">
-  .clusterRanking-wrapper
-    .clusterRanking-item(@click="selectRankItem" :id="modelData.id")
-
+  .label-container
 </template>
 
 <script>
+import { EventBus } from '../../utils/event-bus';
 import * as d3 from 'd3';
 import _ from 'lodash';
-import { EventBus } from '../../utils/event-bus';
 
 export default {
-  name: 'Rank-Item',
+  name: 'LabelComponent',
   props: {
-    modelData: Object
+    index: Number
   },
   data() {
     return {
-      axisList: ['Average', 'C-index', 'Calinski', 'Davis_B', 'Dunn', 's_Dbw', 'SD_Dis', 'SD_Scat', 'Silhouette'],
       radarChartOptions: {
-        w: 164 - 40,
-        h: 164 - 40,
-        margin: { top: 20, right: 20, bottom: 20, left: 20 },
-        maxValue: 100,
+        w: 300 - 60,
+        h: 300 - 60,
+        margin: { top: 30, right: 30, bottom: 30, left: 30 },
         levels: 5,
         roundStrokes: true,
-        color: 'pink'
+        color: this.$store.getters.getColors[this.$props.index]
       },
       svg: null,
+      ID: 'labelDist_' + this.$props.index
     };
   },
-  mounted() {
+  created() {
     let that = this;
-    that.ID = that.modelData.id;
-    that.RadarChart('.radarChart', that.RadarData(), that.radarChartOptions);
+    EventBus.$on('update', () => that.update(this.$store.getters.getFilteredDistribution[this.$props.index - 1], that.radarChartOptions));
   },
   methods: {
-    selectRankItem() {
+    update(dt, options) {
       let that = this;
-      EventBus.$emit('selectRankItem', that.ID);
-      // Selected Cluster에 에밋하기
-    },
-    RadarData() {
-      let that = this;
-      return [_.reduce(that.axisList, (result, value) => {
-        result.push({
-          axis: value,
-          value: that.modelData[value]
-        });
-        return result;
-      }, [])];
-    },
-    RadarChart(id, data, options) {
-      let that = this;
+      let data = [dt];
+      let maxValue = that.$store.getters.getMaxLabelCount;
       let cfg = {
-        w: 124,				//Width of the circle
-        h: 124,				//Height of the circle
-        margin: { top: 0, right: 0, bottom: 0, left: 0 }, //The margins of the SVG
-        levels: 3,				//How many levels or inner circles should there be drawn
-        maxValue: 100, 			//What is the value that the biggest circle will represent
-        labelFactor: 1.06, 	//How much farther than the radius of the outer circle should the labels be placed
-        wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
-        opacityArea: 0.35, 	//The opacity of the area of the blob
-        dotRadius: 2, 			//The size of the colored circles of each blog
-        opacityCircles: 0.1, 	//The opacity of the circles of each blob
-        strokeWidth: 2, 		//The width of the stroke around each blob
-        roundStrokes: false,	//If true the area and stroke will follow a round path (cardinal-closed)
-        color: 'pink'	//Color function
+        w: 300,
+        h: 300,
+        margin: { top: 0, right: 0, bottom: 0, left: 0 },
+        levels: 5,
+        maxValue: maxValue,
+        labelFactor: 1.06,
+        wrapWidth: 60,
+        opacityArea: 0.35,
+        dotRadius: 2,
+        opacityCircles: 0.08,
+        strokeWidth: 2,
+        roundStrokes: false,
+        color: this.$store.getters.getColors[this.$props.index]
       };
       if ('undefined' !== typeof options) {
         for (let i in options) {
           if ('undefined' !== typeof options[i]) cfg[i] = options[i];
         }
       }
-
-      let maxValue = 100;
-      var allAxis = that.axisList,	//Names of each axis
-          total = allAxis.length,					//The number of different axes
-          radius = Math.min(cfg.w / 2, cfg.h / 2), 	//Radius of the outermost circle
-          angleSlice = Math.PI * 2 / total;		//The width in radians of each "slice"
+      let temp = _.map(dt, d => d.label);
+      var allAxis = _.filter(that.$store.getters.getLabelSortedList, d => temp.includes(d)),
+          total = allAxis.length,
+          radius = Math.min(cfg.w / 2, cfg.h / 2),
+          angleSlice = Math.PI * 2 / total;
 
       var rScale = d3.scaleLinear()
           .range([0, radius])
-          .domain([0, maxValue]);
+          .domain([-0.05 * maxValue, maxValue]);
 
       d3.select(`#${that.ID}`).select('svg').remove();
 
@@ -128,15 +110,15 @@ export default {
           .style('stroke', 'white')
           .style('stroke-width', '1px');
 
-      axis.append('text')
-          .attr('class', 'legend')
-          .style('font-size', '7px')
-          .attr('text-anchor', 'middle')
-          .attr('dy', '0.35em')
-          .attr('x', (d, i) => rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice * i - Math.PI / 2))
-          .attr('y', (d, i) => rScale(maxValue * cfg.labelFactor) * Math.sin(angleSlice * i - Math.PI / 2))
-          .text(d => d)
-          .call(wrap, cfg.wrapWidth);
+      // axis.append('text')
+      //     .attr('class', 'legend')
+      //     .style('font-size', '14px')
+      //     .attr('text-anchor', 'middle')
+      //     .attr('dy', '0.35em')
+      //     .attr('x', (d, i) => rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice * i - Math.PI / 2))
+      //     .attr('y', (d, i) => rScale(maxValue * cfg.labelFactor) * Math.sin(angleSlice * i - Math.PI / 2))
+      //     .text(d => d)
+      //     .call(wrap, cfg.wrapWidth);
 
       let radarLine = d3.radialLine()
           .curve(d3.curveLinearClosed)
@@ -145,6 +127,7 @@ export default {
 
       if (cfg.roundStrokes) radarLine.curve(d3.curveCardinalClosed);
 
+      console.log('before blobWrapper declaration');
       let blobWrapper = g.selectAll('.radarWrapper')
           .data(data)
           .enter().append('g')
@@ -154,14 +137,14 @@ export default {
           .append('path')
           .attr('class', 'radarArea')
           .attr('d', (d, i) => radarLine(d))
-          .style('fill', '#fac85c')
+          .style('fill', cfg.color)
           .style('fill-opacity', cfg.opacityArea);
 
       blobWrapper.append('path')
           .attr('class', 'radarStroke')
           .attr('d', (d, i) => radarLine(d))
           .style('stroke-width', cfg.strokeWidth + 'px')
-          .style('stroke', '#8a6c34')
+          .style('stroke', shadeColor(cfg.color, -20))
           .style('fill', 'none')
           .style('filter', 'url(#glow)');
 
@@ -172,7 +155,7 @@ export default {
           .attr('r', cfg.dotRadius)
           .attr('cx', (d, i) => rScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2))
           .attr('cy', (d, i) => rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2))
-          .style('fill', '#2e2510')
+          .style('fill', shadeColor(cfg.color, -40))
           .style('fill-opacity', 0.9);
 
       let blobCircleWrapper = g.selectAll('.radarCircleWrapper')
@@ -190,12 +173,12 @@ export default {
           .style('fill', 'none')
           .style('pointer-events', 'all')
           .on('mouseover', function (d, i) {
-            let newX = parseFloat(d3.select(this).attr('cx')) - 10;
+            let newX = parseFloat(d3.select(this).attr('cx')) - 20;
             let newY = parseFloat(d3.select(this).attr('cy')) - 10;
             tooltip
                 .attr('x', newX)
                 .attr('y', newY)
-                .text(d.value + '%')
+                .text(`${d.label}: ${d.value}`)
                 .transition().duration(200)
                 .style('opacity', 1);
           })
@@ -204,6 +187,27 @@ export default {
       let tooltip = g.append('text')
           .attr('class', 'tooltip')
           .style('opacity', 0);
+
+      function shadeColor(color, percent) {
+
+        var R = parseInt(color.substring(1, 3), 16);
+        var G = parseInt(color.substring(3, 5), 16);
+        var B = parseInt(color.substring(5, 7), 16);
+
+        R = parseInt(R * (100 + percent) / 100);
+        G = parseInt(G * (100 + percent) / 100);
+        B = parseInt(B * (100 + percent) / 100);
+
+        R = (R < 255) ? R : 255;
+        G = (G < 255) ? G : 255;
+        B = (B < 255) ? B : 255;
+
+        var RR = ((R.toString(16).length === 1) ? '0' + R.toString(16) : R.toString(16));
+        var GG = ((G.toString(16).length === 1) ? '0' + G.toString(16) : G.toString(16));
+        var BB = ((B.toString(16).length === 1) ? '0' + B.toString(16) : B.toString(16));
+
+        return '#' + RR + GG + BB;
+      }
 
       function wrap(text, width) {
         text.each(function () {
@@ -229,25 +233,15 @@ export default {
           }
         });
       }
-
     }
   }
 };
 </script>
 
 <style scoped lang="sass">
-.clusterRanking-wrapper
-  width: 180px
-  height: 100%
-  padding: 8px
-  border-radius: 8px
-  transition: 0.24s
-  position: relative
-
-  &:hover
-    background: rgba(0, 0, 0, 0.1)
-
-  .clusterRanking-item
-    width: 100%
-    height: 100%
+@import "../../style/colors"
+.label-container
+  width: 300px
+  height: 300px
+  box-sizing: inherit
 </style>

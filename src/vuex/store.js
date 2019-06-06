@@ -34,6 +34,13 @@ const countLabel = function (queriedData) {
   return obj;
 };
 
+const initLabelQuery = function (labelCount) {
+  return _.reduce(Object.keys(labelCount), (result, datum) => {
+    result[datum] = 'none';
+    return result;
+  }, {});
+};
+
 export const store = new Vuex.Store({
   state: {
     colors: [null, '#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabebe', '#469990', '#e6beff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000'],
@@ -54,14 +61,15 @@ export const store = new Vuex.Store({
     ],
     selectedClusterData: kmeans_12,
     selectedClusterName: 'k-means(12)',
+    selectedClusterLength: 12,
 
     /* rawData: 현재 선택된 클러스터 데이터 + totalData + TSNE 합친 것. */
     rawData: initialData,
     filteredData: initialData,
-
-    labelQuery: {},
-    labelCount: countLabel(initialData)
-
+    labelCount: countLabel(initialData),
+    labelQuery: initLabelQuery(countLabel(initialData)),
+    labelSortedList: labels,
+    filteredDistribution: [],
   },
   getters: {
     getLabelCount: state => state.labelCount,
@@ -70,12 +78,15 @@ export const store = new Vuex.Store({
     getOption: state => state.options,
     getSelectedClusterName: state => state.selectedClusterName,
     getColors: state => state.colors,
-    getFilteredData: state => state.filteredData
+    getFilteredData: state => state.filteredData,
+    getFilteredDistribution: state => state.filteredDistribution,
+    getMaxLabelCount: state => _.maxBy(_.flatten(state.filteredDistribution), d => d.value).value,
+    getSelectedClusterLength: state => state.selectedClusterLength,
+    getLabelSortedList: state => state.labelSortedList
   },
   mutations: {
     updateLabelQuery: function (state, payload) {
       state.labelQuery[payload.key] = payload.value;
-      console.log(state.labelQuery);
     },
     updateOptions: function (state, payload) {
       state.options[payload.key] = payload.value;
@@ -97,8 +108,24 @@ export const store = new Vuex.Store({
             datum.selected = 'true' : datum.selected = 'false';
         return datum;
       });
-      console.log('selected Data length: ' + _.filter(state.filteredData, datum => datum.selected === 'true').length);
-      console.log(_.filter(state.filteredData, datum => datum.selected === 'true'));
+    },
+    updateFilteredDistribution: function (state) {
+      let filtered = _.filter(state.filteredData, datum => datum.selected === 'true');
+      state.filteredDistribution = [];
+      let labels = _.compact(_.concat(_.invertBy(state.labelQuery)['must'], _.invertBy(state.labelQuery)['maybe']));
+      console.log(labels);
+      for (let i = 1; i <= state.selectedClusterLength; i++) {
+        let r = _.reduce(labels, (result, label) => {
+          result.push({
+            label,
+            value: _.filter(filtered, datum => datum['labels'].includes(label) && datum['clusterGroup'] === i).length
+          });
+          return result;
+        }, []);
+        state.filteredDistribution.push(r);
+      }
+
+      console.log(state.filteredDistribution);
     }
   },
   actions: {
@@ -110,6 +137,9 @@ export const store = new Vuex.Store({
     },
     updateFilteredData: function (context) {
       context.commit('updateFilteredData');
+    },
+    updateFilteredDistribution: function (context) {
+      context.commit('updateFilteredDistribution');
     }
   }
 });

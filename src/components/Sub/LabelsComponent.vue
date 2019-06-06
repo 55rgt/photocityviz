@@ -2,12 +2,26 @@
   .labels-container
     .component-header Distribution
     .component-body
-
+      .label-list-container
+        LabelComponent(v-for="n in length" :id="'labelDist_' + n" :index="n")
 </template>
 
 <script>
+import LabelComponent from './LabelComponent';
+import { EventBus } from '../../utils/event-bus';
 export default {
-  name: 'LabelsComponent'
+  name: 'LabelsComponent',
+  components: { LabelComponent },
+  data() {
+    return {
+      length: this.$store.getters.getSelectedClusterLength
+    }
+  },
+  created() {
+    let that = this;
+  },
+  methods: {
+  }
 };
 </script>
 
@@ -20,5 +34,14 @@ export default {
   background: $md-white
   @include box_shadow
   margin-bottom: $unit-2
+  .component-body
+    .label-list-container
+      width: 100%
+      height: 100%
+      padding-bottom: $unit-3
+      display: flex
+      flex-wrap: wrap
+      overflow: scroll
 
+.b
 </style>

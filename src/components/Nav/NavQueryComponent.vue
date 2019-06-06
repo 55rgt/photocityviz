@@ -6,7 +6,7 @@
         .nav-query-header-label label
         .nav-query-header-radio(v-for="state in query_state") {{ state }}
       .nav-query-content
-        NavQueryItemComponent(v-for="label in Object.keys(labelCount)" :labelMap="{key: label, value: labelCount[label]}" :selectedState="'maybe'")
+        NavQueryItemComponent(v-for="label in Object.keys(labelCount)" :labelMap="{key: label, value: labelCount[label]}" :selectedState="'none'")
 
 </template>
 

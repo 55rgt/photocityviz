@@ -14,6 +14,7 @@ import NavFilterComponent from './NavFilterComponent';
 import NavQueryComponent from './NavQueryComponent';
 import NavSettingComponent from './NavSettingComponent';
 import { EventBus } from '../../utils/event-bus';
+import _ from 'lodash';
 export default {
   name: 'NavComponent',
   components: { NavSettingComponent, NavQueryComponent, NavFilterComponent, NavClusterComponent },
@@ -25,6 +26,7 @@ export default {
     async apply() {
       let that = this;
       await that.$store.dispatch('updateFilteredData');
+      await that.$store.dispatch('updateFilteredDistribution');
       EventBus.$emit('update');
     }
   }
