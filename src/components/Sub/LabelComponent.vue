@@ -104,30 +104,35 @@ export default {
       axis.append('line')
           .attr('x1', 0)
           .attr('y1', 0)
-          .attr('x2', (d, i) => rScale(maxValue * 1.1) * Math.cos(angleSlice * i - Math.PI / 2))
-          .attr('y2', (d, i) => rScale(maxValue * 1.1) * Math.sin(angleSlice * i - Math.PI / 2))
+          .attr('x2', (d, i) => rScale(maxValue * 1) * Math.cos(angleSlice * i - Math.PI / 2))
+          .attr('y2', (d, i) => rScale(maxValue * 1) * Math.sin(angleSlice * i - Math.PI / 2))
           .attr('class', 'line')
           .style('stroke', 'white')
           .style('stroke-width', '1px');
 
-      // axis.append('text')
-      //     .attr('class', 'legend')
-      //     .style('font-size', '14px')
-      //     .attr('text-anchor', 'middle')
-      //     .attr('dy', '0.35em')
-      //     .attr('x', (d, i) => rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice * i - Math.PI / 2))
-      //     .attr('y', (d, i) => rScale(maxValue * cfg.labelFactor) * Math.sin(angleSlice * i - Math.PI / 2))
-      //     .text(d => d)
-      //     .call(wrap, cfg.wrapWidth);
+      axis.append('text')
+          .attr('class', 'legend')
+          .style('font-size', '8px')
+          .attr('text-anchor', 'middle')
+          .attr('dy', '0em')
+          .attr('x', (d, i) => rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice * i - Math.PI / 2))
+          .attr('y', (d, i) => rScale(maxValue * cfg.labelFactor) * Math.sin(angleSlice * i - Math.PI / 2))
+          .attr('transform', (d, i) =>
+              ` translate(${rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice * i - Math.PI / 2)}, ${rScale(maxValue * cfg.labelFactor) * Math.sin(angleSlice * i - Math.PI / 2)})
+                rotate(${((360 / total) * i) - 360})
+                translate(${-1 * rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice * i - Math.PI / 2)}, ${-1 * rScale(maxValue * cfg.labelFactor) * Math.sin(angleSlice * i - Math.PI / 2)})
+              `
+          )
+          .text(d => d.includes('Transportation') ? d.replace('Transportation', 'Trans.') : d)
+          .call(wrap, cfg.wrapWidth);
 
       let radarLine = d3.radialLine()
           .curve(d3.curveLinearClosed)
           .radius(d => rScale(d.value))
           .angle((d, i) => i * angleSlice);
 
-      if (cfg.roundStrokes) radarLine.curve(d3.curveCardinalClosed);
+      if (cfg.roundStrokes) radarLine.curve(d3.curveCatmullRomClosed.alpha(0.25));
 
-      console.log('before blobWrapper declaration');
       let blobWrapper = g.selectAll('.radarWrapper')
           .data(data)
           .enter().append('g')
@@ -173,18 +178,21 @@ export default {
           .style('fill', 'none')
           .style('pointer-events', 'all')
           .on('mouseover', function (d, i) {
-            let newX = parseFloat(d3.select(this).attr('cx')) - 20;
-            let newY = parseFloat(d3.select(this).attr('cy')) - 10;
+            let newX = parseFloat(d3.select(this).attr('cx'));
+            let newY = parseFloat(d3.select(this).attr('cy'));
             tooltip
-                .attr('x', newX)
-                .attr('y', newY)
+                .attr('x', newX - 2 * `${d.label}: ${d.value}`.length)
+                .attr('y', newY - 10)
+                // .attr('transform', `translate(${newX}, ${newY}) rotate(${((360 / total) * i) - 360}) translate(${-newX}, ${-newY})`)
                 .text(`${d.label}: ${d.value}`)
                 .transition().duration(200)
+                .style('fill', shadeColor(cfg.color, -25))
                 .style('opacity', 1);
           })
           .on('mouseout', () => tooltip.transition().duration(200).style('opacity', 0));
 
       let tooltip = g.append('text')
+          .style('font-size', '8px')
           .attr('class', 'tooltip')
           .style('opacity', 0);
 
@@ -244,4 +252,7 @@ export default {
   width: 300px
   height: 300px
   box-sizing: inherit
+  transition: 0.24s
+  &:hover
+    background: rgba(0, 0, 0, 0.1)
 </style>
