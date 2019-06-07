@@ -14,7 +14,22 @@ import Mexico from '../assets/flag/Mexico.png';
 import Peru from '../assets/flag/Peru.png';
 import Spain from '../assets/flag/Spain.png';
 import Taiwan from '../assets/flag/Taiwan.png';
+import { promisify } from 'util';
 
+import firebase from 'firebase';
+
+const firebaseConfig = {
+  apiKey: `${process.env.VUE_APP_KEY}`,
+  authDomain: 'photocityviz.firebaseapp.com',
+  databaseURL: 'https://photocityviz.firebaseio.com',
+  projectId: 'photocityviz',
+  storageBucket: 'photocityviz.appspot.com',
+  messagingSenderId: '64979964954',
+  appId: `${process.env.VUE_APP_ID}`
+};
+firebase.initializeApp(firebaseConfig);
+const storage = firebase.storage();
+const storageRef = storage.ref();
 
 Vue.use(Vuex);
 
@@ -70,6 +85,9 @@ export const store = new Vuex.Store({
     labelQuery: initLabelQuery(countLabel(initialData)),
     labelSortedList: labels,
     filteredDistribution: [],
+    selectedLabels: [],
+    selectedData: [],
+    galleryIndex: 0,
   },
   getters: {
     getLabelCount: state => state.labelCount,
@@ -82,7 +100,8 @@ export const store = new Vuex.Store({
     getFilteredDistribution: state => state.filteredDistribution,
     getMaxLabelCount: state => _.maxBy(_.flatten(state.filteredDistribution), d => d.value).value,
     getSelectedClusterLength: state => state.selectedClusterLength,
-    getLabelSortedList: state => state.labelSortedList
+    getLabelSortedList: state => state.labelSortedList,
+    getSelectedLabels: state => state.selectedLabels
   },
   mutations: {
     updateLabelQuery: function (state, payload) {
@@ -108,6 +127,7 @@ export const store = new Vuex.Store({
             datum.selected = 'true' : datum.selected = 'false';
         return datum;
       });
+      // state.filteredData = _.shuffle(state.filteredData);
     },
     updateFilteredDistribution: function (state) {
       let filtered = _.filter(state.filteredData, datum => datum.selected === 'true');
@@ -126,6 +146,18 @@ export const store = new Vuex.Store({
       }
 
       console.log(state.filteredDistribution);
+    },
+    updateSelectedLabels: function (state, payload) {
+      if (_.isNil(payload)) state.selectedLabels = [];
+      else {
+        if (state.selectedLabels.includes(payload)) state.selectedLabels = _.without(state.selectedLabels, payload);
+        else state.selectedLabels.push(payload);
+      }
+      // console.log(state.selectedLabels);
+    },
+    updateSelectedData: function (state) {
+      let labels = state.selectedLabels;
+      state.selectedData = _.filter(state.filteredData, datum => labels.includes(datum['clusterGroup']));
     }
   },
   actions: {
@@ -140,6 +172,42 @@ export const store = new Vuex.Store({
     },
     updateFilteredDistribution: function (context) {
       context.commit('updateFilteredDistribution');
+    },
+    updateSelectedLabels: function (context, payload) {
+      context.commit('updateSelectedLabels', payload);
+    },
+    updateSelectedData: function (context) {
+      context.commit('updateSelectedData');
+    },
+    getGalleryData: async function (context, payload) {
+      // payload 0일 때 random start index 설정하고, 스크롤 내릴 때에는 8개씩 추가하는데, idx % length 비교
+      if (payload === 0) {
+        context.state.galleryIndex = 0;
+        context.state.filteredData = _.shuffle(context.state.filteredData);
+      }
+      let filtered = _.filter(context.state.filteredData, d => context.state.selectedLabels.includes(d['clusterGroup']));
+      let p_idx = context.state.galleryIndex;
+      context.state.galleryIndex = Math.min(filtered.length, p_idx + 8);
+      let c_idx = context.state.galleryIndex;
+      let data = filtered.slice(p_idx, c_idx);
+      let infos = _.map(data, d => {
+        return {
+          name: d['name'],
+          cluster: d['clusterGroup']
+        };
+      });
+
+      let promises = _.map(infos, async info => {
+        const ref = storageRef.child(`images/${info.name}`);
+        return await ref.getDownloadURL();
+      });
+      let images = [];
+      _.map(await Promise.all(promises), (p, i) => images.push({
+        url: p,
+        cluster: infos[i].cluster
+      }));
+      console.log(images);
+      return images;
     }
   }
 });

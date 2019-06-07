@@ -1,5 +1,6 @@
 <template lang="pug">
-  .label-container
+  .label-container(@click="toggleLabelItem" v-bind:class="{ selectedLabel: selected }"
+    :style='{border: selected ? `2px solid ${shadeColor(radarChartOptions.color, -30)}` : "2px solid #fff", background: selected ? `${shadeColor(radarChartOptions.color, 40)}11` : "#fff"}')
 </template>
 
 <script>
@@ -14,9 +15,10 @@ export default {
   },
   data() {
     return {
+      selected: false,
       radarChartOptions: {
-        w: 300 - 60,
-        h: 300 - 60,
+        w: 292 - 60,
+        h: 292 - 60,
         margin: { top: 30, right: 30, bottom: 30, left: 30 },
         levels: 5,
         roundStrokes: true,
@@ -31,6 +33,35 @@ export default {
     EventBus.$on('update', () => that.update(this.$store.getters.getFilteredDistribution[this.$props.index - 1], that.radarChartOptions));
   },
   methods: {
+    shadeColor(color, percent) {
+      var R = parseInt(color.substring(1, 3), 16);
+      var G = parseInt(color.substring(3, 5), 16);
+      var B = parseInt(color.substring(5, 7), 16);
+
+      R = parseInt(R * (100 + percent) / 100);
+      G = parseInt(G * (100 + percent) / 100);
+      B = parseInt(B * (100 + percent) / 100);
+
+      R = (R < 255) ? R : 255;
+      G = (G < 255) ? G : 255;
+      B = (B < 255) ? B : 255;
+
+      var RR = ((R.toString(16).length === 1) ? '0' + R.toString(16) : R.toString(16));
+      var GG = ((G.toString(16).length === 1) ? '0' + G.toString(16) : G.toString(16));
+      var BB = ((B.toString(16).length === 1) ? '0' + B.toString(16) : B.toString(16));
+
+      return '#' + RR + GG + BB;
+    },
+    async toggleLabelItem() {
+      // 여기서 selectedLabels에 자기 index 넣는다
+      let that = this;
+      await that.$store.dispatch('updateSelectedLabels', this.$props.index);
+      await that.$store.dispatch('updateSelectedData');
+      // updateSummaryInfo
+      // updateGalleryInfo
+      EventBus.$emit('updateClusterComponent');
+      that.selected = that.$store.getters.getSelectedLabels.includes(that.$props.index);
+    },
     update(dt, options) {
       let that = this;
       let data = [dt];
@@ -90,7 +121,7 @@ export default {
           .append('circle')
           .attr('class', 'gridCircle')
           .attr('r', (d, i) => radius / cfg.levels * d)
-          .style('fill', shadeColor(cfg.color, -40))
+          .style('fill', that.shadeColor(cfg.color, -40))
           .style('stroke', '#CDCDCD')
           .style('fill-opacity', cfg.opacityCircles)
           .style('filter', 'url(#glow)');
@@ -149,7 +180,7 @@ export default {
           .attr('class', 'radarStroke')
           .attr('d', (d, i) => radarLine(d))
           .style('stroke-width', cfg.strokeWidth + 'px')
-          .style('stroke', shadeColor(cfg.color, -20))
+          .style('stroke', that.shadeColor(cfg.color, -20))
           .style('fill', 'none')
           .style('filter', 'url(#glow)');
 
@@ -160,7 +191,7 @@ export default {
           .attr('r', cfg.dotRadius)
           .attr('cx', (d, i) => rScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2))
           .attr('cy', (d, i) => rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2))
-          .style('fill', shadeColor(cfg.color, -40))
+          .style('fill', that.shadeColor(cfg.color, -40))
           .style('fill-opacity', 0.9);
 
       let blobCircleWrapper = g.selectAll('.radarCircleWrapper')
@@ -186,7 +217,7 @@ export default {
                 // .attr('transform', `translate(${newX}, ${newY}) rotate(${((360 / total) * i) - 360}) translate(${-newX}, ${-newY})`)
                 .text(`${d.label}: ${d.value}`)
                 .transition().duration(200)
-                .style('fill', shadeColor(cfg.color, -25))
+                .style('fill', that.shadeColor(cfg.color, -25))
                 .style('opacity', 1);
           })
           .on('mouseout', () => tooltip.transition().duration(200).style('opacity', 0));
@@ -196,26 +227,6 @@ export default {
           .attr('class', 'tooltip')
           .style('opacity', 0);
 
-      function shadeColor(color, percent) {
-
-        var R = parseInt(color.substring(1, 3), 16);
-        var G = parseInt(color.substring(3, 5), 16);
-        var B = parseInt(color.substring(5, 7), 16);
-
-        R = parseInt(R * (100 + percent) / 100);
-        G = parseInt(G * (100 + percent) / 100);
-        B = parseInt(B * (100 + percent) / 100);
-
-        R = (R < 255) ? R : 255;
-        G = (G < 255) ? G : 255;
-        B = (B < 255) ? B : 255;
-
-        var RR = ((R.toString(16).length === 1) ? '0' + R.toString(16) : R.toString(16));
-        var GG = ((G.toString(16).length === 1) ? '0' + G.toString(16) : G.toString(16));
-        var BB = ((B.toString(16).length === 1) ? '0' + B.toString(16) : B.toString(16));
-
-        return '#' + RR + GG + BB;
-      }
 
       function wrap(text, width) {
         text.each(function () {
@@ -250,11 +261,13 @@ export default {
 @import "../../style/colors"
 @import "../../style/styles"
 .label-container
-  width: 300px
-  height: 300px
+  width: 292px
+  height: 292px
   box-sizing: inherit
   transition: 0.24s
   border-radius: $unit-5
+  margin: $unit-1
+
   &:hover
     background: rgba(0, 0, 0, 0.1)
 </style>

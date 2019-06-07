@@ -27,6 +27,7 @@ export default {
       let that = this;
       await that.$store.dispatch('updateFilteredData');
       await that.$store.dispatch('updateFilteredDistribution');
+      await that.$store.dispatch('updateSelectedLabels');
       EventBus.$emit('update');
     }
   }

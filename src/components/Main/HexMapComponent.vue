@@ -115,7 +115,7 @@ export default {
           .join('path')
           .attr('stroke', '#000')
           .attr('stroke-opacity', 0.8)
-          .attr('stroke-width', Math.max(that.hexRadius / 20, 3)) // 얘도 그거에 따라 반지름에 따
+          .attr('stroke-width', 2) // 얘도 그거에 따라 반지름에 따
           .attr('d', that.hexbin.hexagon())
           .attr('id', d => `hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}`)
           .attr('transform', d => `translate(${d.x},${d.y})`)

@@ -8,7 +8,6 @@
 
 <script>
 import LabelComponent from './LabelComponent';
-import { EventBus } from '../../utils/event-bus';
 export default {
   name: 'LabelsComponent',
   components: { LabelComponent },
@@ -41,7 +40,10 @@ export default {
       padding-bottom: $unit-3
       display: flex
       flex-wrap: wrap
-      overflow: scroll
+      overflow-y: scroll
+    .label-list-container::-webkit-scrollbar
+      display: none
+      width: 0
+      background: transparent
 
-.b
 </style>

@@ -53,5 +53,9 @@ export default {
       width: 100%
       height: calc(100% - 24px)
       overflow: scroll
+    .nav-query-content::-webkit-scrollbar
+      display: none
+      width: 0
+      background: transparent
 .b
 </style>
