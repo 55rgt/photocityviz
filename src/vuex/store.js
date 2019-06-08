@@ -14,7 +14,6 @@ import Mexico from '../assets/flag/Mexico.png';
 import Peru from '../assets/flag/Peru.png';
 import Spain from '../assets/flag/Spain.png';
 import Taiwan from '../assets/flag/Taiwan.png';
-import { promisify } from 'util';
 
 import firebase from 'firebase';
 
@@ -118,7 +117,7 @@ export const store = new Vuex.Store({
         if (value === 'must') result['must'].push(key);
         return result;
       }, { 'must': [], 'not': [] });
-      state.filteredData = _.map(state.filteredData, (datum) => {
+      state.filteredData = _.map(state.rawData, (datum) => {
         (option.countries.includes(datum.country)
             && _.difference(labelList['must'], datum.labels).length === 0
             && _.intersection(labelList['not'], datum.labels).length === 0
@@ -127,7 +126,7 @@ export const store = new Vuex.Store({
             datum.selected = 'true' : datum.selected = 'false';
         return datum;
       });
-      // state.filteredData = _.shuffle(state.filteredData);
+
     },
     updateFilteredDistribution: function (state) {
       let filtered = _.filter(state.filteredData, datum => datum.selected === 'true');
@@ -145,7 +144,6 @@ export const store = new Vuex.Store({
         state.filteredDistribution.push(r);
       }
 
-      console.log(state.filteredDistribution);
     },
     updateSelectedLabels: function (state, payload) {
       if (_.isNil(payload)) state.selectedLabels = [];
@@ -153,11 +151,17 @@ export const store = new Vuex.Store({
         if (state.selectedLabels.includes(payload)) state.selectedLabels = _.without(state.selectedLabels, payload);
         else state.selectedLabels.push(payload);
       }
-      // console.log(state.selectedLabels);
     },
     updateSelectedData: function (state) {
       let labels = state.selectedLabels;
-      state.selectedData = _.filter(state.filteredData, datum => labels.includes(datum['clusterGroup']));
+      state.selectedData = _.filter(state.filteredData, datum => labels.includes(datum['clusterGroup']) && datum.selected === 'true');
+    },
+    getSummaryData: function (state) {
+      let selectedData = state.selectedData;
+
+      // selected data로 해야 한다.
+      //
+
     }
   },
   actions: {
@@ -179,21 +183,24 @@ export const store = new Vuex.Store({
     updateSelectedData: function (context) {
       context.commit('updateSelectedData');
     },
+    getSummaryData: function(context) {
+      context.commit('getSummaryData');
+    },
     getGalleryData: async function (context, payload) {
-      // payload 0일 때 random start index 설정하고, 스크롤 내릴 때에는 8개씩 추가하는데, idx % length 비교
       if (payload === 0) {
         context.state.galleryIndex = 0;
-        context.state.filteredData = _.shuffle(context.state.filteredData);
+        context.state.selectedData = _.shuffle(context.state.selectedData);
       }
-      let filtered = _.filter(context.state.filteredData, d => context.state.selectedLabels.includes(d['clusterGroup']));
+      let filtered = _.filter(context.state.selectedData, d => context.state.selectedLabels.includes(d['clusterGroup']));
       let p_idx = context.state.galleryIndex;
-      context.state.galleryIndex = Math.min(filtered.length, p_idx + 8);
+      context.state.galleryIndex = Math.min(filtered.length, p_idx + 16);
       let c_idx = context.state.galleryIndex;
       let data = filtered.slice(p_idx, c_idx);
       let infos = _.map(data, d => {
         return {
           name: d['name'],
-          cluster: d['clusterGroup']
+          cluster: d['clusterGroup'],
+          country: d['country']
         };
       });
 
@@ -204,7 +211,8 @@ export const store = new Vuex.Store({
       let images = [];
       _.map(await Promise.all(promises), (p, i) => images.push({
         url: p,
-        cluster: infos[i].cluster
+        cluster: infos[i].cluster,
+        country: infos[i].country
       }));
       console.log(images);
       return images;

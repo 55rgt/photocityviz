@@ -30,7 +30,11 @@ export default {
   },
   created() {
     let that = this;
-    EventBus.$on('update', () => that.update(this.$store.getters.getFilteredDistribution[this.$props.index - 1], that.radarChartOptions));
+    EventBus.$on('update', async () => {
+      that.update(this.$store.getters.getFilteredDistribution[this.$props.index - 1], that.radarChartOptions);
+      await that.$store.dispatch('updateSelectedLabels');
+      that.selected = false;
+    });
   },
   methods: {
     shadeColor(color, percent) {
@@ -267,7 +271,7 @@ export default {
   transition: 0.24s
   border-radius: $unit-5
   margin: $unit-1
-
+  cursor: pointer
   &:hover
-    background: rgba(0, 0, 0, 0.1)
+    background: rgba(0, 0, 0, 0.15)
 </style>

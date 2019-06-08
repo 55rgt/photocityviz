@@ -11,6 +11,7 @@
 
 <script>
 import { EventBus } from '../../utils/event-bus';
+
 export default {
   name: 'SummaryComponent',
   data() {
@@ -22,17 +23,27 @@ export default {
         'colors': [],
         'hashtags': []
       }
-    }
+    };
   },
   created() {
     let that = this;
-    EventBus.$on('updateClusterComponent', () => that.update());
+    EventBus.$on('update', () => {
+      that.summaryData = {
+        'number': '',
+        'selected': [],
+        'countries': [],
+        'colors': [],
+        'hashtags': []
+      };
+    });
+    EventBus.$on('updateClusterComponent', () => that.get());
 
   },
   methods: {
-    update() {
-
-    }
+    async get() {
+      let that = this;
+      that.summaryData = await that.$store.summaryData('getSummaryData');
+    },
 
   }
 
@@ -43,8 +54,10 @@ export default {
 @import "../../style/styles"
 .summary-container
   flex: 1
+
   .component-body
     padding: 0 0 $unit-3 $unit-3
+
     .summary-item
       width: 100%
       height: 40px
@@ -54,6 +67,7 @@ export default {
       font-weight: 500
       line-height: 40px
       @include setFonts('Roboto', #686868, $unit-3, 'sans-serif')
+
     .summary-item-2
       width: 100%
       height: 80px

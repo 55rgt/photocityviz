@@ -117,6 +117,7 @@ export default {
           .attr('stroke-opacity', 0.8)
           .attr('stroke-width', 2) // 얘도 그거에 따라 반지름에 따
           .attr('d', that.hexbin.hexagon())
+          // ㅇㅕ기다가 transform => scale
           .attr('id', d => `hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}`)
           .attr('transform', d => `translate(${d.x},${d.y})`)
           .attr('fill', d => `${that.setMainColor(`hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}`)}`)
