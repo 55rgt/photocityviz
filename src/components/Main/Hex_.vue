@@ -11,7 +11,7 @@ import uuidv4 from 'uuid/v4';
 
 const SCALE_MIN = 1 / 20, SCALE_MAX = 3; // radius에 따라 변경?
 export default {
-  name: 'Hex_',
+  name: 'HexMapComponent',
   data() {
     return {
       width: 660,
@@ -29,6 +29,7 @@ export default {
       hexRadius: null,
       minCluster: null,
       maxCluster: null,
+      r: null,
     };
   },
   created() {
@@ -87,6 +88,10 @@ export default {
           names: [],
           clusters: {}
         });
+
+        that.r = d3.scaleSqrt()
+            .domain([0, d3.max(that.bins, d => d.length)])
+            .range([0, that.hexbin.radius() * Math.SQRT2]);
         // if(result[id]['selected']) _.forEach(Object.keys(result[id]['clusters']), (cK) => {
         //   let value = result[id]['clusters'][cK];
         //   if(_.isNil(that.minCluster) || that.minCluster > value) that.minCluster = value;
@@ -116,7 +121,7 @@ export default {
           .attr('stroke', '#000')
           .attr('stroke-opacity', 0.8)
           .attr('stroke-width', 2) // 얘도 그거에 따라 반지름에 따
-          .attr('d', that.hexbin.hexagon())
+          .attr('d', d => that.hexbin.hexagon(that.r(d.length)))
           // ㅇㅕ기다가 transform => scale
           .attr('id', d => `hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}`)
           .attr('transform', d => `translate(${d.x},${d.y})`)
@@ -183,7 +188,7 @@ export default {
               .attr('offset', `${prop}%`)
               .style('stop-color', that.colors[Number.parseInt(datum.key)])
               .style('stop-opacity', 0.2 + datum.value / (that.hexRadius * that.hexRadius / 360));
-              // .style('stop-opacity', MIN_OPACITY + (1-MIN_OPACITY)*(that.minCluster / that.maxCluster) * datum.value);
+          // .style('stop-opacity', MIN_OPACITY + (1-MIN_OPACITY)*(that.minCluster / that.maxCluster) * datum.value);
         });
         return `url(#${uniqID})`;
       } else {
