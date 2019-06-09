@@ -28,7 +28,8 @@ export default {
       await that.$store.dispatch('updateFilteredData');
       await that.$store.dispatch('updateFilteredDistribution');
       await that.$store.dispatch('updateSelectedLabels');
-      EventBus.$emit('update');
+      console.log('Emit update');
+      await EventBus.$emit('update');
     }
   }
 };

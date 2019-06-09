@@ -11,7 +11,7 @@ import uuidv4 from 'uuid/v4';
 
 const SCALE_MIN = 1 / 20, SCALE_MAX = 3; // radius에 따라 변경?
 export default {
-  name: 'Hex_',
+  name: 'HexMapComponent',
   data() {
     return {
       width: 660,
@@ -29,6 +29,8 @@ export default {
       hexRadius: null,
       minCluster: null,
       maxCluster: null,
+      scale_min: null,
+      scale_max: null,
     };
   },
   created() {
@@ -71,6 +73,16 @@ export default {
       that.points = _.map(that.filteredData, (d) => [d[that.axisX] * that.width / that.cohesion, d[that.axisY] * that.height / that.cohesion, d['name'], d['clusterGroup'], d['selected']]); // 이쪽 것도 radius에 맞게 조절 필요할
       that.hexbin = hexbin.hexbin().extent([[0, 0], [that.width, that.height]]).radius(that.hexRadius);
       that.bins = that.hexbin(that.points);
+
+      let min = d3.min(that.bins, d => d.length);
+      let max = d3.max(that.bins, d => d.length);
+
+
+      that.r = d3.scaleSqrt()
+          .domain([min, max])
+          .range([Math.pow(min / max, 0.25) * that.hexbin.radius() * Math.SQRT2, Math.pow(max / min, 0.25) * that.hexbin.radius() * Math.SQRT2]);
+
+
       that.hexData = _.reduce(that.bins, (result, data) => {
         let id = `hex_${Math.floor(data['x'])}_${Math.floor(data['y'])}`;
         result[id] = _.reduce(data, (result, datum) => {
@@ -95,6 +107,9 @@ export default {
         return result;
       }, {});
       // console.log(that.minCluster, that.maxCluster);
+      that.scale_min = 1/20;
+      alert(that.scale_min);
+      that.scale_max = 3;
 
     },
     render() {
@@ -102,12 +117,12 @@ export default {
       let that = this;
       let zoom_layer = that.svg.append('g');
       let zoom = d3.zoom()
-          .scaleExtent([SCALE_MIN, SCALE_MAX]) // SCALE_MIN , MAX도 반지름에 맞게 init에서  조절?
+          .scaleExtent([that.scale_min, that.scale_max]) // SCALE_MIN , MAX도 반지름에 맞게 init에서  조절?
           .on('zoom', () => {
             zoom_layer.attr('transform', d3.event.transform);
           });
       that.svg.call(zoom);
-      that.svg.call(zoom.transform, d3.zoomIdentity.translate(that.width / 2, that.height / 2).scale(SCALE_MIN));
+      that.svg.call(zoom.transform, d3.zoomIdentity.translate(that.width / 2, that.height / 2).scale(that.scale_min));
 
       zoom_layer
           .selectAll('path')
@@ -116,7 +131,8 @@ export default {
           .attr('stroke', '#000')
           .attr('stroke-opacity', 0.8)
           .attr('stroke-width', 2) // 얘도 그거에 따라 반지름에 따
-          .attr('d', that.hexbin.hexagon())
+          .attr('d', d => that.hexbin.hexagon(that.r(d.length)))
+          // .attr('d', that.hexbin.hexagon())
           // ㅇㅕ기다가 transform => scale
           .attr('id', d => `hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}`)
           .attr('transform', d => `translate(${d.x},${d.y})`)
@@ -183,7 +199,7 @@ export default {
               .attr('offset', `${prop}%`)
               .style('stop-color', that.colors[Number.parseInt(datum.key)])
               .style('stop-opacity', 0.2 + datum.value / (that.hexRadius * that.hexRadius / 360));
-              // .style('stop-opacity', MIN_OPACITY + (1-MIN_OPACITY)*(that.minCluster / that.maxCluster) * datum.value);
+          // .style('stop-opacity', MIN_OPACITY + (1-MIN_OPACITY)*(that.minCluster / that.maxCluster) * datum.value);
         });
         return `url(#${uniqID})`;
       } else {

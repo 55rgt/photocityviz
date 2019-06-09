@@ -1,15 +1,16 @@
 <template lang="pug">
   .sub-container
-    LabelsComponent
+    Hex_
     ClusterComponent
 </template>
 
 <script>
-import LabelsComponent from '../Sub/LabelsComponent';
 import ClusterComponent from '../Sub/ClusterComponent';
+import Hex_ from '../Main/Hex_';
+import LabelsComponent from './LabelsComponent';
 export default {
   name: 'SubComponent',
-  components: { ClusterComponent, LabelsComponent }
+  components: { LabelsComponent, Hex_, ClusterComponent }
 };
 </script>
 
