@@ -23,8 +23,8 @@ export default {
   },
   created() {
     let that = this;
-    EventBus.$on('updateClusterComponent', () => that.get());
-    EventBus.$on('update', () => that.galleryData = []);
+    // EventBus.$on('updateClusterComponent', () => that.get());
+    EventBus.$on('apply', () => that.galleryData = []);
   },
   methods: {
     async get() {

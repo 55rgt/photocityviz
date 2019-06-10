@@ -42,7 +42,7 @@ export default {
   methods: {
     async get() {
       let that = this;
-      that.summaryData = await that.$store.summaryData('getSummaryData');
+     // that.summaryData = await that.$store.summaryData('getSummaryData');
     },
 
   }

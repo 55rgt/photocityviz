@@ -60,7 +60,7 @@ export const store = new Vuex.Store({
     colors: [null, '#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabebe', '#469990', '#e6beff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000'],
     options: {
       'hexRadius': 84,
-      'cohesion': 12,
+      'cohesion': 8,
       'countries': COUNTRIES,
       'start': 1,
       'end': 12
@@ -85,8 +85,8 @@ export const store = new Vuex.Store({
     labelSortedList: labels,
     filteredDistribution: [],
     selectedLabels: [],
-    selectedData: [],
     galleryIndex: 0,
+    selectedData: [],
   },
   getters: {
     getLabelCount: state => state.labelCount,
@@ -100,7 +100,8 @@ export const store = new Vuex.Store({
     getMaxLabelCount: state => _.maxBy(_.flatten(state.filteredDistribution), d => d.value).value,
     getSelectedClusterLength: state => state.selectedClusterLength,
     getLabelSortedList: state => state.labelSortedList,
-    getSelectedLabels: state => state.selectedLabels
+    getSelectedLabels: state => state.selectedLabels,
+    getSelectedData: state => state.selectedData
   },
   mutations: {
     updateLabelQuery: function (state, payload) {
@@ -117,19 +118,17 @@ export const store = new Vuex.Store({
         if (value === 'must') result['must'].push(key);
         return result;
       }, { 'must': [], 'not': [] });
-      state.filteredData = _.map(state.rawData, (datum) => {
-        (option.countries.includes(datum.country)
+      state.filteredData = _.filter(state.rawData, (datum) => {
+        return option.countries.includes(datum.country)
             && _.difference(labelList['must'], datum.labels).length === 0
             && _.intersection(labelList['not'], datum.labels).length === 0
             && datum.month >= option.start
-            && datum.month <= option.end) ?
-            datum.selected = 'true' : datum.selected = 'false';
-        return datum;
+            && datum.month <= option.end
       });
+      console.log(state.filteredData);
 
     },
-    updateFilteredDistribution: function (state) {
-      let filtered = _.filter(state.filteredData, datum => datum.selected === 'true');
+    updateSelectedDistribution: function (state) {
       state.filteredDistribution = [];
       let labels = _.compact(_.concat(_.invertBy(state.labelQuery)['must'], _.invertBy(state.labelQuery)['maybe']));
       console.log(labels);
@@ -137,7 +136,7 @@ export const store = new Vuex.Store({
         let r = _.reduce(labels, (result, label) => {
           result.push({
             label,
-            value: _.filter(filtered, datum => datum['labels'].includes(label) && datum['clusterGroup'] === i).length
+            value: _.filter(state.filteredData, datum => datum['labels'].includes(label) && datum['clusterGroup'] === i).length
           });
           return result;
         }, []);
@@ -151,13 +150,18 @@ export const store = new Vuex.Store({
         if (state.selectedLabels.includes(payload)) state.selectedLabels = _.without(state.selectedLabels, payload);
         else state.selectedLabels.push(payload);
       }
+      console.log(state.selectedLabels);
     },
-    updateSelectedData: function (state) {
-      let labels = state.selectedLabels;
-      state.selectedData = _.filter(state.filteredData, datum => labels.includes(datum['clusterGroup']) && datum.selected === 'true');
+    updateSelectedData: function (state, payload) {
+      if(_.isNil(payload)) {
+        state.selectedData = _.map(state.filteredData, (datum) => {
+          datum.selected = 'true';
+          return datum;
+        });
+      }
     },
     getSummaryData: function (state) {
-      let selectedData = state.selectedData;
+      let selectedData = state.filteredData;
 
       // selected data로 해야 한다.
       //
@@ -174,8 +178,8 @@ export const store = new Vuex.Store({
     updateFilteredData: function (context) {
       context.commit('updateFilteredData');
     },
-    updateFilteredDistribution: function (context) {
-      context.commit('updateFilteredDistribution');
+    updateSelectedDistribution: function (context) {
+      context.commit('updateSelectedDistribution');
     },
     updateSelectedLabels: function (context, payload) {
       context.commit('updateSelectedLabels', payload);
@@ -183,15 +187,20 @@ export const store = new Vuex.Store({
     updateSelectedData: function (context) {
       context.commit('updateSelectedData');
     },
+    updateSelected: async function(context) {
+      await context.commit('updateSelectedData');
+      await context.commit('updateSelectedDistribution');
+      await context.commit('updateSelectedLabels');
+    },
     getSummaryData: function(context) {
       context.commit('getSummaryData');
     },
     getGalleryData: async function (context, payload) {
       if (payload === 0) {
         context.state.galleryIndex = 0;
-        context.state.selectedData = _.shuffle(context.state.selectedData);
+        context.state.selectedData = _.shuffle(context.state.filteredData);
       }
-      let filtered = _.filter(context.state.selectedData, d => context.state.selectedLabels.includes(d['clusterGroup']));
+      let filtered = _.filter(context.state.filteredData, d => context.state.selectedLabels.includes(d['clusterGroup']));
       let p_idx = context.state.galleryIndex;
       context.state.galleryIndex = Math.min(filtered.length, p_idx + 16);
       let c_idx = context.state.galleryIndex;

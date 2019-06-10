@@ -1,6 +1,6 @@
 <template lang="pug">
   .sub-container
-    Hex_
+    // Hex_
     ClusterComponent
 </template>
 

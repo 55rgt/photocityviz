@@ -2,12 +2,16 @@
   .main-container
     .component-header Cluster: {{ clusterName }}
     .component-body
+      Hex_
+      //ClustersComponent
 </template>
 
 <script>
+import ClustersComponent from './ClustersComponent';
+import Hex_ from './Hex_';
 export default {
   name: 'MainComponent',
-  components: { },
+  components: { Hex_, ClustersComponent },
   data() {
     return {
       clusterName: this.$store.getters.getSelectedClusterName

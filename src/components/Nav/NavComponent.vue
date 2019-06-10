@@ -25,11 +25,13 @@ export default {
     }, 500),
     async apply() {
       let that = this;
-      await that.$store.dispatch('updateFilteredData');
-      await that.$store.dispatch('updateFilteredDistribution');
-      await that.$store.dispatch('updateSelectedLabels');
-      console.log('Emit update');
-      await EventBus.$emit('update');
+      await that.$store.dispatch('updateFilteredData'); // for HexComponent
+      await that.$store.dispatch('updateSelected');
+      // await that.$store.dispatch('updateSelectedData');
+      // await that.$store.dispatch('updateSelectedDistribution'); // for clustersComponent
+      // await that.$store.dispatch('updateSelectedLabels'); //
+      console.log('Emit apply');
+      await EventBus.$emit('apply');
     }
   }
 };
