@@ -27,7 +27,7 @@ export default {
       hexRadius: null,
       minCluster: null,
       maxCluster: null,
-      scale_min: 1 / 20,
+      scale_min: 1 / 100,
       scale_max: 3,
       points: [],
       bins: [],
@@ -40,16 +40,16 @@ export default {
     let that = this;
     console.log('created Hook');
     EventBus.$on('apply', () => {
-      that.update();
+      that.update(true);
     });
     EventBus.$on('updateHex', () => {
-      that.update()
+      that.update(false)
     })
   },
   methods: {
-    update() {
+    update(state) {
       this.remove();
-      this.init();
+      this.init(state);
       this.prepare();
       this.render();
     },
@@ -57,19 +57,19 @@ export default {
       let that = this;
       d3.select(`#${that.svgID}`).remove();
     },
-    init() {
+    init(state) {
       let that = this;
       that.options = JSON.parse(JSON.stringify(this.$store.getters.getOption)); // 이거 복사 안 하고 받으면 이거 안 쓰고 json 안 하고 그냥 변경 바로바ㅗㄹ 될듯?
       that.selectedData = JSON.parse(JSON.stringify(this.$store.getters.getSelectedData)); // 얘도 마찬가지
       that.cohesion = that.options.cohesion;
       that.hexRadius = that.options.hexRadius;
-      that.scale_min = 1 / 20;
+      that.scale_min = 1 / 100;
       that.scale_max = 3;
       that.points = [];
       that.bins = [];
       that.r = null;
       that.isDown = false;
-      that.currentScale = null;
+      that.currentScale = state ? 1 : that.currentScale;
       that.currentX = null;
       that.currentY = null;
 
@@ -117,7 +117,7 @@ export default {
       that.svg.call(that.zoom)
           .on('mousedown.zoom', null);
 
-      that.svg.call(that.zoom.transform, d3.zoomIdentity.translate(that.width / 2, that.height / 2).scale(that.scale_min));
+      that.svg.call(that.zoom.transform, d3.zoomIdentity.translate(that.width / 2, that.height / 2).scale(that.currentScale));
 
       that.svg.on('mousedown', function () {
         that.startDragArea(d3.mouse(this));
