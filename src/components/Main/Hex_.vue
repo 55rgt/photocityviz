@@ -144,7 +144,7 @@ export default {
             await EventBus.$emit('initClusterComponent');
           })
           .attr('stroke', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], -50)}`)
-          .attr('stroke-width', d => d.selected ? that.hexRadius / 4 : 2)
+          .attr('stroke-width', d => d.selected ? that.hexRadius / 4 : Math.max(that.hexRadius / 16, 2))
           .attr('stroke-opacity', 0.8)
           .attr('d', d => that.hexbin.hexagon(that.r(d.length)))
           .attr('id', d => `hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}_${d['cluster']}`)

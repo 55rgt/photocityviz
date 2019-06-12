@@ -133,12 +133,12 @@ export default {
         padding-right: $unit-4
       .summary-item-cluster-content
         flex: 1
-        padding: 8px 0
+        padding: 6px 0
         display: flex
 
         .summary-item-cluster-unit
-          width: 12px
-          height: 12px
+          width: 16px
+          height: 16px
           border-radius: 2px
           margin-right: 4px
 

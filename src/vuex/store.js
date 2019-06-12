@@ -159,6 +159,8 @@ export const store = new Vuex.Store({
         return result;
       }, []);
       state.selectedDistribution = state.selectedDistribution.sort((a, b) => _.sumBy(b.dist, e => e.value) - _.sumBy(a.dist, e => e.value));
+      console.log(state.selectedDistribution);
+      console.log(state.maxLabelCount);
     },
     updateSelectedLabels: function (state, payload) {
       if (_.isNil(payload)) state.selectedLabels = [];
@@ -215,7 +217,7 @@ export const store = new Vuex.Store({
           .map((value, key) => ({ key, value }))
           .orderBy(['value'], ['desc'])
           .map(d => d['key'])
-          .slice(0, MAX_VALUE)
+          .slice(0, MAX_VALUE * 2)
           .value();
 
 
