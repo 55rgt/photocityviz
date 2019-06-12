@@ -50,7 +50,8 @@ export default {
 .nav-query-item
   width: 100%
   height: 28px
-  padding: 0 $unit-3
+  padding-left: $unit-3
+  padding-right: 0
   display: flex
   font-weight: 500
   .nav-query-item-label
@@ -64,7 +65,7 @@ export default {
     text-overflow: ellipsis
     white-space: nowrap
   .nav-query-item-radio
-    width: 40px
+    width: 44px
     height: 100%
     line-height: 28px
     text-align: center

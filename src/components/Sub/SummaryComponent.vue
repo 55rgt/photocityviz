@@ -1,48 +1,107 @@
 <template lang="pug">
   .summary-container
     .component-header Summary
-    .component-body
-      .summary-item Selected Clusters:
-      .summary-item Number of data:
-      .summary-item Top Colors:
-      .summary-item-2 Top Labels:
-      .summary-item-2 Top Hashtags:
+    .component-body(v-if="ok")
+      .summary-item
+        .summary-item-title Number of Data
+        .summary-item-title-content {{ (summaryData['length'] === null) ? '' : numberWithCommas(summaryData['length']) }}
+      .summary-item
+        .summary-item-title Selected Clusters
+        .summary-item-cluster-content
+          .summary-item-cluster-unit(v-for="color in summaryData.selectedClusters" :style="{border: `1px solid ${shadeColor(colorList[color], -30)}`, background: `${colorList[color]}`}")
+      .summary-item
+        .summary-item-title Top Colors
+        .summary-item-colors-content
+          .summary-item-colors-unit(v-for="color in summaryData.colors" :style="{border: `1px solid ${shadeColor(colorPalette[color].hex, -30)}`, background: `${colorPalette[color].hex}`}")
+      .summary-item-2
+        .summary-item-2-title Top Labels
+        .summary-item-2-content
+          .summary-item-2-unit(v-for="label in summaryData.labels") {{ label }}
+      .summary-item-2
+        .summary-item-2-title Top Hashtags
+        .summary-item-2-content
+          .summary-item-2-unit(v-for="hashTag in summaryData.hashTags") {{ '#' + hashTag }}
 </template>
 
 <script>
 import { EventBus } from '../../utils/event-bus';
+import _ from 'lodash';
 
 export default {
   name: 'SummaryComponent',
   data() {
     return {
+      ok: false,
+      test: ['hello', 'complimentary', 'hex', 'lotte', 'happy', 'hello', 'complimentary', 'hex', 'lotte', 'happy', 'hello', 'complimentary', 'hex', 'lotte', 'happy'],
+      colorPalette: this.$store.getters.getColorPalette,
+      colorList: this.$store.getters.getColors,
       summaryData: {
-        'number': '',
-        'selected': [],
-        'countries': [],
-        'colors': [],
-        'hashtags': []
+        selectedClusters: null,
+        length: null,
+        colors: [],
+        labels: [],
+        hashTags: [],
       }
     };
   },
   created() {
     let that = this;
-    EventBus.$on('update', () => {
-      that.summaryData = {
-        'number': '',
-        'selected': [],
-        'countries': [],
-        'colors': [],
-        'hashtags': []
-      };
+    EventBus.$on('apply', () => {
+          that.summaryData = {
+            selectedClusters: null,
+            length: null,
+            colors: [],
+            labels: [],
+            hashTags: [],
+          };
+        }
+    );
+    EventBus.$on('updateClusterComponent', () => {
+      that.ok = true;
+      that.get();
     });
-    EventBus.$on('updateClusterComponent', () => that.get());
+    EventBus.$on('initClusterComponent', () => {
+          that.ok = false;
+          console.log('summary init');
+          that.summaryData = {
+            selectedClusters: null,
+            length: null,
+            colors: [],
+            labels: [],
+            hashTags: []
+          };
+        }
+    );
 
   },
   methods: {
     async get() {
       let that = this;
-     // that.summaryData = await that.$store.summaryData('getSummaryData');
+      await that.$store.dispatch('getSummaryData');
+      that.summaryData = that.$store.getters.getSummaryData;
+      console.log(that.summaryData);
+    },
+    numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    },
+    shadeColor(color, percent) {
+      var R = parseInt(color.substring(1, 3), 16);
+      var G = parseInt(color.substring(3, 5), 16);
+      var B = parseInt(color.substring(5, 7), 16);
+
+      R = parseInt(R * (100 + percent) / 100);
+      G = parseInt(G * (100 + percent) / 100);
+      B = parseInt(B * (100 + percent) / 100);
+
+      R = (R < 255) ? R : 255;
+      G = (G < 255) ? G : 255;
+      B = (B < 255) ? B : 255;
+
+      var RR = ((R.toString(16).length === 1) ? '0' + R.toString(16) : R.toString(16));
+      var GG = ((G.toString(16).length === 1) ? '0' + G.toString(16) : G.toString(16));
+      var BB = ((B.toString(16).length === 1) ? '0' + B.toString(16) : B.toString(16));
+
+      return '#' + RR + GG + BB;
     },
 
   }
@@ -60,22 +119,75 @@ export default {
 
     .summary-item
       width: 100%
-      height: 40px
+      height: 28px
       box-sizing: border-box
-      border: 1px solid black
       padding-left: $unit-2
       font-weight: 500
-      line-height: 40px
+      display: flex
+      line-height: 28px
       @include setFonts('Roboto', #686868, $unit-3, 'sans-serif')
+
+      .summary-item-title
+        width: 112px
+        height: 100%
+
+      .summary-item-cluster-content
+        flex: 1
+        padding: 8px 0
+        display: flex
+
+        .summary-item-cluster-unit
+          width: 12px
+          height: 12px
+          margin-right: 2px
+
+      .summary-item-title-content
+        flex: 1
+
+      .summary-item-colors-content
+        flex: 1
+        padding: 6px 0
+        display: flex
+
+        .summary-item-colors-unit
+          width: 16px
+          height: 16px
+          margin-right: 4px
+          border: 1px solid black
+
 
     .summary-item-2
       width: 100%
-      height: 80px
+      height: 100px
       box-sizing: border-box
-      border: 1px solid black
       padding-left: $unit-2
       font-weight: 500
-      line-height: 80px
       @include setFonts('Roboto', #686868, $unit-3, 'sans-serif')
 
+      .summary-item-2-title
+        width: 100%
+        height: 28px
+        line-height: 28px
+
+      .summary-item-2-content
+        width: 100%
+        height: calc(100% - 28px)
+        padding: $unit-1
+        display: flex
+        flex-wrap: wrap
+        overflow: hidden
+
+        .summary-item-2-unit
+          width: auto
+          margin: 3px
+          padding: 0 4px
+          height: 28px
+          line-height: 28px
+          text-align: center
+          background: #f4f4f4
+          border: 1px solid #7c7c7c
+          border-radius: 6px
+          box-sizing: border-box
+          @include setFonts('Roboto', #71655b, $unit-2, 'sans-serif')
+          font-weight: 500
 </style>

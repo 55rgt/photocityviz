@@ -145,31 +145,38 @@ export default {
           .append('g')
           .attr('class', 'axis');
 
+
       axis.append('line')
           .attr('x1', 0)
           .attr('y1', 0)
-          .attr('x2', (d, i) => rScale(maxValue * 1) * Math.cos(angleSlice * i - Math.PI / 2))
-          .attr('y2', (d, i) => rScale(maxValue * 1) * Math.sin(angleSlice * i - Math.PI / 2))
+          .attr('x2', (d, i) => rScale(maxValue) * Math.cos(angleSlice * i - Math.PI / 2))
+          .attr('y2', (d, i) => rScale(maxValue) * Math.sin(angleSlice * i - Math.PI / 2))
           .attr('class', 'line')
           .style('stroke', 'white')
           .style('stroke-width', '1px');
 
-      axis.append('text')
-          .attr('class', 'legend')
-          .style('font-size', '8px')
-          .attr('text-anchor', 'middle')
-          .attr('dy', '0em')
-          .attr('x', (d, i) => rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice * i - Math.PI / 2))
-          .attr('y', (d, i) => rScale(maxValue * cfg.labelFactor) * Math.sin(angleSlice * i - Math.PI / 2))
-          .attr('transform', (d, i) =>
-              ` translate(${rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice * i - Math.PI / 2)}, ${rScale(maxValue * cfg.labelFactor) * Math.sin(angleSlice * i - Math.PI / 2)})
+      let query = that.$store.getters.getLabelQuery;
+      if (_.compact(_.concat(_.invertBy(query)['must'], _.invertBy(query)['maybe'])).length < 15) {
+
+
+
+        axis.append('text')
+            .attr('class', 'legend')
+            .style('font-size', '8px')
+            .attr('text-anchor', 'middle')
+            .attr('dy', '0em')
+            .attr('x', (d, i) => rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice * i - Math.PI / 2))
+            .attr('y', (d, i) => rScale(maxValue * cfg.labelFactor) * Math.sin(angleSlice * i - Math.PI / 2))
+            .attr('transform', (d, i) =>
+                ` translate(${rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice * i - Math.PI / 2)}, ${rScale(maxValue * cfg.labelFactor) * Math.sin(angleSlice * i - Math.PI / 2)})
                 rotate(${((360 / total) * i) - 360})
                 translate(${-1 * rScale(maxValue * cfg.labelFactor) * Math.cos(angleSlice * i - Math.PI / 2)}, ${-1 * rScale(maxValue * cfg.labelFactor) * Math.sin(angleSlice * i - Math.PI / 2)})
               `
-          )
-          .text(d => d.includes('Transportation') ? d.replace('Transportation', 'Trans.') : d)
-          .call(wrap, cfg.wrapWidth);
+            )
+            .text(d => d.includes('Transportation') ? d.replace('Transportation', 'Trans.') : d)
+            .call(wrap, cfg.wrapWidth);
 
+      }
       let radarLine = d3.radialLine()
           .curve(d3.curveLinearClosed)
           .radius(d => rScale(d.value))
@@ -281,6 +288,7 @@ export default {
   border-radius: $unit-5
   margin: $unit-1
   cursor: pointer
+
   &:hover
     background: rgba(0, 0, 0, 0.1) !important
 </style>

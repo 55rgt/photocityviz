@@ -60,7 +60,7 @@ export default {
       overflow: scroll
       .gallery-item-wrapper
         width: 139px
-        height: 141px
+        height: 143px
         padding: 3px
         .gallery-item
           width: 100%

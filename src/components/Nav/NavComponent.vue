@@ -27,9 +27,6 @@ export default {
       let that = this;
       await that.$store.dispatch('updateFilteredData'); // for HexComponent
       await that.$store.dispatch('updateSelected');
-      // await that.$store.dispatch('updateSelectedData');
-      // await that.$store.dispatch('updateSelectedDistribution'); // for clustersComponent
-      // await that.$store.dispatch('updateSelectedLabels'); //
       await EventBus.$emit('apply');
     }
   }

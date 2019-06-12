@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console,no-case-declarations */
 // store.js
 import Vue from 'vue';
 import Vuex from 'vuex';
@@ -34,7 +34,7 @@ const storageRef = storage.ref();
 Vue.use(Vuex);
 
 const COUNTRIES = ['Egypt', 'Macao', 'Mexico', 'Peru', 'Spain', 'Taiwan'];
-
+const MAX_VALUE = 10;
 
 const mergeData = function (final, cluster, TSNE) {
   let res = cluster.map(x => Object.assign(x, final.find(y => y.name === x.name)));
@@ -61,7 +61,7 @@ export const store = new Vuex.Store({
     colors: [null, '#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabebe', '#469990', '#e6beff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000'],
     options: {
       'hexRadius': 84,
-      'cohesion': 10,
+      'cohesion': 11,
       'countries': COUNTRIES,
       'start': 1,
       'end': 12
@@ -78,6 +78,7 @@ export const store = new Vuex.Store({
     selectedClusterName: 'k-means(12)',
     selectedClusterLength: 12,
 
+
     /* rawData: 현재 선택된 클러스터 데이터 + totalData + TSNE 합친 것. */
     rawData: initialData,
     filteredData: initialData,
@@ -88,9 +89,12 @@ export const store = new Vuex.Store({
     selectedLabels: [],
     galleryIndex: 0,
     selectedData: [],
-    maxLabelCount: 0
+    maxLabelCount: 0,
+    summaryData: {},
+    colorPalette: colorPalette
   },
   getters: {
+    getIsHidden: state => state.isHidden,
     getLabelCount: state => state.labelCount,
     getLabelQuery: state => state.labelQuery,
     getCountryFlags: state => state.countryFlags,
@@ -103,7 +107,9 @@ export const store = new Vuex.Store({
     getSelectedClusterLength: state => state.selectedClusterLength,
     getLabelSortedList: state => state.labelSortedList,
     getSelectedLabels: state => state.selectedLabels,
-    getSelectedData: state => state.selectedData
+    getSelectedData: state => state.selectedData,
+    getSummaryData: state => state.summaryData,
+    getColorPalette: state => state.colorPalette
   },
   mutations: {
     updateLabelQuery: function (state, payload) {
@@ -127,12 +133,13 @@ export const store = new Vuex.Store({
             && datum.month >= option.start
             && datum.month <= option.end;
       });
-      console.log(state.filteredData);
 
     },
     updateSelectedDistribution: function (state) {
       state.selectedDistribution = [];
+      console.log(state.labelQuery);
       let labels = _.compact(_.concat(_.invertBy(state.labelQuery)['must'], _.invertBy(state.labelQuery)['maybe']));
+      console.log(state.selectedData);
       for (let i = 1; i <= state.selectedClusterLength; i++) {
         let r = _.reduce(labels, (result, label) => {
           result.push({
@@ -166,20 +173,82 @@ export const store = new Vuex.Store({
           datum.selected = false;
           return datum;
         });
-      } else if (payload.evt !== 'reset') {
-        state.selectedData = _.map(state.selectedData, (datum) => {
-          if (payload.data.includes(datum['name'])) {
-            datum.selected = payload.newState;
-          }
-          return datum;
-        });
+      } else {
+        switch (payload.evt) {
+          case 'click':
+          case 'drag':
+            state.selectedData = _.map(state.selectedData, (datum) => {
+              if (payload.data.includes(datum['name'])) {
+                datum.selected = payload.newState;
+              }
+              return datum;
+            });
+            break;
+          case 'cluster':
+            let n = _.filter(state.selectedData, d => d['clusterGroup'] === payload.cluster && !d.selected);
+            let newState = n.length !== 0;
+            state.selectedData = _.map(state.selectedData, (d) => {
+              if (d['clusterGroup'] === payload.cluster) d.selected = newState;
+              return d;
+            });
+            break;
+          case 'reset':
+            state.selectedData = _.map(state.filteredData, (datum) => {
+              datum.selected = false;
+              return datum;
+            });
+            break;
+          default:
+            break;
+        }
       }
-      // else {
-      //
-      // }
     },
     getSummaryData: function (state) {
-      let selectedData = state.filteredData;
+      let dt = _.filter(state.selectedData, d => state.selectedLabels.includes(d['clusterGroup']) && d.selected);
+
+      let colors = _.chain(dt)
+          .map(d => d.color)
+          .reduce((r, data) => {
+            _.forEach(data, (value, key) => _.isNil(r[key]) ? r[key] = value : r[key] += value);
+            return r;
+          }, {})
+          .map((value, key) => ({ key, value }))
+          .orderBy(['value'], ['desc'])
+          .map(d => d['key'])
+          .slice(0, MAX_VALUE)
+          .value();
+
+
+      let labels = _(dt)
+          .map(d => d.labels)
+          .flatten()
+          .groupBy()
+          .values()
+          .map(d => ({ label: d[0], count: d.length }))
+          .orderBy('count', 'desc')
+          .map(d => d.label)
+          .slice(0, MAX_VALUE)
+          .value();
+      let hashTags = _(dt)
+          .map(d => d['hashTags'])
+          .flatten()
+          .groupBy()
+          .values()
+          .map(d => ({ hashTag: d[0], count: d.length }))
+          .orderBy('count', 'desc')
+          .map(d => d.hashTag)
+          .slice(0, MAX_VALUE)
+          .value();
+
+      state.summaryData = {
+        selectedClusters: state.selectedLabels,
+        length: dt.length,
+        colors,
+        labels,
+        hashTags,
+      };
+      // console.log(state.summaryData);
+      return state.summaryData;
 
       // selected data로 해야 한다.
       //
@@ -206,8 +275,11 @@ export const store = new Vuex.Store({
       context.commit('updateSelectedData');
     },
     updateSelected: async function (context, payload) {
+      console.log('data');
       await context.commit('updateSelectedData', payload);
+      console.log('dist');
       await context.commit('updateSelectedDistribution');
+      console.log('labels');
       await context.commit('updateSelectedLabels');
     },
     getSummaryData: function (context) {
@@ -241,7 +313,6 @@ export const store = new Vuex.Store({
         cluster: infos[i].cluster,
         country: infos[i].country
       }));
-      console.log(images);
       return images;
     }
   }

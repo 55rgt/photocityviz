@@ -33,7 +33,8 @@ export default {
     .nav-query-header
       width: 100%
       height: 24px
-      padding: 0 $unit-3
+      padding-left: $unit-3
+      padding-right: 0
       display: flex
       font-weight: 500
       .nav-query-header-label
@@ -44,7 +45,7 @@ export default {
         padding-right: $unit-3
         @include setFonts('Roboto', #686868, $unit-3, 'sans-serif')
       .nav-query-header-radio
-        width: 40px
+        width: 44px
         height: 100%
         line-height: 24px
         text-align: center
