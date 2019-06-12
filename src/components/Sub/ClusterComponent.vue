@@ -22,6 +22,6 @@ export default {
   height: $cluster-container-height
   background: $md-white
   @include box_shadow
-  display: flex
+
 
 </style>

@@ -12,7 +12,7 @@ export default {
   name: 'Hex_',
   data() {
     return {
-      width: 660,
+      width: 1004,
       height: 940,
       svg: null,
       hexDataset: null,
@@ -69,7 +69,7 @@ export default {
       that.bins = [];
       that.r = null;
       that.isDown = false;
-      that.currentScale = state ? 1 : that.currentScale;
+      that.currentScale = state ? 1/ 21 : that.currentScale;
       that.currentX = null;
       that.currentY = null;
 

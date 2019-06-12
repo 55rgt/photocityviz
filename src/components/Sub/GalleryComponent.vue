@@ -47,21 +47,20 @@ export default {
 <style scoped lang="sass">
 @import "../../style/styles"
 .gallery-container
-  width: $gallery-container-width
-  height: 100%
-
+  width: 100%
+  height: calc(100% - 288px)
   .component-body
     .gallery-item-list
       width: 100%
       height: 100%
       display: flex
       flex-wrap: wrap
-      padding-bottom: $unit-1
+      padding-bottom: $unit-3
       overflow: scroll
       .gallery-item-wrapper
         width: 139px
-        height: 143px
-        padding: 3px
+        height: 137px
+        padding: 2px 2px 4px 2px
         .gallery-item
           width: 100%
           height: 100%

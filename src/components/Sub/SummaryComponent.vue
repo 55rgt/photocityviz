@@ -3,22 +3,22 @@
     .component-header Summary
     .component-body(v-if="ok")
       .summary-item
-        .summary-item-title Number of Data
+        .summary-item-title Number of Data:
         .summary-item-title-content {{ (summaryData['length'] === null) ? '' : numberWithCommas(summaryData['length']) }}
       .summary-item
-        .summary-item-title Selected Clusters
+        .summary-item-title Selected Clusters:
         .summary-item-cluster-content
           .summary-item-cluster-unit(v-for="color in summaryData.selectedClusters" :style="{border: `1px solid ${shadeColor(colorList[color], -30)}`, background: `${colorList[color]}`}")
       .summary-item
-        .summary-item-title Top Colors
+        .summary-item-title Top Colors:
         .summary-item-colors-content
           .summary-item-colors-unit(v-for="color in summaryData.colors" :style="{border: `1px solid ${shadeColor(colorPalette[color].hex, -30)}`, background: `${colorPalette[color].hex}`}")
       .summary-item-2
-        .summary-item-2-title Top Labels
+        .summary-item-2-title Top Labels:
         .summary-item-2-content
           .summary-item-2-unit(v-for="label in summaryData.labels") {{ label }}
       .summary-item-2
-        .summary-item-2-title Top Hashtags
+        .summary-item-2-title Top Hashtags:
         .summary-item-2-content
           .summary-item-2-unit(v-for="hashTag in summaryData.hashTags") {{ '#' + hashTag }}
 </template>
@@ -112,11 +112,10 @@ export default {
 <style scoped lang="sass">
 @import "../../style/styles"
 .summary-container
-  flex: 1
-
+  width: 100%
+  height: 288px
   .component-body
-    padding: 0 0 $unit-3 $unit-3
-
+    padding: 0 0 0 $unit-3
     .summary-item
       width: 100%
       height: 28px
@@ -128,9 +127,10 @@ export default {
       @include setFonts('Roboto', #686868, $unit-3, 'sans-serif')
 
       .summary-item-title
-        width: 112px
+        width: 140px
         height: 100%
-
+        text-align: right
+        padding-right: $unit-4
       .summary-item-cluster-content
         flex: 1
         padding: 8px 0
@@ -139,7 +139,8 @@ export default {
         .summary-item-cluster-unit
           width: 12px
           height: 12px
-          margin-right: 2px
+          border-radius: 2px
+          margin-right: 4px
 
       .summary-item-title-content
         flex: 1
@@ -148,41 +149,37 @@ export default {
         flex: 1
         padding: 6px 0
         display: flex
-
         .summary-item-colors-unit
           width: 16px
           height: 16px
           margin-right: 4px
-          border: 1px solid black
-
-
+          border-radius: 2px
     .summary-item-2
       width: 100%
-      height: 100px
+      height: 78px
       box-sizing: border-box
       padding-left: $unit-2
       font-weight: 500
+      display: flex
       @include setFonts('Roboto', #686868, $unit-3, 'sans-serif')
-
       .summary-item-2-title
-        width: 100%
-        height: 28px
-        line-height: 28px
-
+        width: 140px
+        height: 100%
+        line-height: 38px
+        text-align: right
+        padding-right: $unit-4
       .summary-item-2-content
-        width: 100%
-        height: calc(100% - 28px)
-        padding: $unit-1
+        flex: 1
+        padding-right: $unit-2
         display: flex
         flex-wrap: wrap
         overflow: hidden
-
         .summary-item-2-unit
           width: auto
-          margin: 3px
+          margin: 3px 5px 2px 0
           padding: 0 4px
-          height: 28px
-          line-height: 28px
+          height: 33px
+          line-height: 33px
           text-align: center
           background: #f4f4f4
           border: 1px solid #7c7c7c

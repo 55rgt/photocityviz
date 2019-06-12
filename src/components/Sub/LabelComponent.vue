@@ -281,8 +281,8 @@ export default {
 @import "../../style/colors"
 @import "../../style/styles"
 .label-container
-  width: 292px
-  height: 292px
+  width: 330px
+  height: 330px
   box-sizing: inherit
   transition: 0.2s
   border-radius: $unit-5
