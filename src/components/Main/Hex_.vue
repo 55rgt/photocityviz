@@ -42,6 +42,9 @@ export default {
     EventBus.$on('apply', () => {
       that.update();
     });
+    EventBus.$on('updateHex', () => {
+      that.update()
+    })
   },
   methods: {
     update() {
@@ -60,8 +63,6 @@ export default {
       that.selectedData = JSON.parse(JSON.stringify(this.$store.getters.getSelectedData)); // 얘도 마찬가지
       that.cohesion = that.options.cohesion;
       that.hexRadius = that.options.hexRadius;
-      that.minCluster = null;
-      that.maxCluster = null;
       that.scale_min = 1 / 20;
       that.scale_max = 3;
       that.points = [];
@@ -69,20 +70,19 @@ export default {
       that.r = null;
       that.isDown = false;
       that.currentScale = null;
+      that.currentX = null;
+      that.currentY = null;
 
     },
     prepare() {
       let that = this;
-
       that.hexbin = hexbin.hexbin().extent([[0, 0], [that.width, that.height]]).radius(that.hexRadius);
-
       let dataGroup = _.groupBy(that.selectedData, d => d['clusterGroup']);
-
       _.forEach(dataGroup, (value, key) => {
-        let points = _.map(value, (d) => [d[that.axisX] * that.width / that.cohesion, d[that.axisY] * that.height / that.cohesion, d['name']]); // 이쪽 것도 radius에 맞게 조절 필요할
+        let points = _.map(value, (d) => [d[that.axisX] * that.width / that.cohesion, d[that.axisY] * that.height / that.cohesion, d['name'], d['selected']]); // 이쪽 것도 radius에 맞게 조절 필요할
         let bin = _.map(that.hexbin(points), hex => {
           hex['cluster'] = Number.parseInt(key);
-          // selected에 대한 걸 여기서 해준다.
+          hex['selected'] = _.map(hex, h => h[3]).includes(true);
           return hex;
         });
         that.bins.push(bin);
@@ -90,16 +90,12 @@ export default {
 
       let flatten = _.flatten(that.bins);
       that.bins = _.orderBy(flatten, ['length'], ['desc']);
-      console.log(that.bins);
-
       let min = d3.min(that.bins, d => d.length);
       let max = d3.max(that.bins, d => d.length);
-      console.log(min, max);
 
       that.r = d3.scaleSqrt()
           .domain([min, max])
           .range([Math.min(0.5, Math.pow(min / max, 0.25)) * that.hexbin.radius() * Math.SQRT2, Math.min(2, max / min, 2.25) * that.hexbin.radius() * Math.SQRT2]);
-
     },
     render() {
       let that = this;
@@ -110,12 +106,13 @@ export default {
           .attr('height', that.height);
 
       let zoom_layer = that.svg.append('g');
-      let selectedLabels = that.$store.getters.getSelectedLabels;
       that.zoom = d3.zoom()
           .scaleExtent([that.scale_min, that.scale_max]) // SCALE_MIN , MAX도 반지름에 맞게 init에서  조절?
           .on('zoom', () => {
             zoom_layer.attr('transform', d3.event.transform);
             that.currentScale = d3.event.transform.k;
+            that.currentX = d3.event.transform.x;
+            that.currentY = d3.event.transform.y;
           });
       that.svg.call(that.zoom)
           .on('mousedown.zoom', null);
@@ -135,33 +132,25 @@ export default {
           .selectAll('path')
           .data(that.bins)
           .join('path')
-          .on('click', function (d) {
-            if (_.isNil(d['selected'])) d['selected'] = true;
-            else d['selected'] = !d['selected'];
-            if (d['selected']) {
-              d3.select(this).attr('stroke', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], -50)}`)
-                  .attr('stroke-width', that.hexRadius / 4)
-                  .attr('stroke-opacity', 0.8);
-            } else {
-              d3.select(this).attr('stroke', '#000')
-                  .attr('stroke-width', 2)
-                  .attr('stroke-opacity', 0.8);
-            }
-            console.log([d.x * that.cohesion / that.width, d.y * that.cohesion / that.height]);
+          .on('click', async d => {
+            await that.$store.dispatch('updateSelected',
+                {
+                  'evt': 'click',
+                  'newState': !d.selected,
+                  'data': _.map(d, a => a[2])
+                });
+            await EventBus.$emit('updateHex');
+            await EventBus.$emit('updateLabelComponent');
+            await EventBus.$emit('initClusterComponent');
           })
           .attr('stroke', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], -50)}`)
-          // .attr('stroke-width', d => selectedLabels.includes(d['cluster']) ? that.hexRadius / 4 : 2)
-          .attr('stroke-width', d => selectedLabels.includes(d['cluster']) ? that.hexRadius / 4 : 2)
-          // .attr('stroke', '#000')
+          .attr('stroke-width', d => d.selected ? that.hexRadius / 4 : 2)
           .attr('stroke-opacity', 0.8)
-          // .attr('stroke-width', 2) // 얘도 그거에 따라 반지름에 따
           .attr('d', d => that.hexbin.hexagon(that.r(d.length)))
-          // .attr('d', that.hexbin.hexagon())
           .attr('id', d => `hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}_${d['cluster']}`)
           .attr('transform', d => `translate(${d.x},${d.y})`)
           .attr('fill', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], 0)}`)
-          // .attr('fill', d => selectedLabels.includes(d['cluster']) ? `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], 0)}` : 'none')
-          .attr('fill-opacity', d => selectedLabels.includes(d['cluster']) ? 0.6 : 0.05);
+          .attr('fill-opacity', d => d.selected ? 0.6 : 0.05);
 
     },
     shadeColor(color, percent) {
@@ -204,40 +193,46 @@ export default {
             L ${d[0]} ${d[1]} L ${that.startX} ${d[1]} L ${that.startX} ${that.startY}`);
       }
     },
-    finishDragArea(d) {
+    async finishDragArea(d) {
       let that = this;
 
       that.isDown = false;
       d3.select(`#drag_${that.svgID}`).remove();
-      console.log(that.currentScale);
 
-      let csx = (that.cohesion / that.width) / that.currentScale;
-      let csy = (that.cohesion / that.height) / that.currentScale;
-      let cex = (that.cohesion / that.width) / that.currentScale;
-      let cey = (that.cohesion / that.height) / that.currentScale;
+      if(Math.abs(d[0] - that.startX) <= 2 && Math.abs(d[1] - that.startY) <= 2) return;
+      let csx = 1 / that.currentScale;
+      let csy = 1 / that.currentScale;
+      let cex = 1 / that.currentScale;
+      let cey = 1 / that.currentScale;
 
       if (d[0] < that.startX) {
-        csx *= (d[0] - (that.width / 2));
-        cex *= (that.startX - (that.width / 2));
+        csx *= (d[0] - (that.currentX));
+        cex *= (that.startX - (that.currentX));
       } else {
-        cex *= (d[0] - (that.width / 2));
-        csx *= (that.startX - (that.width / 2));
+        cex *= (d[0] - (that.currentX));
+        csx *= (that.startX - (that.currentX));
       }
       if (d[1] < that.startY) {
-        csy *= (d[1] - (that.height / 2));
-        cey *= (that.startY - (that.height / 2));
+        csy *= (d[1] - (that.currentY));
+        cey *= (that.startY - (that.currentY));
       } else {
-        cey *= (d[1] - (that.height / 2));
-        csy *= (that.startY - (that.height / 2));
+        cey *= (d[1] - (that.currentY));
+        csy *= (that.startY - (that.currentY));
       }
-      console.log([csx, csy], [cex, cey]);
 
       let selectedBins = _.filter(that.bins, bin =>
-          bin['x'] * that.cohesion / that.width >= csx && bin['x'] * that.cohesion / that.width <= cex &&
-          bin['y'] * that.cohesion / that.height >= csy && bin['y'] * that.cohesion / that.height <= cey);
-      console.log(selectedBins);
+          bin['x'] >= csx && bin['x'] <= cex &&
+          bin['y'] >= csy && bin['y'] <= cey);
 
-
+      await that.$store.dispatch('updateSelected',
+          {
+            'evt': 'drag',
+            'newState': true,
+            'data': _.map(_.flatten(selectedBins), bin => bin[2])
+          });
+      await EventBus.$emit('updateHex');
+      await EventBus.$emit('updateLabelComponent');
+      await EventBus.$emit('initClusterComponent');
     }
   }
 };

@@ -22,7 +22,7 @@ export default {
         margin: { top: 30, right: 30, bottom: 30, left: 30 },
         levels: 5,
         roundStrokes: true,
-        color: this.$store.getters.getColors[this.$props.index]
+        color: null,
       },
       svg: null,
       ID: 'labelDist_' + this.$props.index
@@ -30,11 +30,17 @@ export default {
   },
   created() {
     let that = this;
-    EventBus.$on('update', async () => {
-      that.update(this.$store.getters.getFilteredDistribution[this.$props.index - 1], that.radarChartOptions);
+    EventBus.$on('apply', async () => {
+      that.update(this.$store.getters.getSelectedDistribution[this.$props.index - 1].dist, that.radarChartOptions);
       await that.$store.dispatch('updateSelectedLabels');
       that.selected = false;
     });
+    EventBus.$on('updateLabelComponent', async () => {
+      that.update(this.$store.getters.getSelectedDistribution[this.$props.index - 1].dist, that.radarChartOptions);
+      await that.$store.dispatch('updateSelectedLabels');
+      that.selected = false;
+    });
+
   },
   methods: {
     shadeColor(color, percent) {
@@ -59,12 +65,11 @@ export default {
     async toggleLabelItem() {
       // 여기서 selectedLabels에 자기 index 넣는다
       let that = this;
-      await that.$store.dispatch('updateSelectedLabels', this.$props.index);
-      await that.$store.dispatch('updateSelectedData');
+      await that.$store.dispatch('updateSelectedLabels', this.$store.getters.getSelectedDistribution[this.$props.index - 1].cluster);
       // updateSummaryInfo
       // updateGalleryInfo
       EventBus.$emit('updateClusterComponent');
-      that.selected = that.$store.getters.getSelectedLabels.includes(that.$props.index);
+      that.selected = that.$store.getters.getSelectedLabels.includes(this.$store.getters.getSelectedDistribution[this.$props.index - 1].cluster);
     },
     update(dt, options) {
       let that = this;
@@ -75,7 +80,7 @@ export default {
         h: 300,
         margin: { top: 0, right: 0, bottom: 0, left: 0 },
         levels: 5,
-        maxValue: maxValue,
+        maxValue: 0.5,
         labelFactor: 1.06,
         wrapWidth: 60,
         opacityArea: 0.35,
@@ -83,8 +88,12 @@ export default {
         opacityCircles: 0.05,
         strokeWidth: 2,
         roundStrokes: false,
-        color: this.$store.getters.getColors[this.$props.index]
+        color: this.$store.getters.getColors[this.$store.getters.getSelectedDistribution[this.$props.index - 1].cluster]
       };
+      that.radarChartOptions.color = this.$store.getters.getColors[this.$store.getters.getSelectedDistribution[this.$props.index - 1].cluster];
+
+      maxValue = Math.max(maxValue, cfg.maxValue);
+
       if ('undefined' !== typeof options) {
         for (let i in options) {
           if ('undefined' !== typeof options[i]) cfg[i] = options[i];
@@ -268,10 +277,10 @@ export default {
   width: 292px
   height: 292px
   box-sizing: inherit
-  transition: 0.24s
+  transition: 0.2s
   border-radius: $unit-5
   margin: $unit-1
   cursor: pointer
   &:hover
-    background: rgba(0, 0, 0, 0.15)
+    background: rgba(0, 0, 0, 0.1) !important
 </style>

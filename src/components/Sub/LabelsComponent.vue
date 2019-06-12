@@ -3,7 +3,7 @@
     .component-header Distribution
     .component-body
       .label-list-container
-        LabelComponent(v-for="n in length" :id="'labelDist_' + n" :index="n")
+        LabelComponent(v-for="n in length" :id="'labelDist_' + n" :index="n") // 나중에 바꿔야 함.
 </template>
 
 <script>

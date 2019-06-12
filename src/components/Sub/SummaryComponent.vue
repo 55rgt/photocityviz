@@ -2,10 +2,10 @@
   .summary-container
     .component-header Summary
     .component-body
-      .summary-item Number of data:
       .summary-item Selected Clusters:
-      .summary-item-2 Countries:
+      .summary-item Number of data:
       .summary-item Top Colors:
+      .summary-item-2 Top Labels:
       .summary-item-2 Top Hashtags:
 </template>
 

@@ -30,7 +30,6 @@ export default {
       // await that.$store.dispatch('updateSelectedData');
       // await that.$store.dispatch('updateSelectedDistribution'); // for clustersComponent
       // await that.$store.dispatch('updateSelectedLabels'); //
-      console.log('Emit apply');
       await EventBus.$emit('apply');
     }
   }

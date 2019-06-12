@@ -23,7 +23,13 @@ export default {
   },
   created() {
     let that = this;
-    // EventBus.$on('updateClusterComponent', () => that.get());
+    EventBus.$on('initClusterComponent', () => {
+      that.galleryData = []
+    });
+    EventBus.$on('updateClusterComponent', () => {
+      that.galleryData = [];
+      that.get()
+    });
     EventBus.$on('apply', () => that.galleryData = []);
   },
   methods: {
