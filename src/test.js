@@ -1,10 +1,7 @@
 const _ = require('lodash');
 
-let data = { 0: [[], [], [], [], []], cluster: 1 };
+let data = [{'T': '1'},{'A': 2},{'V': 4},{'T': 3}];
 console.log(data.length);
-
-let objects = [[{ 'n': 4 }, { 'n': 2 }, { 'n': 8 }, { 'n': 6 }], [{ 'n': 1 }, { 'n': 2 }, { 'n': 3 }, { 'n': 4 }],
-  [{ 'n': 4 }, { 'n': 2 }, { 'n': 8 }, { 'n': 66 }], [{ 'n': 4 }, { 'n': 2 }, { 'n': 8 }, { 'n': 6 }]];
-
-let a = objects.sort((a,b) => _.sumBy(b, e => e.n) - _.sumBy(a, e => e.n));
-console.log(a);
+data['cluster'] = 6;
+console.log(data.length);
+_.forEach(data, d => console.log(d));

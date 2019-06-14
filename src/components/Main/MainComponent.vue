@@ -3,20 +3,23 @@
     .component-header Cluster: {{ clusterName }}
       .buttons(v-if="ok")
         .button(v-for="color in selectedClusterLength" @click="updateHex('cluster', color)" :style="{border: `1px solid ${shadeColor(colors[color], -30)}`, background: `${colors[color]}`, opacity: 0.8}")
-        .reset(@click="updateHex('reset')") reset
+        font-awesome-icon.reset(@click="updateHex('reset')" :icon="['fas', 'undo']")
     .component-body
       Hex_
       //ClustersComponent
 </template>
 
 <script>
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
 import { EventBus } from '../../utils/event-bus';
 import ClustersComponent from './ClustersComponent';
+import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import Hex_ from './Hex_';
-
+library.add(faUndo);
 export default {
   name: 'MainComponent',
-  components: { Hex_, ClustersComponent },
+  components: { Hex_, ClustersComponent, FontAwesomeIcon },
   data() {
     return {
       ok: false,
@@ -84,21 +87,21 @@ export default {
       width: auto
       height: 24px
       display: flex
-
       .reset
-        width: 48px
+        width: 24px
         height: 24px
-        border: 1px solid #9c9c9c
         border-radius: 4px
         box-sizing: border-box
+        font-weight: lighter
+        color: #ababab
         line-height: 24px
         text-align: center
-        font-size: 12px
-        margin-left: 4px
+        font-size: 10px
+        margin-left: 6px
         transition: 0.15s
         cursor: pointer
         &:hover
-          background: rgba(0, 0, 0, 0.08)
+          color: #828282
       .button
         width: 24px
         height: 24px

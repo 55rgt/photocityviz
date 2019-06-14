@@ -1,8 +1,8 @@
 <template lang="pug">
   .legend-item(@click="toggleLegendItem" v-bind:class="{ selectedLabel: selected }"
-    :style='{border: selected ? `2px solid ${shadeColor(colors[clusters[this.$props.index - 1].cluster], -30)}` : "2px solid #fff", background: selected ? `${shadeColor(colors[clusters[this.$props.index - 1].cluster], 40)}11` : "#fff"}')
+    :style='{border: selected ? `2px solid ${shadeColor(getCluster(this.$props.index - 1), -30)}` : "2px solid #fff", background: selected ? `${shadeColor(getCluster(this.$props.index - 1), 40)}11` : "#fff"}')
     .legend-cluster-wrapper
-      .legend-cluster(:style='{border: `1px solid ${shadeColor(colors[clusters[this.$props.index - 1].cluster], -30)}`, background: `${shadeColor(colors[clusters[this.$props.index - 1].cluster], -20)}55`}')
+      .legend-cluster(:style='{border: `1px solid ${shadeColor(getCluster(this.$props.index - 1), -30)}`, background: `${shadeColor(getCluster(this.$props.index - 1), -20)}55`}')
     .legend-unit Labels - {{ getDist(this.$props.index - 1)}}
     .legend-unit Data - {{ getData(this.$props.index - 1) }}
 </template>
@@ -24,6 +24,7 @@ export default {
   },
   created() {
     let that = this;
+    that.clusters = this.$store.getters.getSelectedDistribution;
     EventBus.$on('apply', async () => {
       await that.$store.dispatch('updateSelectedLabels');
       that.clusters = this.$store.getters.getSelectedDistribution;
@@ -36,6 +37,11 @@ export default {
     })
   },
   methods: {
+    getCluster(idx) {
+      let that = this;
+      if(_.isNil(this.clusters[idx])) return '#FFFFFF';
+      else return that.colors[that.clusters[idx].cluster]
+    },
     getData(idx) {
       if(_.isNil(this.clusters[idx])) return '';
       else {
@@ -66,11 +72,14 @@ export default {
 
       return '#' + RR + GG + BB;
     },
-    async toggleLegendItem(index) {
+    async toggleLegendItem() {
       let that = this;
       await that.$store.dispatch('updateSelectedLabels', this.clusters[this.$props.index - 1].cluster);
-      // EventBus.$emit('updateClusterComponent');
+      // update Label!
+      // console.log(that.$store.getters.getSelectedLabels);
       that.selected = that.$store.getters.getSelectedLabels.includes(this.clusters[this.$props.index - 1].cluster);
+      EventBus.$emit('renderLabel');
+      EventBus.$emit('updateClusterComponent');
     }
   }
 };

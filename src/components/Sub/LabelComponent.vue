@@ -14,14 +14,13 @@ export default {
   },
   data() {
     return {
-      selected: false,
       radarChartOptions: {
         w: 324 - 40,
         h: 324 - 40,
         margin: { top: 20, right: 20, bottom: 20, left: 20 },
         levels: 5,
         roundStrokes: true,
-        color: null,
+        color: this.$store.getters.getColors,
       },
       svg: null,
       ID: 'labelDist_' + this.$props.index
@@ -30,14 +29,15 @@ export default {
   created() {
     let that = this;
     EventBus.$on('apply', async () => {
-      that.update(this.$store.getters.getSelectedDistribution[this.$props.index - 1].dist, that.radarChartOptions);
+      that.update(this.$store.getters.getSelectedDistribution, that.radarChartOptions);
       await that.$store.dispatch('updateSelectedLabels');
-      that.selected = false;
     });
     EventBus.$on('updateLabelComponent', async () => {
-      that.update(this.$store.getters.getSelectedDistribution[this.$props.index - 1].dist, that.radarChartOptions);
+      that.update(this.$store.getters.getSelectedDistribution, that.radarChartOptions);
       await that.$store.dispatch('updateSelectedLabels');
-      that.selected = false;
+    });
+    EventBus.$on('renderLabel', async () => {
+      that.update(this.$store.getters.getSelectedDistribution, that.radarChartOptions);
     });
 
   },
@@ -63,7 +63,13 @@ export default {
     },
     update(dt, options) {
       let that = this;
-      let data = [dt];
+      let sLabels = that.$store.getters.getSelectedLabels;
+      let data = _.chain(dt)
+          .filter(d => sLabels.includes(d.cluster))
+          .map(d => _.map(d.dist, e => ({label: e.label, value: e.value, cluster: d.cluster })))
+          .value();
+
+
       let maxValue = that.$store.getters.getMaxLabelCount;
       let cfg = {
         w: 300,
@@ -74,13 +80,13 @@ export default {
         labelFactor: 1.06,
         wrapWidth: 60,
         opacityArea: 0.35,
-        dotRadius: 2,
-        opacityCircles: 0.05,
+        dotRadius: 3,
+        opacityCircles: 0.1,
         strokeWidth: 2,
         roundStrokes: false,
-        color: this.$store.getters.getColors[this.$store.getters.getSelectedDistribution[this.$props.index - 1].cluster]
+        color: this.$store.getters.getColors
       };
-      that.radarChartOptions.color = this.$store.getters.getColors[this.$store.getters.getSelectedDistribution[this.$props.index - 1].cluster];
+      that.radarChartOptions.color = this.$store.getters.getColors;
 
       maxValue = Math.max(maxValue, cfg.maxValue);
 
@@ -89,14 +95,14 @@ export default {
           if ('undefined' !== typeof options[i]) cfg[i] = options[i];
         }
       }
-      let temp = _.map(dt, d => d.label);
-      var allAxis = _.filter(that.$store.getters.getLabelSortedList, d => temp.includes(d)),
+
+      var allAxis = _.map(data[0], d => d.label),
           total = allAxis.length,
           radius = Math.min(cfg.w / 2, cfg.h / 2),
           angleSlice = Math.PI * 2 / total;
 
       var rScale = d3.scaleLinear()
-          .range([0, radius])
+          .range([0, radius]) // ?
           .domain([-0.2 * maxValue, maxValue]);
 
       d3.select(`#${that.ID}`).select('svg').remove();
@@ -124,7 +130,7 @@ export default {
           .append('circle')
           .attr('class', 'gridCircle')
           .attr('r', (d, i) => radius / cfg.levels * d)
-          .style('fill', that.shadeColor(cfg.color, -40))
+          .style('fill', '#CDCDCD')
           .style('stroke', '#CDCDCD')
           .style('fill-opacity', cfg.opacityCircles)
           .style('filter', 'url(#glow)');
@@ -146,9 +152,7 @@ export default {
           .style('stroke-width', '1px');
 
       let query = that.$store.getters.getLabelQuery;
-      if (_.compact(_.concat(_.invertBy(query)['must'], _.invertBy(query)['maybe'])).length < 15) {
-
-
+      if (_.compact(_.concat(_.invertBy(query)['must'], _.invertBy(query)['maybe'])).length <= 15) {
 
         axis.append('text')
             .attr('class', 'legend')
@@ -183,14 +187,31 @@ export default {
           .append('path')
           .attr('class', 'radarArea')
           .attr('d', (d, i) => radarLine(d))
-          .style('fill', cfg.color)
-          .style('fill-opacity', cfg.opacityArea);
+          .style('fill', d => cfg.color[d[0].cluster])
+          .style('fill-opacity', cfg.opacityArea)
+          .on('mouseover', function (d,i){
+            //Dim all blobs
+            d3.selectAll(".radarArea")
+                .transition().duration(200)
+                .style("fill-opacity", 0.1);
+            //Bring back the hovered over blob
+            d3.select(this)
+                .transition().duration(200)
+                .style("fill-opacity", 0.7);
+          })
+          .on('mouseout', function(){
+            //Bring back all blobs
+            d3.selectAll(".radarArea")
+                .transition().duration(200)
+                .style("fill-opacity", cfg.opacityArea);
+          });
+          // mouseover and out evt
 
       blobWrapper.append('path')
           .attr('class', 'radarStroke')
           .attr('d', (d, i) => radarLine(d))
           .style('stroke-width', cfg.strokeWidth + 'px')
-          .style('stroke', that.shadeColor(cfg.color, -20))
+          .style('stroke', d => that.shadeColor(cfg.color[d[0].cluster], -20))
           .style('fill', 'none')
           .style('filter', 'url(#glow)');
 
@@ -201,7 +222,7 @@ export default {
           .attr('r', cfg.dotRadius)
           .attr('cx', (d, i) => rScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2))
           .attr('cy', (d, i) => rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2))
-          .style('fill', that.shadeColor(cfg.color, -40))
+          .style('fill', d => that.shadeColor(cfg.color[d.cluster], -40))
           .style('fill-opacity', 0.9);
 
       let blobCircleWrapper = g.selectAll('.radarCircleWrapper')
@@ -224,16 +245,16 @@ export default {
             tooltip
                 .attr('x', newX - 2 * `${d.label}: ${d.value}`.length)
                 .attr('y', newY - 10)
-                // .attr('transform', `translate(${newX}, ${newY}) rotate(${((360 / total) * i) - 360}) translate(${-newX}, ${-newY})`)
                 .text(`${d.label}: ${d.value}`)
                 .transition().duration(200)
-                .style('fill', that.shadeColor(cfg.color, -25))
+                .style('fill', that.shadeColor(cfg.color[d.cluster], -60))
                 .style('opacity', 1);
           })
           .on('mouseout', () => tooltip.transition().duration(200).style('opacity', 0));
 
       let tooltip = g.append('text')
-          .style('font-size', '8px')
+          .style('font-weight', 500)
+          .style('font-size', '10px')
           .attr('class', 'tooltip')
           .style('opacity', 0);
 
@@ -276,8 +297,4 @@ export default {
   box-sizing: inherit
   transition: 0.2s
   border-radius: $unit-5
-  cursor: pointer
-
-  &:hover
-    background: rgba(0, 0, 0, 0.1) !important
 </style>
