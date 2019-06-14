@@ -3,10 +3,10 @@
     .component-header Query
     .component-body
       .nav-query-header
-        .nav-query-header-label label
-        .nav-query-header-radio(v-for="state in query_state") {{ state }}
+        .nav-query-header-label Label
+        .nav-query-header-radio(v-for="state in query_state") {{ state.toUpperCase() }}
       .nav-query-content
-        NavQueryItemComponent(v-for="label in Object.keys(labelCount)" :labelMap="{key: label, value: labelCount[label]}" :selectedState="'none'")
+        NavQueryItemComponent(v-for="label in Object.keys(rawLabel)" :labelMap="{key: label, value: rawLabel[label]}")
 
 </template>
 
@@ -17,8 +17,8 @@ export default {
   components: { NavQueryItemComponent },
   data() {
     return {
+      rawLabel: this.$store.getters.getRawLabel,
       query_state:['none', 'maybe', 'must', 'not'],
-      labelCount: JSON.parse(JSON.stringify(this.$store.getters.getLabelCount))
     }
   }
 };

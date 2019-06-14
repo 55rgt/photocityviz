@@ -115,7 +115,9 @@ export const store = new Vuex.Store({
   },
   mutations: {
     updateLabelQuery: function (state, payload) {
-      state.labelQuery[payload.key] = payload.value;
+      if (payload.condition === 'small') state.labelQuery[payload.key] = payload.value;
+      else _.forEach(Object.keys(state.rawLabel[payload.key]), k => state.labelQuery[k] = payload.value);
+      console.log(state.labelQuery);
     },
     updateOptions: function (state, payload) {
       state.options[payload.key] = payload.value;

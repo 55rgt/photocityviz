@@ -49,7 +49,7 @@ export default {
     .nav-apply
       width: 100%
       height: 100%
-      line-height: 24px
+      line-height: 34px
       text-align: center
       @include setFonts('Roboto', $md-dark-text-secondary, $unit-3, 'sans-serif')
       border: 1px solid #ababab

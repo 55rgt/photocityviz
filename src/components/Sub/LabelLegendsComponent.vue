@@ -1,18 +1,24 @@
 <template lang="pug">
-  .legends-container
+  .legends-container(v-if="ok")
     LabelLegendComponent(v-for="n in length" :id="'legend_' + n" :index="n") // 나중에 바꿔야 함.
 </template>
 
 <script>
+import { EventBus } from '../../utils/event-bus';
 import LabelLegendComponent from './LabelLegendComponent';
 export default {
   name: 'LabelLegendsComponent',
   components: { LabelLegendComponent },
   data() {
     return {
+      ok: false,
       length: this.$store.getters.getSelectedClusterLength
     }
   },
+  created() {
+    let that = this;
+    EventBus.$on('apply', () => that.ok = true);
+  }
 };
 </script>
 
