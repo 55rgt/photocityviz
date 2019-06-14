@@ -1,6 +1,5 @@
 <template lang="pug">
-  .label-container(@click="toggleLabelItem" v-bind:class="{ selectedLabel: selected }"
-    :style='{border: selected ? `2px solid ${shadeColor(radarChartOptions.color, -30)}` : "2px solid #fff", background: selected ? `${shadeColor(radarChartOptions.color, 40)}11` : "#fff"}')
+  .label-container
 </template>
 
 <script>
@@ -17,9 +16,9 @@ export default {
     return {
       selected: false,
       radarChartOptions: {
-        w: 292 - 60,
-        h: 292 - 60,
-        margin: { top: 30, right: 30, bottom: 30, left: 30 },
+        w: 324 - 40,
+        h: 324 - 40,
+        margin: { top: 20, right: 20, bottom: 20, left: 20 },
         levels: 5,
         roundStrokes: true,
         color: null,
@@ -61,15 +60,6 @@ export default {
       var BB = ((B.toString(16).length === 1) ? '0' + B.toString(16) : B.toString(16));
 
       return '#' + RR + GG + BB;
-    },
-    async toggleLabelItem() {
-      // 여기서 selectedLabels에 자기 index 넣는다
-      let that = this;
-      await that.$store.dispatch('updateSelectedLabels', this.$store.getters.getSelectedDistribution[this.$props.index - 1].cluster);
-      // updateSummaryInfo
-      // updateGalleryInfo
-      EventBus.$emit('updateClusterComponent');
-      that.selected = that.$store.getters.getSelectedLabels.includes(this.$store.getters.getSelectedDistribution[this.$props.index - 1].cluster);
     },
     update(dt, options) {
       let that = this;
@@ -281,12 +271,11 @@ export default {
 @import "../../style/colors"
 @import "../../style/styles"
 .label-container
-  width: 330px
-  height: 330px
+  width: 324px
+  height: 324px
   box-sizing: inherit
   transition: 0.2s
   border-radius: $unit-5
-  margin: $unit-1
   cursor: pointer
 
   &:hover

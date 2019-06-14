@@ -3,14 +3,16 @@
     .component-header Distribution
     .component-body
       .label-list-container
-        LabelComponent(v-for="n in length" :id="'labelDist_' + n" :index="n") // 나중에 바꿔야 함.
+        LabelComponent(v-for="n in 1" :id="'labelDist_' + n" :index="n") // 나중에 바꿔야 함.
+        LabelLegendsComponent
 </template>
 
 <script>
 import LabelComponent from './LabelComponent';
+import LabelLegendsComponent from './LabelLegendsComponent';
 export default {
   name: 'LabelsComponent',
-  components: { LabelComponent },
+  components: { LabelLegendsComponent, LabelComponent },
   data() {
     return {
       length: this.$store.getters.getSelectedClusterLength
@@ -40,10 +42,4 @@ export default {
       padding-bottom: $unit-3
       display: flex
       flex-wrap: wrap
-      overflow-y: scroll
-    .label-list-container::-webkit-scrollbar
-      display: none
-      width: 0
-      background: transparent
-
 </style>
