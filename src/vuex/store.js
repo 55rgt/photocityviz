@@ -8,6 +8,7 @@ import kmeans_12 from '../../public/data/kmeans_12';
 import TSNE from '../../public/data/TSNE_final';
 import labels from '../../public/data/Labels';
 import colorPalette from '../../public/data/colorPalette';
+import RawLabel from '../../public/data/RawLabel';
 
 import Egypt from '../assets/flag/Egypt.png';
 import Macao from '../assets/flag/Macao.png';
@@ -78,6 +79,7 @@ export const store = new Vuex.Store({
     selectedClusterName: 'k-means(12)',
     selectedClusterLength: 12,
 
+    rawLabel: RawLabel,
 
     /* rawData: 현재 선택된 클러스터 데이터 + totalData + TSNE 합친 것. */
     rawData: initialData,
@@ -94,7 +96,7 @@ export const store = new Vuex.Store({
     colorPalette: colorPalette
   },
   getters: {
-    getIsHidden: state => state.isHidden,
+    getRawLabel: state => state.rawLabel,
     getLabelCount: state => state.labelCount,
     getLabelQuery: state => state.labelQuery,
     getCountryFlags: state => state.countryFlags,
