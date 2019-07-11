@@ -47,6 +47,7 @@ export default {
   created() {
     let that = this;
     EventBus.$on('apply', () => {
+          that.ok = false;
           that.summaryData = {
             selectedClusters: null,
             length: null,
@@ -114,8 +115,10 @@ export default {
 .summary-container
   width: 100%
   height: 288px
+
   .component-body
     padding: 0 0 0 $unit-3
+
     .summary-item
       width: 100%
       height: 28px
@@ -131,6 +134,7 @@ export default {
         height: 100%
         text-align: right
         padding-right: $unit-4
+
       .summary-item-cluster-content
         flex: 1
         padding: 6px 0
@@ -149,11 +153,13 @@ export default {
         flex: 1
         padding: 6px 0
         display: flex
+
         .summary-item-colors-unit
           width: 16px
           height: 16px
           margin-right: 4px
           border-radius: 2px
+
     .summary-item-2
       width: 100%
       height: 78px
@@ -162,18 +168,21 @@ export default {
       font-weight: 500
       display: flex
       @include setFonts('Roboto', #686868, $unit-3, 'sans-serif')
+
       .summary-item-2-title
         width: 140px
         height: 100%
         line-height: 38px
         text-align: right
         padding-right: $unit-4
+
       .summary-item-2-content
         flex: 1
         padding-right: $unit-2
         display: flex
         flex-wrap: wrap
         overflow: hidden
+
         .summary-item-2-unit
           width: auto
           margin: 3px 5px 2px 0

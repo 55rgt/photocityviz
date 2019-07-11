@@ -6,7 +6,6 @@
 
 <script>
 import ClusterComponent from '../Sub/ClusterComponent';
-import Hex_ from '../Main/Hex_';
 import LabelsComponent from './LabelsComponent';
 export default {
   name: 'SubComponent',

@@ -59,7 +59,20 @@ const initLabelQuery = function (labelCount) {
 
 export const store = new Vuex.Store({
   state: {
+    rawLabel: RawLabel,
+    /* rawData: 현재 선택된 클러스터 데이터 + totalData + TSNE 합친 것. */
+    rawData: initialData,
+    filteredData: initialData,
+
+    /* navigator 에서 클러스터
+    * 선택이 바뀌면 rawData, filteredData 를 바꿔 줘야 함.
+    * */
+    selectedClusterData: kmeans_12,
+    selectedClusterName: 'k-means(12)',
+    selectedClusterLength: 12,
+
     colors: [null, '#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabebe', '#469990', '#e6beff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000'],
+    // navigator 옵션
     options: {
       'hexRadius': 84,
       'cohesion': 11,
@@ -67,6 +80,7 @@ export const store = new Vuex.Store({
       'start': 1,
       'end': 12
     },
+    // 국기 url
     countryFlags: [
       { url: Egypt, name: 'Egypt' },
       { url: Macao, name: 'Macao' },
@@ -75,29 +89,25 @@ export const store = new Vuex.Store({
       { url: Spain, name: 'Spain' },
       { url: Taiwan, name: 'Taiwan' },
     ],
-    selectedClusterData: kmeans_12,
-    selectedClusterName: 'k-means(12)',
-    selectedClusterLength: 12,
 
-    rawLabel: RawLabel,
-
-    /* rawData: 현재 선택된 클러스터 데이터 + totalData + TSNE 합친 것. */
-    rawData: initialData,
-    filteredData: initialData,
-    labelCount: countLabel(initialData),
+    // navigator 쿼리
     labelQuery: initLabelQuery(countLabel(initialData)),
-    labelSortedList: labels,
+
+    /* radar chart 관련 */
     selectedDistribution: [],
     selectedLabels: [],
-    galleryIndex: 0,
-    selectedData: [],
     maxLabelCount: 0,
+
+    // hexmap에서 하이라이트 된 애
+    selectedData: [],
+
+    // summaryData & galleryData
     summaryData: {},
-    colorPalette: colorPalette
+    colorPalette: colorPalette,
+    galleryIndex: 0
   },
   getters: {
     getRawLabel: state => state.rawLabel,
-    getLabelCount: state => state.labelCount,
     getLabelQuery: state => state.labelQuery,
     getCountryFlags: state => state.countryFlags,
     getOption: state => state.options,
@@ -107,7 +117,6 @@ export const store = new Vuex.Store({
     getSelectedDistribution: state => state.selectedDistribution,
     getMaxLabelCount: state => state.maxLabelCount,
     getSelectedClusterLength: state => state.selectedClusterLength,
-    getLabelSortedList: state => state.labelSortedList,
     getSelectedLabels: state => state.selectedLabels,
     getSelectedData: state => state.selectedData,
     getSummaryData: state => state.summaryData,
@@ -117,11 +126,9 @@ export const store = new Vuex.Store({
     updateLabelQuery: function (state, payload) {
       if (payload.condition === 'small') state.labelQuery[payload.key] = payload.value;
       else _.forEach(Object.keys(state.rawLabel[payload.key]), k => state.labelQuery[k] = payload.value);
-      console.log(state.labelQuery);
     },
     updateOptions: function (state, payload) {
       state.options[payload.key] = payload.value;
-      console.log(state.options);
     },
     updateFilteredData: function (state) {
       let option = state.options;
@@ -141,9 +148,7 @@ export const store = new Vuex.Store({
     },
     updateSelectedDistribution: function (state) {
       state.selectedDistribution = [];
-      console.log(state.labelQuery);
       let labels = _.compact(_.concat(_.invertBy(state.labelQuery)['must'], _.invertBy(state.labelQuery)['maybe']));
-      console.log(state.selectedData);
       for (let i = 1; i <= state.selectedClusterLength; i++) {
         let r = _.reduce(labels, (result, label) => {
           result.push({
@@ -163,8 +168,6 @@ export const store = new Vuex.Store({
         return result;
       }, []);
       state.selectedDistribution = state.selectedDistribution.sort((a, b) => _.sumBy(b.dist, e => e.value) - _.sumBy(a.dist, e => e.value));
-      console.log(state.selectedDistribution);
-      console.log(state.maxLabelCount);
     },
     updateSelectedLabels: function (state, payload) {
       if (_.isNil(payload)) state.selectedLabels = [];
@@ -253,11 +256,7 @@ export const store = new Vuex.Store({
         labels,
         hashTags,
       };
-      // console.log(state.summaryData);
       return state.summaryData;
-
-      // selected data로 해야 한다.
-      //
 
     }
   },
@@ -281,11 +280,8 @@ export const store = new Vuex.Store({
       context.commit('updateSelectedData');
     },
     updateSelected: async function (context, payload) {
-      console.log('data');
       await context.commit('updateSelectedData', payload);
-      console.log('dist');
       await context.commit('updateSelectedDistribution');
-      console.log('labels');
       await context.commit('updateSelectedLabels');
     },
     getSummaryData: function (context) {

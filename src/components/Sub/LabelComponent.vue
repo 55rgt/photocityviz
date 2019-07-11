@@ -29,7 +29,7 @@ export default {
   created() {
     let that = this;
     EventBus.$on('apply', async () => {
-      that.update(this.$store.getters.getSelectedDistribution, that.radarChartOptions);
+      that.reset();
       await that.$store.dispatch('updateSelectedLabels');
     });
     EventBus.$on('updateLabelComponent', async () => {
@@ -60,6 +60,10 @@ export default {
       var BB = ((B.toString(16).length === 1) ? '0' + B.toString(16) : B.toString(16));
 
       return '#' + RR + GG + BB;
+    },
+    reset() {
+      let that = this;
+      d3.select(`#${that.ID}`).select('svg').remove();
     },
     update(dt, options) {
       let that = this;

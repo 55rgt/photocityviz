@@ -6,6 +6,7 @@
 <script>
 import { EventBus } from '../../utils/event-bus';
 import LabelLegendComponent from './LabelLegendComponent';
+
 export default {
   name: 'LabelLegendsComponent',
   components: { LabelLegendComponent },
@@ -13,11 +14,12 @@ export default {
     return {
       ok: false,
       length: this.$store.getters.getSelectedClusterLength
-    }
+    };
   },
   created() {
     let that = this;
-    EventBus.$on('apply', () => that.ok = true);
+    EventBus.$on('apply', () => that.ok = false);
+    EventBus.$on('updateLabelComponent', () => that.ok = true);
   }
 };
 </script>
@@ -33,6 +35,7 @@ export default {
   overflow-y: scroll
   font-weight: 500
   @include setFonts('Roboto', #686868, $unit-2, 'sans-serif')
+
 .legends-container::-webkit-scrollbar
   display: none
   width: 0

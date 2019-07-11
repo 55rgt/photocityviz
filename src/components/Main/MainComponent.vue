@@ -6,20 +6,18 @@
         font-awesome-icon.reset(@click="updateHex('reset')" :icon="['fas', 'undo']")
     .component-body
       Hex_
-      //ClustersComponent
 </template>
 
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { EventBus } from '../../utils/event-bus';
-import ClustersComponent from './ClustersComponent';
 import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import Hex_ from './Hex_';
 library.add(faUndo);
 export default {
   name: 'MainComponent',
-  components: { Hex_, ClustersComponent, FontAwesomeIcon },
+  components: { Hex_, FontAwesomeIcon },
   data() {
     return {
       ok: false,
