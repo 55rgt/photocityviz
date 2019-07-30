@@ -51,11 +51,37 @@ export default {
       this.remove();
       this.init(state);
       this.prepare();
+      this.relocate();
       this.render();
     },
     remove() {
       let that = this;
       d3.select(`#${that.svgID}`).remove();
+    },
+    relocate() {
+      let that = this;
+      for (let i = 0; i < that.bins.length; i++) {
+        let lt = that.bins[i];
+        for (let j = i + 1; j < that.bins.length; j++) {
+          let rb = that.bins[j];
+          that.checkCollision(lt, rb);
+        }
+      }
+    },
+    checkCollision(lt, rb) {
+      const d = Math.sqrt(Math.pow(lt.x - rb.x, 2) + Math.pow(lt.y - rb.y, 2));
+      if (d >= lt.radius + rb.radius) {
+        return 0;
+      } else {
+        if (lt.x === rb.x && lt.y === rb.y) {
+          let newX = (Math.random() * 2 - 1) * (lt.radius + rb.radius) + lt.x;
+          let mark = Math.floor(Math.random() * 10 + 1) % 2 === 0 ? 1 : -1;
+          let newY = Math.floor(mark * Math.sqrt(Math.pow(lt.radius + rb.radius, 2) - Math.pow(newX - lt.x, 2)) + lt.y);
+          rb.x = Math.floor(newX);
+          rb.y = newY;
+          return 1;
+        }
+      }
     },
     init(state) {
       let that = this;
@@ -69,7 +95,7 @@ export default {
       that.bins = [];
       that.r = null;
       that.isDown = false;
-      that.currentScale = state ? 1 / 21 : that.currentScale;
+      that.currentScale = state ? 1 / 5 : that.currentScale;
       that.currentX = null;
       that.currentY = null;
 
@@ -78,24 +104,24 @@ export default {
       let that = this;
       that.hexbin = hexbin.hexbin().extent([[0, 0], [that.width, that.height]]).radius(that.hexRadius);
       let dataGroup = _.groupBy(that.selectedData, d => d['clusterGroup']);
-      /*
-       1. 각 점들 정규화시켜서 변경
-       2. hex를 만드는데, 얘들은 임의의 애들임.
-       3. 반지름은 미리 정해놔야 함 수식으로.
-       4. hex 속성 다 가지고 있는 node 생성
-       5. node를 force-collision 이용해서 위치 새로 잡기
-       6. 새로 잡은 위치는 hex에 업데이트
-       7. 렌더링
-
-       */
-
-
+      let arr = _.flatten(_.map(dataGroup));
+      let max_min = {
+        maxX: _.maxBy(arr, (e) => e.x).x,
+        maxY: _.maxBy(arr, (e) => e.y).y,
+        minX: _.minBy(arr, (e) => e.x).x,
+        minY: _.minBy(arr, (e) => e.y).y
+      };
       _.forEach(dataGroup, (value, key) => {
-        let points = _.map(value, (d) => [d[that.axisX] * that.width / that.cohesion, d[that.axisY] * that.height / that.cohesion, d['name'], d['selected']]); // 이쪽 것도 radius에 맞게 조절 필요할
-        //  포인트 다시.
+        let points = _.map(value, (d) =>
+            [
+              (d.x - max_min.minX) / (max_min.maxX - max_min.minX) * that.width * 4,
+              (d.y - max_min.minY) / (max_min.maxY - max_min.minY) * that.height * 4,
+              d['name'],
+              d['selected']]);
         let bin = _.map(that.hexbin(points), hex => {
           hex['cluster'] = Number.parseInt(key);
           hex['selected'] = _.map(hex, h => h[3]).includes(true);
+          hex['radius'] = 16 + hex.length;
           return hex;
         });
         that.bins.push(bin);
@@ -103,12 +129,14 @@ export default {
 
       let flatten = _.flatten(that.bins);
       that.bins = _.orderBy(flatten, ['length'], ['desc']);
+      that.bins = _.orderBy(that.bins, ['x', 'y', 'length'], ['asc', 'asc', 'desc']);
+      console.log(that.bins);
       let min = d3.min(that.bins, d => d.length);
       let max = d3.max(that.bins, d => d.length);
 
-      that.r = d3.scaleSqrt()
-          .domain([min, max])
-          .range([Math.min(0.5, Math.pow(min / max, 0.25)) * that.hexbin.radius() * Math.SQRT2, Math.min(2, max / min, 2.25) * that.hexbin.radius() * Math.SQRT2]);
+      // that.r = d3.scaleSqrt()
+      //     .domain([min, max])
+      //     .range([Math.min(0.5, Math.pow(min / max, 0.25)) * that.hexbin.radius() * Math.SQRT2, Math.min(2, max / min, 2.25) * that.hexbin.radius() * Math.SQRT2]);
     },
     render() {
       let that = this;
@@ -130,7 +158,7 @@ export default {
       that.svg.call(that.zoom)
           .on('mousedown.zoom', null);
 
-      that.svg.call(that.zoom.transform, d3.zoomIdentity.translate(that.width / 2, that.height / 2).scale(that.currentScale));
+      that.svg.call(that.zoom.transform, d3.zoomIdentity.translate(120, 120).scale(that.currentScale));
 
       that.svg.on('mousedown', function () {
         that.startDragArea(d3.mouse(this));
@@ -159,7 +187,7 @@ export default {
           .attr('stroke', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], -50)}`)
           .attr('stroke-width', d => d.selected ? that.hexRadius / 4 : Math.max(that.hexRadius / 16, 2))
           .attr('stroke-opacity', 0.8)
-          .attr('d', d => that.hexbin.hexagon(that.r(d.length)))
+          .attr('d', d => that.hexbin.hexagon(d.radius))
           .attr('id', d => `hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}_${d['cluster']}`)
           .attr('transform', d => `translate(${d.x},${d.y})`)
           .attr('fill', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], 0)}`)
