@@ -31,6 +31,7 @@ export default {
       scale_max: 3,
       points: [],
       bins: [],
+      clusterLength: this.$store.getters.getSelectedClusterLength,
       r: null,
       isDown: false,
       currentScale: null
@@ -76,13 +77,14 @@ export default {
       // }
     },
     checkCollision(lt, rb) {
+      let that = this;
       const d = Math.sqrt(Math.pow(lt.x - rb.x, 2) + Math.pow(lt.y - rb.y, 2));
       if (d >= lt.radius + rb.radius) {
         return 0;
       } else {
         if (lt.x === rb.x && lt.y === rb.y) {
-          let newX = (Math.random() * 2 - 1) * (lt.radius + rb.radius) + lt.x;
-          let mark = Math.floor(Math.random() * 10 + 1) % 2 === 0 ? 1 : -1;
+          let newX = 2 * (lt.radius + rb.radius) / that.clusterLength * rb.cluster + lt.x - (lt.radius + rb.radius);
+          let mark = rb.cluster % 2 === 0 ? 1 : -1;
           let newY = Math.floor(mark * Math.sqrt(Math.pow(lt.radius + rb.radius, 2) - Math.pow(newX - lt.x, 2)) + lt.y);
           rb.x = Math.floor(newX);
           rb.y = newY;
