@@ -5,7 +5,7 @@
         .button(v-for="color in selectedClusterLength" @click="updateHex('cluster', color)" :style="{border: `1px solid ${shadeColor(colors[color], -30)}`, background: `${colors[color]}`, opacity: 0.8}")
         font-awesome-icon.reset(@click="updateHex('reset')" :icon="['fas', 'undo']")
     .component-body
-      Hex_
+      HexComponent
 </template>
 
 <script>
@@ -14,10 +14,12 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { EventBus } from '../../utils/event-bus';
 import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import Hex_ from './Hex_';
+import HexComponent from './HexComponent';
+import TestComponent from './test';
 library.add(faUndo);
 export default {
   name: 'MainComponent',
-  components: { Hex_, FontAwesomeIcon },
+  components: { TestComponent, HexComponent, Hex_, FontAwesomeIcon },
   data() {
     return {
       ok: false,

@@ -9,7 +9,7 @@ import { EventBus } from '../../utils/event-bus';
 import _ from 'lodash';
 
 export default {
-  name: 'Hex_',
+  name: 'testComponent',
   data() {
     return {
       width: 1004,
@@ -38,13 +38,7 @@ export default {
   },
   created() {
     let that = this;
-    console.log('created Hook');
-    EventBus.$on('apply', () => {
-      that.update(true);
-    });
-    EventBus.$on('updateHex', () => {
-      that.update(false);
-    });
+
   },
   methods: {
     update(state) {
@@ -78,6 +72,17 @@ export default {
       let that = this;
       that.hexbin = hexbin.hexbin().extent([[0, 0], [that.width, that.height]]).radius(that.hexRadius);
       let dataGroup = _.groupBy(that.selectedData, d => d['clusterGroup']);
+
+      let arr = _.flatten(_.map(dataGroup));
+      console.log(_.minBy(arr, (e) => e.x).x);
+      console.log(_.minBy(arr, (e) => e.y).y);
+      console.log(_.maxBy(arr, (e) => e.x).x);
+      console.log(_.maxBy(arr, (e) => e.y).y);
+
+      // 최소x: -100 최대x: 90
+      // 최대y: -87.3 최대y: 90.6
+
+
       /*
        1. 각 점들 정규화시켜서 변경
        2. hex를 만드는데, 얘들은 임의의 애들임.
@@ -100,6 +105,7 @@ export default {
         });
         that.bins.push(bin);
       });
+      console.log(that.bins); // [0] => x [1] => y이다 length로 r을 만든다. //
 
       let flatten = _.flatten(that.bins);
       that.bins = _.orderBy(flatten, ['length'], ['desc']);
@@ -150,7 +156,7 @@ export default {
                 {
                   'evt': 'click',
                   'newState': !d.selected,
-                  'data': _.map(d, a => a[2]) // 이런 거 다 바꿀 수 있다.
+                  'data': _.map(d, a => a[2])
                 });
             await EventBus.$emit('updateHex');
             await EventBus.$emit('updateLabelComponent');

@@ -9,7 +9,7 @@ import { EventBus } from '../../utils/event-bus';
 import _ from 'lodash';
 
 export default {
-  name: 'Hex_',
+  name: 'HexComponent',
   data() {
     return {
       width: 1004,
@@ -51,6 +51,8 @@ export default {
       this.remove();
       this.init(state);
       this.prepare();
+      // this.relocate();
+
       this.render();
     },
     remove() {
@@ -69,7 +71,7 @@ export default {
       that.bins = [];
       that.r = null;
       that.isDown = false;
-      that.currentScale = state ? 1 / 21 : that.currentScale;
+      that.currentScale = state ? 1 / 5 : that.currentScale;
       that.currentX = null;
       that.currentY = null;
 
@@ -78,40 +80,74 @@ export default {
       let that = this;
       that.hexbin = hexbin.hexbin().extent([[0, 0], [that.width, that.height]]).radius(that.hexRadius);
       let dataGroup = _.groupBy(that.selectedData, d => d['clusterGroup']);
-      /*
-       1. 각 점들 정규화시켜서 변경
-       2. hex를 만드는데, 얘들은 임의의 애들임.
-       3. 반지름은 미리 정해놔야 함 수식으로.
-       4. hex 속성 다 가지고 있는 node 생성
-       5. node를 force-collision 이용해서 위치 새로 잡기
-       6. 새로 잡은 위치는 hex에 업데이트
-       7. 렌더링
 
-       */
+      let arr = _.flatten(_.map(dataGroup));
+
+      let max_min = {
+        maxX: _.maxBy(arr, (e) => e.x).x,
+        maxY: _.maxBy(arr, (e) => e.y).y,
+        minX: _.minBy(arr, (e) => e.x).x,
+        minY: _.minBy(arr, (e) => e.y).y
+      };
 
 
       _.forEach(dataGroup, (value, key) => {
-        let points = _.map(value, (d) => [d[that.axisX] * that.width / that.cohesion, d[that.axisY] * that.height / that.cohesion, d['name'], d['selected']]); // 이쪽 것도 radius에 맞게 조절 필요할
-        //  포인트 다시.
-        let bin = _.map(that.hexbin(points), hex => {
-          hex['cluster'] = Number.parseInt(key);
-          hex['selected'] = _.map(hex, h => h[3]).includes(true);
-          return hex;
-        });
+        let points = _.map(value, (d) =>
+            [
+              (d.x - max_min.minX) / (max_min.maxX - max_min.minX) * that.width * 4,
+              (d.y - max_min.minY) / (max_min.maxY - max_min.minY) * that.height * 4,
+              d['name'],
+              d['selected']]);
+        let bin = _.map(that.hexbin(points), hex =>
+            ({
+              cluster: Number.parseInt(key),
+              selected: _.map(hex, h => h[3]).includes(true),
+              data: _.map(hex, h => h[2]),
+              length: hex.length,
+              x: Math.floor(+hex.x),
+              y: Math.floor(+hex.y),
+              radius: 16 + hex.length
+            })
+        );
         that.bins.push(bin);
       });
+      that.bins = _.flatten(that.bins);
+      that.bins = _.orderBy(that.bins, ['x', 'y', 'length'], ['asc', 'asc', 'desc']);
+      console.log(`bins: ${that.bins.length}, radius: ${that.hexRadius},
+      maxCount: ${that.bins[0].length}, minCount: ${that.bins[that.bins.length - 1].length}
+      midCount: ${that.bins[Math.floor(that.bins.length / 2)].length},
+      quarter_3: ${Math.floor(that.bins[Math.floor(that.bins.length / 4)].length)}
+      avgCount: ${Math.floor(_.meanBy(that.bins, b => Number.parseInt(b.length)))}`);
 
-      let flatten = _.flatten(that.bins);
-      that.bins = _.orderBy(flatten, ['length'], ['desc']);
-      let min = d3.min(that.bins, d => d.length);
-      let max = d3.max(that.bins, d => d.length);
-
-      that.r = d3.scaleSqrt()
-          .domain([min, max])
-          .range([Math.min(0.5, Math.pow(min / max, 0.25)) * that.hexbin.radius() * Math.SQRT2, Math.min(2, max / min, 2.25) * that.hexbin.radius() * Math.SQRT2]);
+    },
+    relocate() {
+      let that = this;
+      for (let i = 0; i < that.bins.length; i++) {
+        let lt = that.bins[i];
+        for (let j = i + 1; j < that.bins.length; j++) {
+          let rb = that.bins[j];
+          that.checkCollision(lt, rb);
+        }
+      }
+    },
+    checkCollision(lt, rb) {
+      const d = Math.sqrt(Math.pow(lt.x - rb.x, 2) + Math.pow(lt.y - rb.y, 2));
+      if (d >= lt.radius + rb.radius) {
+        return 0;
+      } else {
+        if (lt.x === rb.x && lt.y === rb.y) {
+          let newX = (Math.random() * 2 - 1) * (lt.radius + rb.radius) + lt.x;
+          let mark = Math.floor(Math.random() * 10 + 1) % 2 === 0 ? 1 : -1;
+          let newY = Math.floor(mark * Math.sqrt(Math.pow(lt.radius + rb.radius, 2) - Math.pow(newX - lt.x, 2)) + lt.y);
+          rb.x = Math.floor(newX);
+          rb.y = newY;
+          return 1;
+        }
+      }
     },
     render() {
       let that = this;
+      console.log('render');
       that.svg = d3.select('#hexMap')
           .append('svg')
           .attr('id', that.svgID)
@@ -146,11 +182,12 @@ export default {
           .data(that.bins)
           .join('path')
           .on('click', async d => {
+            console.log(d);
             await that.$store.dispatch('updateSelected',
                 {
                   'evt': 'click',
                   'newState': !d.selected,
-                  'data': _.map(d, a => a[2]) // 이런 거 다 바꿀 수 있다.
+                  'data': d.data
                 });
             await EventBus.$emit('updateHex');
             await EventBus.$emit('updateLabelComponent');
@@ -159,8 +196,8 @@ export default {
           .attr('stroke', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], -50)}`)
           .attr('stroke-width', d => d.selected ? that.hexRadius / 4 : Math.max(that.hexRadius / 16, 2))
           .attr('stroke-opacity', 0.8)
-          .attr('d', d => that.hexbin.hexagon(that.r(d.length)))
-          .attr('id', d => `hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}_${d['cluster']}`)
+          .attr('d', d => that.hexbin.hexagon(d.radius))
+          .attr('id', d => `hex_${Math.floor(d.x)}_${Math.floor(d['y'])}_${d['cluster']}`)
           .attr('transform', d => `translate(${d.x},${d.y})`)
           .attr('fill', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], 0)}`)
           .attr('fill-opacity', d => d.selected ? 0.6 : 0.05);
@@ -236,12 +273,13 @@ export default {
       let selectedBins = _.filter(that.bins, bin =>
           bin['x'] >= csx && bin['x'] <= cex &&
           bin['y'] >= csy && bin['y'] <= cey);
+      console.log(selectedBins);
 
       await that.$store.dispatch('updateSelected',
           {
             'evt': 'drag',
             'newState': true,
-            'data': _.map(_.flatten(selectedBins), bin => bin[2])
+            'data': _.uniq(_.map(_.flatten(selectedBins), bin => bin.data))
           });
       await EventBus.$emit('updateHex');
       await EventBus.$emit('updateLabelComponent');
