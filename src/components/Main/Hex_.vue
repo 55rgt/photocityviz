@@ -169,7 +169,7 @@ export default {
       that.svg.call(that.zoom)
           .on('mousedown.zoom', null);
 
-      that.svg.call(that.zoom.transform, d3.zoomIdentity.translate(120, 120).scale(that.currentScale));
+      that.svg.call(that.zoom.transform, d3.zoomIdentity.translate(30, 90).scale(that.currentScale));
 
       that.svg.on('mousedown', function () {
         that.startDragArea(d3.mouse(this));
