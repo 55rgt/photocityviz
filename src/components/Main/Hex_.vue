@@ -60,13 +60,20 @@ export default {
     },
     relocate() {
       let that = this;
+      // let count = 1;
+      // while(count > 50) {
+      //   count = 1;
+      // console.log('count');
+      that.bins = _.orderBy(that.bins, ['x', 'y', 'length'], ['asc', 'asc', 'desc']);
       for (let i = 0; i < that.bins.length; i++) {
-        let lt = that.bins[i];
+        let a = that.bins[i];
         for (let j = i + 1; j < that.bins.length; j++) {
-          let rb = that.bins[j];
-          that.checkCollision(lt, rb);
+          let b = that.bins[j];
+          that.checkCollision(a, b);
         }
       }
+      that.bins = _.orderBy(that.bins, ['length'], ['desc']);
+      // }
     },
     checkCollision(lt, rb) {
       const d = Math.sqrt(Math.pow(lt.x - rb.x, 2) + Math.pow(lt.y - rb.y, 2));
@@ -81,6 +88,13 @@ export default {
           rb.y = newY;
           return 1;
         }
+        // else {
+        //   let newX = (lt.radius + rb.radius) * (rb.x - lt.x) / d + lt.x;
+        //   let newY = Math.floor((rb.y - lt.y) / (rb.x - lt.x) * (newX - rb.x) + rb.y);
+        //   rb.x = Math.floor(newX);
+        //   rb.y = newY;
+        //   return 1;
+        // }
       }
     },
     init(state) {
@@ -122,6 +136,8 @@ export default {
           hex['cluster'] = Number.parseInt(key);
           hex['selected'] = _.map(hex, h => h[3]).includes(true);
           hex['radius'] = 16 + hex.length;
+          hex['x'] = Math.floor(+hex.x);
+          hex['y'] = Math.floor(+hex.y);
           return hex;
         });
         that.bins.push(bin);
@@ -129,14 +145,7 @@ export default {
 
       let flatten = _.flatten(that.bins);
       that.bins = _.orderBy(flatten, ['length'], ['desc']);
-      that.bins = _.orderBy(that.bins, ['x', 'y', 'length'], ['asc', 'asc', 'desc']);
-      console.log(that.bins);
-      let min = d3.min(that.bins, d => d.length);
-      let max = d3.max(that.bins, d => d.length);
-
-      // that.r = d3.scaleSqrt()
-      //     .domain([min, max])
-      //     .range([Math.min(0.5, Math.pow(min / max, 0.25)) * that.hexbin.radius() * Math.SQRT2, Math.min(2, max / min, 2.25) * that.hexbin.radius() * Math.SQRT2]);
+      // that.bins = _.orderBy(that.bins, ['x', 'y', 'length'], ['asc', 'asc', 'desc']);
     },
     render() {
       let that = this;
@@ -185,13 +194,13 @@ export default {
             await EventBus.$emit('initClusterComponent');
           })
           .attr('stroke', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], -50)}`)
-          .attr('stroke-width', d => d.selected ? that.hexRadius / 4 : Math.max(that.hexRadius / 16, 2))
+          .attr('stroke-width', d => d.selected ? that.hexRadius / 8 : Math.max(that.hexRadius / 16, 2))
           .attr('stroke-opacity', 0.8)
           .attr('d', d => that.hexbin.hexagon(d.radius))
           .attr('id', d => `hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}_${d['cluster']}`)
           .attr('transform', d => `translate(${d.x},${d.y})`)
           .attr('fill', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], 0)}`)
-          .attr('fill-opacity', d => d.selected ? 0.6 : 0.05);
+          .attr('fill-opacity', d => d.selected ? 0.6 : 0.015);
 
     },
     shadeColor(color, percent) {
