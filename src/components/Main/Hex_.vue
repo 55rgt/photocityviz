@@ -12,7 +12,7 @@ export default {
   name: 'Hex_',
   data() {
     return {
-      width: 1004,
+      width: 864,
       height: 940,
       svg: null,
       hexDataset: null,
@@ -61,10 +61,6 @@ export default {
     },
     relocate() {
       let that = this;
-      // let count = 1;
-      // while(count > 50) {
-      //   count = 1;
-      // console.log('count');
       that.bins = _.orderBy(that.bins, ['x', 'y', 'length'], ['asc', 'asc', 'desc']);
       for (let i = 0; i < that.bins.length; i++) {
         let a = that.bins[i];
@@ -74,7 +70,6 @@ export default {
         }
       }
       that.bins = _.orderBy(that.bins, ['length'], ['desc']);
-      // }
     },
     checkCollision(lt, rb) {
       let that = this;
@@ -137,7 +132,7 @@ export default {
         let bin = _.map(that.hexbin(points), hex => {
           hex['cluster'] = Number.parseInt(key);
           hex['selected'] = _.map(hex, h => h[3]).includes(true);
-          hex['radius'] = 16 + hex.length;
+          hex['radius'] = hex.length > 300 ? 300 : 16 + hex.length;
           hex['x'] = Math.floor(+hex.x);
           hex['y'] = Math.floor(+hex.y);
           return hex;
@@ -169,7 +164,7 @@ export default {
       that.svg.call(that.zoom)
           .on('mousedown.zoom', null);
 
-      that.svg.call(that.zoom.transform, d3.zoomIdentity.translate(30, 90).scale(that.currentScale));
+      that.svg.call(that.zoom.transform, d3.zoomIdentity.translate(60, 90).scale(that.currentScale));
 
       that.svg.on('mousedown', function () {
         that.startDragArea(d3.mouse(this));
@@ -196,7 +191,7 @@ export default {
             await EventBus.$emit('initClusterComponent');
           })
           .attr('stroke', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], -50)}`)
-          .attr('stroke-width', d => d.selected ? that.hexRadius / 8 : Math.max(that.hexRadius / 16, 2))
+          .attr('stroke-width', d => d.selected ? that.hexRadius / 12 : Math.max(that.hexRadius / 16, 2))
           .attr('stroke-opacity', 0.8)
           .attr('d', d => that.hexbin.hexagon(d.radius))
           .attr('id', d => `hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}_${d['cluster']}`)

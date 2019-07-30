@@ -236,7 +236,7 @@ export const store = new Vuex.Store({
           .map(d => ({ label: d[0], count: d.length }))
           .orderBy('count', 'desc')
           .map(d => d.label)
-          .slice(0, MAX_VALUE)
+          .slice(0, MAX_VALUE * 1.5)
           .value();
       let hashTags = _(dt)
           .map(d => d['hashTags'])
@@ -246,7 +246,7 @@ export const store = new Vuex.Store({
           .map(d => ({ hashTag: d[0], count: d.length }))
           .orderBy('count', 'desc')
           .map(d => d.hashTag)
-          .slice(0, MAX_VALUE)
+          .slice(0, MAX_VALUE * 1.5)
           .value();
 
       state.summaryData = {
@@ -294,7 +294,7 @@ export const store = new Vuex.Store({
       }
       let filtered = _.filter(context.state.selectedData, d => context.state.selectedLabels.includes(d['clusterGroup']) && d.selected);
       let p_idx = context.state.galleryIndex;
-      context.state.galleryIndex = Math.min(filtered.length, p_idx + 16);
+      context.state.galleryIndex = Math.min(filtered.length, p_idx + 20);
       let c_idx = context.state.galleryIndex;
       let data = filtered.slice(p_idx, c_idx);
       let infos = _.map(data, d => {
