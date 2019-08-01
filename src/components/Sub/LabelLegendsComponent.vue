@@ -27,9 +27,8 @@ export default {
 <style scoped lang="sass">
 @import "../../style/styles"
 .legends-container
-  width: calc(100% - 324px)
+  flex: 1
   height: 100%
-  padding: $unit-1 0 $unit-1 $unit-2
   display: flex
   flex-wrap: wrap
   overflow-y: scroll

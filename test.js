@@ -1,19 +1,66 @@
 const _ = require('lodash');
-let a = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
-console.log(a.slice(0, 8));  // 0번째 인덱스부터 7까지 [ '1', '2', '3', '4', '5', '6', '7', '8' ]
-console.log(a.slice(3, 8)); // [ '4', '5', '6', '7', '8' ]
-
-_.map(a, (d, i) => {
-  console.log(d, i);
-});
 
 
-let users = [
-  { 'user': 'barney', 'age': 36, 'active': true },
-  { 'user': 'fred', 'age': 40, 'active': false },
-  { 'user': 'pebbles', 'age': 1, 'active': true }
+const data = ["apple", "banana", "apple", "orange", "grapes", "mango", "banana"];
+
+const result = _.values(_.groupBy(data)).map(d => ({name: d[0], value: d.length}));
+
+const r = _.chain(data)
+    .groupBy()
+    .map(d => ({name: d[0], value: d.length}))
+    .value();
+// console.log(r);
+
+
+let d = [
+
+  {
+    group: 1,
+    name: 'Tom',
+    value: ['a','b']
+  },
+  {
+    group: 2,
+    name: 'Mike',
+    value: ['a','b']
+  },
+  {
+    group: 1,
+    name: 'Chester',
+    value: ['a','b']
+  },
+  {
+    group: 3,
+    name: 'York',
+    value: ['a','b']
+  },
+  {
+    group: 2,
+    name: 'Shinoda',
+    value: ['a','b', 'c']
+  },
+  {
+    group: 1,
+    name: 'Liberty',
+    value: ['a']
+  }
 ];
+// console.log(_.groupBy(d, e => e.group));
 
-console.log(_.find(users, function (o) {
-  return o.age < 40;
-}));
+let a = _.chain(d)
+    .groupBy(e => e.group)
+    // .map(e => e.value)
+    .value();
+// console.log(a);
+
+// _.map(a, (k,v) => console.log(k,v));
+
+console.log(_.map(a, (k, v) => ({
+  name: v,
+  children: _.chain(_.map(k, ele => ele.value))
+      .groupBy()
+      .map(d => ({name: d[0], value: d.length}))
+      .value()
+})));
+
+

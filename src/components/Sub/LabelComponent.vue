@@ -67,12 +67,14 @@ export default {
     },
     update(dt, options) {
       let that = this;
+
       let sLabels = that.$store.getters.getSelectedLabels;
       let data = _.chain(dt)
           .filter(d => sLabels.includes(d.cluster))
           .map(d => _.map(d.dist, e => ({label: e.label, value: e.value, cluster: d.cluster })))
           .value();
 
+      console.log(data);
 
       let maxValue = that.$store.getters.getMaxLabelCount;
       let cfg = {

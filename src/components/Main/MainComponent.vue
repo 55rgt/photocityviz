@@ -14,12 +14,10 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { EventBus } from '../../utils/event-bus';
 import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import Hex_ from './Hex_';
-import HexComponent from './HexComponent';
-import TestComponent from './test';
 library.add(faUndo);
 export default {
   name: 'MainComponent',
-  components: { TestComponent, HexComponent, Hex_, FontAwesomeIcon },
+  components: { Hex_, FontAwesomeIcon },
   data() {
     return {
       ok: false,
