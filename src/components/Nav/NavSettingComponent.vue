@@ -7,11 +7,6 @@
         .nav-setting-item-body
           .nav-setting-input-wrapper
             input.nav-setting-input(v-model="option.hexRadius")
-      .nav-setting-item-container
-        .nav-setting-item-title Cohesion
-        .nav-setting-item-body
-          .nav-setting-input-wrapper
-            input.nav-setting-input(v-model="option.cohesion")
 </template>
 
 <script>
@@ -43,9 +38,10 @@ export default {
   width: 100%
   height: $nav-setting-height
   .component-body
+    height: 34px
     .nav-setting-item-container
       width: 100%
-      height: 50%
+      height: 100%
       padding: 0 0 0 $unit-3
       display: flex
       font-weight: 500

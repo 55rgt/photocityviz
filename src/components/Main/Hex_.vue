@@ -106,7 +106,7 @@ export default {
       that.bins = [];
       that.r = null;
       that.isDown = false;
-      that.currentScale = state ? 1 / 5 : that.currentScale;
+      that.currentScale = state ? 1 / 4.5 : that.currentScale;
       that.currentX = null;
       that.currentY = null;
 
@@ -164,7 +164,7 @@ export default {
       that.svg.call(that.zoom)
           .on('mousedown.zoom', null);
 
-      that.svg.call(that.zoom.transform, d3.zoomIdentity.translate(60, 90).scale(that.currentScale));
+      that.svg.call(that.zoom.transform, d3.zoomIdentity.translate(30, 90).scale(that.currentScale));
 
       that.svg.on('mousedown', function () {
         that.startDragArea(d3.mouse(this));
@@ -189,6 +189,18 @@ export default {
             await EventBus.$emit('updateHex');
             await EventBus.$emit('updateLabelComponent');
             await EventBus.$emit('initClusterComponent');
+          })
+          .on('mouseover', async function (d) {
+            if(!that.isDown && d.selected) {
+              d3.select(this)
+                  .attr('fill', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], -50)}`);
+            }
+          })
+          .on('mouseout', async function (d) {
+            if(!that.isDown && d.selected) {
+              d3.select(this)
+                  .attr('fill', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], 0)}`);
+            }
           })
           .attr('stroke', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], -50)}`)
           .attr('stroke-width', d => d.selected ? that.hexRadius / 12 : Math.max(that.hexRadius / 16, 2))
