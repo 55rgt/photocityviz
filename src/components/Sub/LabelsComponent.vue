@@ -3,19 +3,18 @@
     .component-header Distribution
     .component-body
       .label-list-container
-        TreeMapComponent
-        LabelLegendsComponent
+        SunburstComponent
         LabelComponent(v-for="n in 1" :id="'labelDist_' + n" :index="n") // 나중에 바꿔야 함.
-
+        LabelLegendsComponent
 </template>
 
 <script>
 import LabelComponent from './LabelComponent';
 import LabelLegendsComponent from './LabelLegendsComponent';
-import TreeMapComponent from './TreeMapComponent';
+import SunburstComponent from './SunburstComponent';
 export default {
   name: 'LabelsComponent',
-  components: { TreeMapComponent, LabelLegendsComponent, LabelComponent },
+  components: { SunburstComponent, LabelLegendsComponent, LabelComponent },
   data() {
     return {
       length: this.$store.getters.getSelectedClusterLength
