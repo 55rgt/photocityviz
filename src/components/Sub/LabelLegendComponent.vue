@@ -3,6 +3,8 @@
     :style='{border: selected ? `2px solid ${shadeColor(getCluster(this.$props.index - 1), -30)}` : "2px solid #fff", background: selected ? `${shadeColor(getCluster(this.$props.index - 1), 40)}11` : "#fff"}')
     .legend-cluster-wrapper
       .legend-cluster(:style='{border: `1px solid ${shadeColor(getCluster(this.$props.index - 1), -30)}`, background: `${shadeColor(getCluster(this.$props.index - 1), -20)}55`}')
+    .legend-unit Labels - {{ numberWithCommas(getDist(this.$props.index - 1))}}
+    .legend-unit Data - {{ numberWithCommas(getData(this.$props.index - 1)) }}
 </template>
 
 <script>

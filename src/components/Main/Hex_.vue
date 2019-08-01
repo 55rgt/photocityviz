@@ -12,7 +12,7 @@ export default {
   name: 'Hex_',
   data() {
     return {
-      width: 864,
+      width: 864 + 140,
       height: 940,
       svg: null,
       hexDataset: null,
