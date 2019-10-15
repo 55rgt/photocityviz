@@ -1,6 +1,6 @@
 <template lang="pug">
   .main-container
-    .component-header Cluster: {{ clusterName }}
+    .component-header Hexagon: {{ clusterName }}
       .buttons(v-if="ok")
         .button(v-for="color in selectedClusterLength" @click="updateHex('cluster', color)" :style="{border: `1px solid ${shadeColor(colors[color], -30)}`, background: `${colors[color]}`, opacity: 0.8}")
         font-awesome-icon.reset(@click="updateHex('reset')" :icon="['fas', 'undo']")

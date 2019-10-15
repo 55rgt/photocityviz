@@ -63,7 +63,7 @@ export default {
     });
     EventBus.$on('initClusterComponent', () => {
           that.ok = false;
-          console.log('summary init');
+
           that.summaryData = {
             selectedClusters: null,
             length: null,
@@ -80,7 +80,6 @@ export default {
       let that = this;
       await that.$store.dispatch('getSummaryData');
       that.summaryData = that.$store.getters.getSummaryData;
-      console.log(that.summaryData);
     },
     numberWithCommas(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');

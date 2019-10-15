@@ -39,7 +39,6 @@ export default {
   },
   created() {
     let that = this;
-    console.log('created Hook');
     EventBus.$on('apply', () => {
       that.update(true);
     });
@@ -132,7 +131,7 @@ export default {
         let bin = _.map(that.hexbin(points), hex => {
           hex['cluster'] = Number.parseInt(key);
           hex['selected'] = _.map(hex, h => h[3]).includes(true);
-          hex['radius'] = hex.length > 300 ? 300 : 16 + hex.length;
+          hex['radius'] = Math.floor(+hex.length * 1.25) > 300 ? 300 : 9 + Math.floor(+hex.length * 1.25);
           hex['x'] = Math.floor(+hex.x);
           hex['y'] = Math.floor(+hex.y);
           return hex;
@@ -142,7 +141,6 @@ export default {
 
       let flatten = _.flatten(that.bins);
       that.bins = _.orderBy(flatten, ['length'], ['desc']);
-      // that.bins = _.orderBy(that.bins, ['x', 'y', 'length'], ['asc', 'asc', 'desc']);
     },
     render() {
       let that = this;
@@ -179,29 +177,6 @@ export default {
           .selectAll('path')
           .data(that.bins)
           .join('path')
-          .on('click', async d => {
-            await that.$store.dispatch('updateSelected',
-                {
-                  'evt': 'click',
-                  'newState': !d.selected,
-                  'data': _.map(d, a => a[2]) // 이런 거 다 바꿀 수 있다.
-                });
-            await EventBus.$emit('updateHex');
-            await EventBus.$emit('updateLabelComponent');
-            await EventBus.$emit('initClusterComponent');
-          })
-          .on('mouseover', async function (d) {
-            if(!that.isDown && d.selected) {
-              d3.select(this)
-                  .attr('fill', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], -50)}`);
-            }
-          })
-          .on('mouseout', async function (d) {
-            if(!that.isDown && d.selected) {
-              d3.select(this)
-                  .attr('fill', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], 0)}`);
-            }
-          })
           .attr('stroke', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], -50)}`)
           .attr('stroke-width', d => d.selected ? that.hexRadius / 12 : Math.max(that.hexRadius / 16, 2))
           .attr('stroke-opacity', 0.8)
@@ -209,7 +184,30 @@ export default {
           .attr('id', d => `hex_${Math.floor(d['x'])}_${Math.floor(d['y'])}_${d['cluster']}`)
           .attr('transform', d => `translate(${d.x},${d.y})`)
           .attr('fill', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], 0)}`)
-          .attr('fill-opacity', d => d.selected ? 0.6 : 0.015);
+          .attr('fill-opacity', d => d.selected ? 0.6 : 0.015)
+          .on('click', async d => {
+              await that.$store.dispatch('updateSelected',
+                  {
+                      'evt': 'click',
+                      'newState': !d.selected,
+                      'data': _.map(d, a => a[2]) // 이런 거 다 바꿀 수 있다.
+                  });
+              await EventBus.$emit('updateHex');
+              await EventBus.$emit('updateLabelComponent');
+              await EventBus.$emit('initClusterComponent');
+          })
+          .on('mouseover', async function (d) {
+              if(!that.isDown && d.selected) {
+                  d3.select(this)
+                      .attr('fill', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], -30)}`);
+              }
+          })
+          .on('mouseout', async function (d) {
+              if(!that.isDown && d.selected) {
+                  d3.select(this)
+                      .attr('fill', d => `${that.shadeColor(that.colors[Number.parseInt(d['cluster'])], 0)}`);
+              }
+          })
 
     },
     shadeColor(color, percent) {

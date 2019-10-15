@@ -74,7 +74,6 @@ export default {
           .map(d => _.map(d.dist, e => ({label: e.label, value: e.value, cluster: d.cluster })))
           .value();
 
-      console.log(data);
 
       let maxValue = that.$store.getters.getMaxLabelCount;
       let cfg = {
